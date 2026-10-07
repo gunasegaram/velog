@@ -1,0 +1,2886 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>VE-LOG Materialausgabe-Schein</title>
+
+
+<style>
+
+/* =========================================================
+   GRUNDLAYOUT
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    width:100%;
+    overflow-x:hidden;
+}
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#f4f4f4;
+
+    color:#222;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   HAUPT-FORMULAR
+========================================================= */
+
+.formular{
+
+    width:calc(100% - 30px);
+
+    max-width:1000px;
+
+    margin:15px auto;
+
+    background:#ffffff;
+
+    border-radius:15px;
+
+    padding:28px;
+
+    box-shadow:
+        0 2px 12px rgba(0,0,0,0.12);
+
+}
+
+
+/* =========================================================
+   TOP BUTTONS
+========================================================= */
+
+.top-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:18px;
+
+}
+
+.top-button{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    background:#8e2f2b;
+
+    color:#ffffff;
+
+    border:none;
+
+    border-radius:6px;
+
+    padding:10px 18px;
+
+    min-height:42px;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.top-button:hover{
+
+    background:#742522;
+
+}
+
+
+/* =========================================================
+   KOPF
+========================================================= */
+
+.kopf{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:30px;
+
+}
+
+.titel{
+
+    color:#18395b;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin-bottom:18px;
+
+}
+
+.lieferschein{
+
+    color:#18395b;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+
+.lieferschein span{
+
+    color:#8e2f2b;
+
+    font-size:24px;
+
+    margin-left:5px;
+
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo{
+
+    text-align:right;
+
+    flex-shrink:0;
+
+}
+
+.logo-img{
+
+    width:250px;
+
+    max-width:100%;
+
+    height:auto;
+
+    display:block;
+
+}
+
+.logo p{
+
+    margin-top:8px;
+
+    font-size:12px;
+
+    line-height:1.45;
+
+    color:#444;
+
+}
+
+
+/* =========================================================
+   TRENNLINIE
+========================================================= */
+
+.linie{
+
+    border-top:1px solid #aaa;
+
+    margin:22px 0 25px 0;
+
+}
+
+
+/* =========================================================
+   FELDER
+========================================================= */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    column-gap:25px;
+
+    row-gap:18px;
+
+}
+
+.feld{
+
+    width:100%;
+
+}
+
+.feld label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+
+}
+
+.feld input{
+
+    width:100%;
+
+    height:38px;
+
+    padding:5px 8px;
+
+    font-size:15px;
+
+    background:transparent;
+
+    border:none;
+
+    border-bottom:1px solid #999;
+
+    outline:none;
+
+}
+
+.feld input:focus{
+
+    border-bottom:2px solid #8e2f2b;
+
+}
+
+.voll{
+
+    grid-column:1/-1;
+
+}
+
+
+/* =========================================================
+   MATERIAL KASTEN
+========================================================= */
+
+.materialbox{
+
+    width:100%;
+
+    margin-top:28px;
+
+    padding:14px 12px 12px 12px;
+
+    border:1px solid #777;
+
+    border-radius:5px;
+
+    background:#fff;
+
+}
+
+.materialbox h3{
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    padding-bottom:6px;
+
+    margin-bottom:0;
+
+    border-bottom:1px solid #777;
+
+    text-transform:uppercase;
+
+}
+
+.material-grid{
+
+    display:grid;
+
+    grid-template-columns:3fr 1fr;
+
+    gap:14px;
+
+    padding-top:7px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid #777;
+
+}
+
+.material-grid label{
+
+    display:block;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    margin-bottom:3px;
+
+}
+
+.material-grid input{
+
+    width:100%;
+
+    height:31px;
+
+    border:none;
+
+    border-bottom:1px solid #999;
+
+    padding:3px 5px;
+
+    font-size:14px;
+
+    outline:none;
+
+    background:transparent;
+
+}
+
+.material-grid input:focus{
+
+    border-bottom:2px solid #8e2f2b;
+
+}
+
+
+/* =========================================================
+   CHECKBOXEN
+========================================================= */
+
+.checkboxen{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    column-gap:25px;
+
+    row-gap:8px;
+
+    padding-top:8px;
+
+}
+
+.checkboxen label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:12px;
+
+    min-height:20px;
+
+    cursor:pointer;
+
+}
+
+.checkboxen input{
+
+    width:15px;
+
+    height:15px;
+
+    margin:0;
+
+    accent-color:#8e2f2b;
+
+}
+
+
+/* =========================================================
+   BEMERKUNGEN
+========================================================= */
+
+.bemerkungen{
+
+    margin-top:22px;
+
+}
+
+.bemerkungen label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:6px;
+
+}
+
+.bemerkungen textarea{
+
+    width:100%;
+
+    min-height:90px;
+
+    resize:vertical;
+
+    border:none;
+
+    border-bottom:1px solid #999;
+
+    padding:8px 5px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+.bemerkungen textarea:focus{
+
+    border-bottom:2px solid #8e2f2b;
+
+}
+
+
+/* =========================================================
+   SIGNATUREN
+========================================================= */
+
+.signaturen{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:25px;
+
+    margin-top:30px;
+
+}
+
+.signature-box{
+
+    width:100%;
+
+}
+
+.signature-title{
+
+    color:#18395b;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:7px;
+
+}
+
+.signature-pad{
+
+    width:100%;
+
+    height:150px;
+
+    display:block;
+
+    background:#fff;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+
+    touch-action:none;
+
+    cursor:crosshair;
+
+}
+
+.sign-text{
+
+    margin-top:7px;
+
+    padding-top:6px;
+
+    border-top:1px solid #999;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:#444;
+
+}
+
+.signature-buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin-top:7px;
+
+}
+
+.signature-button{
+
+    border:none;
+
+    border-radius:5px;
+
+    padding:7px 10px;
+
+    min-height:34px;
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.signature-delete{
+
+    background:#777;
+
+}
+
+.signature-upload{
+
+    background:#444;
+
+}
+
+.signature-png{
+
+    background:#1f4e79;
+
+}
+
+.signature-button:hover{
+
+    opacity:.9;
+
+}
+
+.file-input{
+
+    display:none;
+
+}
+
+
+/* =========================================================
+   HAUPT BUTTONS
+========================================================= */
+
+.buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:28px;
+
+    padding-top:18px;
+
+    border-top:1px solid #ddd;
+
+}
+
+.buttons button{
+
+    border:none;
+
+    border-radius:6px;
+
+    padding:11px 18px;
+
+    min-height:44px;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.buttons button:hover{
+
+    opacity:.9;
+
+}
+
+.save{
+
+    background:#8e2f2b;
+
+}
+
+.pdf{
+
+    background:#1f4e79;
+
+}
+
+.print{
+
+    background:#444;
+
+}
+
+.clear{
+
+    background:#777;
+
+}
+
+.list-btn{
+
+    background:#18395b;
+
+}
+
+
+/* =========================================================
+   GESPEICHERTE LIEFERSCHEINE
+========================================================= */
+
+.gespeicherte-box{
+
+    display:none;
+
+    width:calc(100% - 30px);
+
+    max-width:1000px;
+
+    margin:0 auto 20px;
+
+    background:#fff;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:
+        0 2px 12px rgba(0,0,0,0.12);
+
+}
+
+.gespeicherte-box.aktiv{
+
+    display:block;
+
+}
+
+.gespeicherte-box h2{
+
+    color:#18395b;
+
+    font-size:20px;
+
+    margin-bottom:18px;
+
+}
+
+.lieferschein-liste{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.lieferschein-eintrag{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:7px;
+
+    background:#fafafa;
+
+}
+
+.lieferschein-info{
+
+    flex:1;
+
+}
+
+.lieferschein-info strong{
+
+    color:#8e2f2b;
+
+    font-size:16px;
+
+}
+
+.lieferschein-info span{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#555;
+
+    font-size:12px;
+
+}
+
+.eintrag-buttons{
+
+    display:flex;
+
+    gap:6px;
+
+}
+
+.eintrag-buttons button{
+
+    border:none;
+
+    border-radius:5px;
+
+    padding:8px 12px;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.oeffnen-btn{
+
+    background:#1f4e79;
+
+}
+
+.loeschen-btn{
+
+    background:#777;
+
+}
+
+.keine-formulare{
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#777;
+
+    border:1px dashed #bbb;
+
+    border-radius:6px;
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:900px){
+
+    .formular{
+
+        width:calc(100% - 20px);
+
+        margin:10px auto;
+
+        padding:22px;
+
+    }
+
+    .gespeicherte-box{
+
+        width:calc(100% - 20px);
+
+    }
+
+    .kopf{
+
+        gap:20px;
+
+    }
+
+    .logo-img{
+
+        width:210px;
+
+    }
+
+}
+
+
+/* =========================================================
+   HANDY
+========================================================= */
+
+@media(max-width:650px){
+
+    .formular{
+
+        width:100%;
+
+        margin:0;
+
+        min-height:100vh;
+
+        padding:15px;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+    }
+
+    .gespeicherte-box{
+
+        width:100%;
+
+        margin:0;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+        padding:15px;
+
+    }
+
+    .top-buttons{
+
+        width:100%;
+
+        gap:8px;
+
+    }
+
+    .top-button{
+
+        flex:1;
+
+        padding:10px 7px;
+
+        font-size:13px;
+
+    }
+
+    .kopf{
+
+        flex-direction:column;
+
+        gap:15px;
+
+    }
+
+    .logo{
+
+        order:-1;
+
+        width:100%;
+
+        text-align:center;
+
+    }
+
+    .logo-img{
+
+        width:210px;
+
+        margin:0 auto;
+
+    }
+
+    .logo p{
+
+        text-align:center;
+
+        font-size:11px;
+
+    }
+
+    .titel{
+
+        font-size:20px;
+
+        margin-bottom:12px;
+
+    }
+
+    .lieferschein{
+
+        font-size:14px;
+
+    }
+
+    .lieferschein span{
+
+        font-size:21px;
+
+    }
+
+    .grid{
+
+        grid-template-columns:1fr;
+
+        gap:15px;
+
+    }
+
+    .voll{
+
+        grid-column:auto;
+
+    }
+
+    .feld input{
+
+        height:43px;
+
+        font-size:16px;
+
+    }
+
+    .materialbox{
+
+        margin-top:24px;
+
+        padding:12px 10px 10px;
+
+    }
+
+    .material-grid{
+
+        grid-template-columns:1fr;
+
+        gap:10px;
+
+    }
+
+    .material-grid input{
+
+        height:40px;
+
+        font-size:16px;
+
+    }
+
+    .checkboxen{
+
+        grid-template-columns:1fr 1fr;
+
+        column-gap:12px;
+
+        row-gap:10px;
+
+    }
+
+    .checkboxen label{
+
+        font-size:13px;
+
+    }
+
+    .bemerkungen textarea{
+
+        min-height:110px;
+
+        font-size:16px;
+
+    }
+
+    .signaturen{
+
+        grid-template-columns:1fr;
+
+        gap:25px;
+
+    }
+
+    .signature-pad{
+
+        height:180px;
+
+    }
+
+    .signature-buttons{
+
+        display:grid;
+
+        grid-template-columns:1fr;
+
+    }
+
+    .signature-button{
+
+        width:100%;
+
+        min-height:40px;
+
+        font-size:13px;
+
+    }
+
+    .buttons{
+
+        display:grid;
+
+        grid-template-columns:1fr;
+
+        gap:8px;
+
+    }
+
+    .buttons button{
+
+        width:100%;
+
+        min-height:48px;
+
+        font-size:15px;
+
+    }
+
+    .lieferschein-eintrag{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .eintrag-buttons{
+
+        width:100%;
+
+    }
+
+    .eintrag-buttons button{
+
+        flex:1;
+
+        min-height:40px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SEHR KLEINES HANDY
+========================================================= */
+
+@media(max-width:380px){
+
+    .formular{
+
+        padding:12px;
+
+    }
+
+    .top-button{
+
+        font-size:12px;
+
+        padding:9px 5px;
+
+    }
+
+    .checkboxen{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+/* =========================================================
+   DRUCK
+========================================================= */
+
+@media print{
+
+    @page{
+
+        size:A4;
+
+        margin:12mm;
+
+    }
+
+    body{
+
+        background:#fff;
+
+    }
+
+    .formular{
+
+        width:100%;
+
+        max-width:none;
+
+        margin:0;
+
+        padding:0;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+    }
+
+    .gespeicherte-box{
+
+        display:none !important;
+
+    }
+
+    .top-buttons,
+    .buttons,
+    .signature-buttons{
+
+        display:none !important;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     GESPEICHERTE LIEFERSCHEINE
+===================================================== -->
+
+<div
+    id="gespeicherteBox"
+    class="gespeicherte-box"
+>
+
+    <h2>
+        📋 Gespeicherte Lieferscheine
+    </h2>
+
+    <div
+        id="lieferscheinListe"
+        class="lieferschein-liste"
+    ></div>
+
+</div>
+
+
+
+<!-- =====================================================
+     HAUPTFORMULAR
+===================================================== -->
+
+<div
+    class="formular"
+    id="formular"
+>
+
+
+<!-- NAVIGATION -->
+
+<div class="top-buttons">
+
+    <a
+        href="formular.html"
+        class="top-button"
+    >
+        📄 Formular
+    </a>
+
+    <a
+        href="index.html"
+        class="top-button"
+    >
+        🏠 Zum Dashboard
+    </a>
+
+</div>
+
+
+
+<!-- KOPF -->
+
+<div class="kopf">
+
+    <div>
+
+        <div class="titel">
+            Materialausgabe-Schein
+        </div>
+
+        <div class="lieferschein">
+
+            Lieferschein Nr.:
+
+            <span id="lieferscheinNr">
+                00000
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="logo">
+
+        <img
+            src="logo.png"
+            alt="VE-LOG Logo"
+            class="logo-img"
+        >
+
+        <p>
+
+            Flächenmanagement · Umschlag · Transport<br>
+
+            Sperberweg 15 · 91056 Erlangen<br>
+
+            Tel. 09131 / 7515-10
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<div class="linie"></div>
+
+
+
+<!-- STAMMDATEN -->
+
+<div class="grid">
+
+
+    <div class="feld">
+
+        <label>
+            Empfänger
+        </label>
+
+        <input
+            type="text"
+            id="empfaengerName"
+        >
+
+    </div>
+
+
+    <div class="feld">
+
+        <label>
+            Datum
+        </label>
+
+        <input
+            type="date"
+            id="datum"
+        >
+
+    </div>
+
+
+    <div class="feld">
+
+        <label>
+            Gerät / Kennzeichen
+        </label>
+
+        <input
+            type="text"
+            id="geraet"
+        >
+
+    </div>
+
+
+    <div class="feld">
+
+        <label>
+            Fahrername
+        </label>
+
+        <input
+            type="text"
+            id="fahrer"
+        >
+
+    </div>
+
+
+    <div class="feld voll">
+
+        <label>
+            Baustelle / Standort
+        </label>
+
+        <input
+            type="text"
+            id="baustelle"
+        >
+
+    </div>
+
+
+</div>
+
+
+
+<!-- MATERIAL -->
+
+<div class="materialbox">
+
+    <h3>
+        Material &amp; Menge
+    </h3>
+
+
+    <div class="material-grid">
+
+
+        <div>
+
+            <label>
+                MATERIAL
+            </label>
+
+            <input
+                type="text"
+                id="material"
+            >
+
+        </div>
+
+
+        <div>
+
+            <label>
+                MENGE
+            </label>
+
+            <input
+                type="text"
+                id="menge"
+            >
+
+        </div>
+
+
+    </div>
+
+
+    <div class="checkboxen">
+
+
+        <label>
+            <input
+                type="checkbox"
+                id="diesel"
+            >
+            Diesel
+        </label>
+
+
+        <label>
+            <input
+                type="checkbox"
+                id="adblue"
+            >
+            AdBlue
+        </label>
+
+
+        <label>
+            <input
+                type="checkbox"
+                id="fett"
+            >
+            Fett
+        </label>
+
+
+        <label>
+            <input
+                type="checkbox"
+                id="wasser"
+            >
+            Wasser
+        </label>
+
+
+        <label>
+            <input
+                type="checkbox"
+                id="oel"
+            >
+            Öl
+        </label>
+
+
+        <label>
+            <input
+                type="checkbox"
+                id="sonstiges"
+            >
+            Sonstiges
+        </label>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- BEMERKUNGEN -->
+
+<div class="bemerkungen">
+
+    <label>
+        BEMERKUNGEN
+    </label>
+
+    <textarea
+        id="bemerkungen"
+    ></textarea>
+
+</div>
+
+
+
+<!-- SIGNATUREN -->
+
+<div class="signaturen">
+
+
+    <!-- AUSGEBER -->
+
+    <div class="signature-box">
+
+        <div class="signature-title">
+            Unterschrift Ausgeber
+        </div>
+
+        <canvas
+            id="ausgeber"
+            class="signature-pad"
+        ></canvas>
+
+
+        <div class="signature-buttons">
+
+            <button
+                type="button"
+                class="signature-button signature-delete"
+                onclick="clearCanvas('ausgeber')"
+            >
+                🗑 Löschen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-button signature-upload"
+                onclick="uploadSignature('ausgeber')"
+            >
+                📁 Hochladen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-button signature-png"
+                onclick="saveSignaturePNG('ausgeber')"
+            >
+                💾 Als PNG
+            </button>
+
+        </div>
+
+
+        <input
+            type="file"
+            id="upload-ausgeber"
+            class="file-input"
+            accept="image/png,image/jpeg,image/jpg"
+            onchange="loadSignature(this,'ausgeber')"
+        >
+
+
+        <div class="sign-text">
+            UNTERSCHRIFT AUSGEBER
+        </div>
+
+    </div>
+
+
+
+    <!-- EMPFÄNGER -->
+
+    <div class="signature-box">
+
+        <div class="signature-title">
+            Unterschrift Empfänger
+        </div>
+
+        <canvas
+            id="empfaengerSignatur"
+            class="signature-pad"
+        ></canvas>
+
+
+        <div class="signature-buttons">
+
+            <button
+                type="button"
+                class="signature-button signature-delete"
+                onclick="clearCanvas('empfaengerSignatur')"
+            >
+                🗑 Löschen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-button signature-upload"
+                onclick="uploadSignature('empfaengerSignatur')"
+            >
+                📁 Hochladen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-button signature-png"
+                onclick="saveSignaturePNG('empfaengerSignatur')"
+            >
+                💾 Als PNG
+            </button>
+
+        </div>
+
+
+        <input
+            type="file"
+            id="upload-empfaengerSignatur"
+            class="file-input"
+            accept="image/png,image/jpeg,image/jpg"
+            onchange="loadSignature(this,'empfaengerSignatur')"
+        >
+
+
+        <div class="sign-text">
+            UNTERSCHRIFT EMPFÄNGER
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- BUTTONS -->
+
+<div class="buttons">
+
+
+    <button
+        type="button"
+        class="save"
+        onclick="speichernFormular()"
+    >
+        💾 Speichern
+    </button>
+
+
+    <button
+        type="button"
+        class="list-btn"
+        onclick="zeigeLieferscheine()"
+    >
+        📋 Gespeicherte Lieferscheine
+    </button>
+
+
+    <button
+        type="button"
+        class="pdf"
+        onclick="window.print()"
+    >
+        📄 PDF
+    </button>
+
+
+    <button
+        type="button"
+        class="print"
+        onclick="window.print()"
+    >
+        🖨 Drucken
+    </button>
+
+
+    <button
+        type="button"
+        class="clear"
+        onclick="clearAllSignatures()"
+    >
+        🗑 Signaturen löschen
+    </button>
+
+
+</div>
+
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   SIGNATURE PADS
+========================================================= */
+
+const pads = {};
+
+
+function createPad(id){
+
+    const canvas =
+        document.getElementById(id);
+
+    if(!canvas) return;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let drawing = false;
+
+
+    function resizeCanvas(){
+
+        const oldImage =
+            canvas.toDataURL();
+
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        const ratio =
+            window.devicePixelRatio || 1;
+
+
+        canvas.width =
+            rect.width * ratio;
+
+
+        canvas.height =
+            rect.height * ratio;
+
+
+        ctx.setTransform(
+            ratio,
+            0,
+            0,
+            ratio,
+            0,
+            0
+        );
+
+
+        ctx.lineWidth = 2;
+
+        ctx.lineCap = "round";
+
+        ctx.lineJoin = "round";
+
+        ctx.strokeStyle = "#000";
+
+
+        if(oldImage !== "data:,"){
+
+            const img =
+                new Image();
+
+            img.onload = function(){
+
+                ctx.drawImage(
+                    img,
+                    0,
+                    0,
+                    rect.width,
+                    rect.height
+                );
+
+            };
+
+            img.src = oldImage;
+
+        }
+
+    }
+
+
+    resizeCanvas();
+
+
+    window.addEventListener(
+        "resize",
+        resizeCanvas
+    );
+
+
+    function getPosition(e){
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        return {
+
+            x:
+                e.clientX -
+                rect.left,
+
+            y:
+                e.clientY -
+                rect.top
+
+        };
+
+    }
+
+
+    canvas.addEventListener(
+        "pointerdown",
+        function(e){
+
+            e.preventDefault();
+
+            canvas.setPointerCapture(
+                e.pointerId
+            );
+
+
+            const pos =
+                getPosition(e);
+
+
+            drawing = true;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                pos.x,
+                pos.y
+            );
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointermove",
+        function(e){
+
+            if(!drawing) return;
+
+            e.preventDefault();
+
+
+            const pos =
+                getPosition(e);
+
+
+            ctx.lineTo(
+                pos.x,
+                pos.y
+            );
+
+
+            ctx.stroke();
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointerup",
+        function(){
+
+            drawing = false;
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointercancel",
+        function(){
+
+            drawing = false;
+
+        }
+    );
+
+
+    pads[id] = {
+
+        canvas:canvas,
+
+        ctx:ctx
+
+    };
+
+}
+
+
+/* =========================================================
+   SIGNATUR LÖSCHEN
+========================================================= */
+
+function clearCanvas(id){
+
+    const pad =
+        pads[id];
+
+    if(!pad) return;
+
+
+    pad.ctx.clearRect(
+        0,
+        0,
+        pad.canvas.width,
+        pad.canvas.height
+    );
+
+}
+
+
+/* =========================================================
+   ALLE SIGNATUREN LÖSCHEN
+========================================================= */
+
+function clearAllSignatures(){
+
+    clearCanvas(
+        "ausgeber"
+    );
+
+    clearCanvas(
+        "empfaengerSignatur"
+    );
+
+}
+
+
+/* =========================================================
+   SIGNATUR HOCHLADEN
+========================================================= */
+
+function uploadSignature(id){
+
+    const input =
+        document.getElementById(
+            "upload-" + id
+        );
+
+
+    if(input){
+
+        input.click();
+
+    }
+
+}
+
+
+/* =========================================================
+   SIGNATUR AUS BILD LADEN
+========================================================= */
+
+function loadSignature(input,id){
+
+    const file =
+        input.files[0];
+
+    if(!file) return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e){
+
+            const img =
+                new Image();
+
+
+            img.onload =
+                function(){
+
+                    const pad =
+                        pads[id];
+
+                    if(!pad) return;
+
+
+                    const canvas =
+                        pad.canvas;
+
+                    const ctx =
+                        pad.ctx;
+
+
+                    const width =
+                        canvas.clientWidth;
+
+                    const height =
+                        canvas.clientHeight;
+
+
+                    ctx.clearRect(
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+
+                    const scale =
+                        Math.min(
+
+                            width /
+                            img.width,
+
+                            height /
+                            img.height
+
+                        );
+
+
+                    const w =
+                        img.width * scale;
+
+
+                    const h =
+                        img.height * scale;
+
+
+                    const x =
+                        (width - w) / 2;
+
+
+                    const y =
+                        (height - h) / 2;
+
+
+                    ctx.drawImage(
+                        img,
+                        x,
+                        y,
+                        w,
+                        h
+                    );
+
+                };
+
+
+            img.src =
+                e.target.result;
+
+        };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =========================================================
+   SIGNATUR ALS PNG
+========================================================= */
+
+function saveSignaturePNG(id){
+
+    const pad =
+        pads[id];
+
+    if(!pad) return;
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.download =
+        id + "_Unterschrift.png";
+
+
+    link.href =
+        pad.canvas.toDataURL(
+            "image/png"
+        );
+
+
+    link.click();
+
+}
+
+
+/* =========================================================
+   SIGNATUR ALS DATA URL
+========================================================= */
+
+function getSignature(id){
+
+    const pad =
+        pads[id];
+
+    if(!pad) return "";
+
+    return pad.canvas.toDataURL(
+        "image/png"
+    );
+
+}
+
+
+/* =========================================================
+   NEUE LIEFERSCHEINNUMMER
+========================================================= */
+
+function generateLieferschein(){
+
+    let nr = parseInt(
+
+        localStorage.getItem(
+            "materialNr"
+        ) || "0"
+
+    );
+
+
+    nr++;
+
+
+    localStorage.setItem(
+        "materialNr",
+        nr
+    );
+
+
+    return nr
+        .toString()
+        .padStart(5,"0");
+
+}
+
+
+/* =========================================================
+   FORMULAR SPEICHERN
+   JEDER KLICK = NEUE NUMMER
+========================================================= */
+
+function speichernFormular(){
+
+    const neueNummer =
+        generateLieferschein();
+
+
+    document.getElementById(
+        "lieferscheinNr"
+    ).innerText =
+        neueNummer;
+
+
+    const daten = {
+
+        lieferscheinNr:
+            neueNummer,
+
+        empfaenger:
+            document.getElementById(
+                "empfaengerName"
+            ).value,
+
+        datum:
+            document.getElementById(
+                "datum"
+            ).value,
+
+        geraet:
+            document.getElementById(
+                "geraet"
+            ).value,
+
+        fahrer:
+            document.getElementById(
+                "fahrer"
+            ).value,
+
+        baustelle:
+            document.getElementById(
+                "baustelle"
+            ).value,
+
+        material:
+            document.getElementById(
+                "material"
+            ).value,
+
+        menge:
+            document.getElementById(
+                "menge"
+            ).value,
+
+        diesel:
+            document.getElementById(
+                "diesel"
+            ).checked,
+
+        adblue:
+            document.getElementById(
+                "adblue"
+            ).checked,
+
+        fett:
+            document.getElementById(
+                "fett"
+            ).checked,
+
+        wasser:
+            document.getElementById(
+                "wasser"
+            ).checked,
+
+        oel:
+            document.getElementById(
+                "oel"
+            ).checked,
+
+        sonstiges:
+            document.getElementById(
+                "sonstiges"
+            ).checked,
+
+        bemerkungen:
+            document.getElementById(
+                "bemerkungen"
+            ).value,
+
+        signaturAusgeber:
+            getSignature("ausgeber"),
+
+        signaturEmpfaenger:
+            getSignature(
+                "empfaengerSignatur"
+            ),
+
+        gespeichertAm:
+            new Date().toLocaleString(
+                "de-DE"
+            )
+
+    };
+
+
+    localStorage.setItem(
+
+        "materialausgabe_" +
+        neueNummer,
+
+        JSON.stringify(daten)
+
+    );
+
+
+    alert(
+
+        "✅ Formular gespeichert!\n\n" +
+
+        "Lieferschein Nr.: " +
+
+        neueNummer
+
+    );
+
+
+    zeigeLieferscheine();
+
+}
+
+
+/* =========================================================
+   ALLE GESPEICHERTEN LIEFERSCHEINE FINDEN
+========================================================= */
+
+function getGespeicherteLieferscheine(){
+
+    const liste = [];
+
+
+    for(
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ){
+
+        const key =
+            localStorage.key(i);
+
+
+        if(
+            key &&
+            key.startsWith(
+                "materialausgabe_"
+            )
+        ){
+
+            try{
+
+                const daten =
+                    JSON.parse(
+                        localStorage.getItem(
+                            key
+                        )
+                    );
+
+
+                if(daten){
+
+                    liste.push(daten);
+
+                }
+
+            }
+            catch(error){
+
+                console.error(
+                    "Fehler:",
+                    error
+                );
+
+            }
+
+        }
+
+    }
+
+
+    liste.sort(
+        function(a,b){
+
+            return parseInt(
+                b.lieferscheinNr
+            )
+            -
+            parseInt(
+                a.lieferscheinNr
+            );
+
+        }
+    );
+
+
+    return liste;
+
+}
+
+
+/* =========================================================
+   LIEFERSCHEIN-LISTE ANZEIGEN
+========================================================= */
+
+function zeigeLieferscheine(){
+
+    const box =
+        document.getElementById(
+            "gespeicherteBox"
+        );
+
+
+    const liste =
+        document.getElementById(
+            "lieferscheinListe"
+        );
+
+
+    const daten =
+        getGespeicherteLieferscheine();
+
+
+    box.classList.add(
+        "aktiv"
+    );
+
+
+    liste.innerHTML = "";
+
+
+    if(daten.length === 0){
+
+        liste.innerHTML = `
+
+            <div class="keine-formulare">
+
+                📋 Noch keine Lieferscheine gespeichert.
+
+            </div>
+
+        `;
+
+        box.scrollIntoView({
+            behavior:"smooth"
+        });
+
+        return;
+
+    }
+
+
+    daten.forEach(
+        function(item){
+
+            const eintrag =
+                document.createElement(
+                    "div"
+                );
+
+
+            eintrag.className =
+                "lieferschein-eintrag";
+
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
+            info.className =
+                "lieferschein-info";
+
+
+            info.innerHTML = `
+
+                <strong>
+                    Lieferschein Nr. ${item.lieferscheinNr}
+                </strong>
+
+                <span>
+                    ${item.empfaenger || "Kein Empfänger"}
+                    ·
+                    ${item.baustelle || "Keine Baustelle"}
+                    <br>
+                    Gespeichert:
+                    ${item.gespeichertAm || ""}
+                </span>
+
+            `;
+
+
+            const buttons =
+                document.createElement(
+                    "div"
+                );
+
+
+            buttons.className =
+                "eintrag-buttons";
+
+
+            const oeffnen =
+                document.createElement(
+                    "button"
+                );
+
+
+            oeffnen.className =
+                "oeffnen-btn";
+
+
+            oeffnen.innerText =
+                "📂 Öffnen";
+
+
+            oeffnen.onclick =
+                function(){
+
+                    ladeLieferschein(
+                        item.lieferscheinNr
+                    );
+
+                };
+
+
+            const loeschen =
+                document.createElement(
+                    "button"
+                );
+
+
+            loeschen.className =
+                "loeschen-btn";
+
+
+            loeschen.innerText =
+                "🗑 Löschen";
+
+
+            loeschen.onclick =
+                function(){
+
+                    loescheLieferschein(
+                        item.lieferscheinNr
+                    );
+
+                };
+
+
+            buttons.appendChild(
+                oeffnen
+            );
+
+
+            buttons.appendChild(
+                loeschen
+            );
+
+
+            eintrag.appendChild(
+                info
+            );
+
+
+            eintrag.appendChild(
+                buttons
+            );
+
+
+            liste.appendChild(
+                eintrag
+            );
+
+        }
+    );
+
+
+    box.scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================================
+   LIEFERSCHEIN LADEN
+========================================================= */
+
+function ladeLieferschein(nummer){
+
+    const daten =
+        JSON.parse(
+
+            localStorage.getItem(
+
+                "materialausgabe_" +
+                nummer
+
+            )
+
+        );
+
+
+    if(!daten){
+
+        alert(
+            "❌ Lieferschein wurde nicht gefunden."
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "lieferscheinNr"
+    ).innerText =
+        daten.lieferscheinNr;
+
+
+    document.getElementById(
+        "empfaengerName"
+    ).value =
+        daten.empfaenger || "";
+
+
+    document.getElementById(
+        "datum"
+    ).value =
+        daten.datum || "";
+
+
+    document.getElementById(
+        "geraet"
+    ).value =
+        daten.geraet || "";
+
+
+    document.getElementById(
+        "fahrer"
+    ).value =
+        daten.fahrer || "";
+
+
+    document.getElementById(
+        "baustelle"
+    ).value =
+        daten.baustelle || "";
+
+
+    document.getElementById(
+        "material"
+    ).value =
+        daten.material || "";
+
+
+    document.getElementById(
+        "menge"
+    ).value =
+        daten.menge || "";
+
+
+    document.getElementById(
+        "diesel"
+    ).checked =
+        daten.diesel || false;
+
+
+    document.getElementById(
+        "adblue"
+    ).checked =
+        daten.adblue || false;
+
+
+    document.getElementById(
+        "fett"
+    ).checked =
+        daten.fett || false;
+
+
+    document.getElementById(
+        "wasser"
+    ).checked =
+        daten.wasser || false;
+
+
+    document.getElementById(
+        "oel"
+    ).checked =
+        daten.oel || false;
+
+
+    document.getElementById(
+        "sonstiges"
+    ).checked =
+        daten.sonstiges || false;
+
+
+    document.getElementById(
+        "bemerkungen"
+    ).value =
+        daten.bemerkungen || "";
+
+
+    clearCanvas(
+        "ausgeber"
+    );
+
+
+    clearCanvas(
+        "empfaengerSignatur"
+    );
+
+
+    if(
+        daten.signaturAusgeber &&
+        daten.signaturAusgeber !== "data:,"
+    ){
+
+        drawSavedSignature(
+            "ausgeber",
+            daten.signaturAusgeber
+        );
+
+    }
+
+
+    if(
+        daten.signaturEmpfaenger &&
+        daten.signaturEmpfaenger !== "data:,"
+    ){
+
+        drawSavedSignature(
+            "empfaengerSignatur",
+            daten.signaturEmpfaenger
+        );
+
+    }
+
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+
+    alert(
+        "✅ Lieferschein Nr. " +
+        nummer +
+        " wurde geöffnet."
+    );
+
+}
+
+
+/* =========================================================
+   GESPEICHERTE SIGNATUR LADEN
+========================================================= */
+
+function drawSavedSignature(
+    id,
+    dataUrl
+){
+
+    const pad =
+        pads[id];
+
+    if(!pad) return;
+
+
+    const img =
+        new Image();
+
+
+    img.onload =
+        function(){
+
+            const canvas =
+                pad.canvas;
+
+
+            const ctx =
+                pad.ctx;
+
+
+            const width =
+                canvas.clientWidth;
+
+
+            const height =
+                canvas.clientHeight;
+
+
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            const scale =
+                Math.min(
+
+                    width /
+                    img.width,
+
+                    height /
+                    img.height
+
+                );
+
+
+            const w =
+                img.width * scale;
+
+
+            const h =
+                img.height * scale;
+
+
+            const x =
+                (width - w) / 2;
+
+
+            const y =
+                (height - h) / 2;
+
+
+            ctx.drawImage(
+                img,
+                x,
+                y,
+                w,
+                h
+            );
+
+        };
+
+
+    img.src =
+        dataUrl;
+
+}
+
+
+/* =========================================================
+   LIEFERSCHEIN LÖSCHEN
+========================================================= */
+
+function loescheLieferschein(nummer){
+
+    const bestaetigt =
+        confirm(
+
+            "Möchtest du den Lieferschein Nr. " +
+            nummer +
+            " wirklich löschen?"
+
+        );
+
+
+    if(!bestaetigt){
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+
+        "materialausgabe_" +
+        nummer
+
+    );
+
+
+    zeigeLieferscheine();
+
+
+    alert(
+        "🗑 Lieferschein Nr. " +
+        nummer +
+        " wurde gelöscht."
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        createPad(
+            "ausgeber"
+        );
+
+
+        createPad(
+            "empfaengerSignatur"
+        );
+
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
