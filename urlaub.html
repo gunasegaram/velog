@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>VE-LOG Urlaub</title>
+
+
+<style>
+
+/* ==========================================
+   GRUNDEINSTELLUNGEN
+========================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body{
+    font-family:Arial,sans-serif;
+    background:#ececec;
+    padding:30px;
+}
+
+
+/* ==========================================
+   HAUPT-KARTE
+========================================== */
+
+.card{
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+
+    background:#fff;
+
+    border-radius:16px;
+
+    padding:25px;
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.08);
+
+    border-left:5px solid #8e2f2b;
+}
+
+
+/* ==========================================
+   LOGO
+========================================== */
+
+.card-logo{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+
+.card-logo img{
+    width:150px;
+    max-width:100%;
+    height:auto;
+}
+
+
+/* ==========================================
+   TITEL
+========================================== */
+
+.card h3{
+    text-align:center;
+
+    color:#17345d;
+
+    font-size:30px;
+
+    margin-bottom:25px;
+}
+
+
+/* ==========================================
+   URLAUBS-STATISTIK
+========================================== */
+
+.urlaub-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,1fr);
+
+    gap:12px;
+
+    margin-bottom:25px;
+}
+
+
+/* ==========================================
+   STATISTIK-KARTE
+========================================== */
+
+.stat-card{
+
+    background:#f5f5f5;
+
+    border-radius:10px;
+
+    padding:18px 12px;
+
+    text-align:center;
+
+    border-left:4px solid #8e2f2b;
+
+    min-height:100px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+}
+
+
+/* Zahl */
+
+.stat-number{
+
+    display:block;
+
+    font-size:30px;
+
+    font-weight:bold;
+
+    color:#17345d;
+}
+
+
+/* Beschriftung */
+
+.stat-label{
+
+    display:block;
+
+    margin-top:6px;
+
+    color:#666;
+
+    font-size:13px;
+}
+
+
+/* ==========================================
+   URLAUB FORMULAR BUTTON
+========================================== */
+
+.urlaub-btn{
+
+    width:100%;
+
+    background:#8e2f2b;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    font-size:16px;
+
+    margin-bottom:10px;
+
+    transition:
+        background .2s,
+        transform .1s;
+}
+
+
+.urlaub-btn:hover{
+
+    background:#742421;
+
+}
+
+
+.urlaub-btn:active{
+
+    transform:scale(.99);
+
+}
+
+
+/* ==========================================
+   ZURÜCK BUTTON
+========================================== */
+
+.zurueck-btn{
+
+    width:100%;
+
+    background:#17345d;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:15px;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    font-size:16px;
+
+    transition:
+        background .2s,
+        transform .1s;
+}
+
+
+.zurueck-btn:hover{
+
+    background:#102846;
+
+}
+
+
+.zurueck-btn:active{
+
+    transform:scale(.99);
+
+}
+
+
+/* ==========================================
+   TRENNLINIE
+========================================== */
+
+.trennlinie{
+
+    height:1px;
+
+    background:#ddd;
+
+    margin:20px 0;
+}
+
+
+/* ==========================================
+   RESPONSIVE TABLET
+========================================== */
+
+@media(max-width:1000px){
+
+    .urlaub-stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+
+/* ==========================================
+   RESPONSIVE HANDY
+========================================== */
+
+@media(max-width:600px){
+
+    body{
+
+        padding:15px;
+
+    }
+
+
+    .card{
+
+        padding:20px;
+
+        border-radius:12px;
+
+    }
+
+
+    .card-logo img{
+
+        width:130px;
+
+    }
+
+
+    .card h3{
+
+        font-size:26px;
+
+        margin-bottom:20px;
+
+    }
+
+
+    .urlaub-stats{
+
+        grid-template-columns:1fr;
+
+        gap:10px;
+
+    }
+
+
+    .stat-card{
+
+        min-height:85px;
+
+        padding:14px;
+
+    }
+
+
+    .stat-number{
+
+        font-size:26px;
+
+    }
+
+
+    .urlaub-btn,
+    .zurueck-btn{
+
+        padding:14px;
+
+        font-size:15px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     HAUPTBEREICH
+========================================== -->
+
+<div class="card">
+
+
+    <!-- ======================================
+         LOGO
+    ======================================= -->
+
+    <div class="card-logo">
+
+        <img
+            src="logo.png"
+            alt="VE-LOG Logo">
+
+    </div>
+
+
+    <!-- ======================================
+         TITEL
+    ======================================= -->
+
+    <h3>
+        📅 Urlaub
+    </h3>
+
+
+    <!-- ======================================
+         URLAUBSSTATISTIK
+    ======================================= -->
+
+    <div class="urlaub-stats">
+
+
+        <!-- URLAUBSTAGE -->
+
+        <div class="stat-card">
+
+            <span
+                class="stat-number"
+                id="urlaubstage">
+                30
+            </span>
+
+            <span
+                class="stat-label">
+                Urlaubstage
+            </span>
+
+        </div>
+
+
+        <!-- GENOMMEN -->
+
+        <div class="stat-card">
+
+            <span
+                class="stat-number"
+                id="genommen">
+                12
+            </span>
+
+            <span
+                class="stat-label">
+                Genommen
+            </span>
+
+        </div>
+
+
+        <!-- VERFÜGBAR -->
+
+        <div class="stat-card">
+
+            <span
+                class="stat-number"
+                id="verfuegbar">
+                18
+            </span>
+
+            <span
+                class="stat-label">
+                Verfügbar
+            </span>
+
+        </div>
+
+
+        <!-- OFFEN -->
+
+        <div class="stat-card">
+
+            <span
+                class="stat-number"
+                id="offen">
+                2
+            </span>
+
+            <span
+                class="stat-label">
+                Offen
+            </span>
+
+        </div>
+
+
+        <!-- GENEHMIGT -->
+
+        <div class="stat-card">
+
+            <span
+                class="stat-number"
+                id="genehmigt">
+                5
+            </span>
+
+            <span
+                class="stat-label">
+                Genehmigt
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ======================================
+         TRENNLINIE
+    ======================================= -->
+
+    <div class="trennlinie"></div>
+
+
+    <!-- ======================================
+         URLAUBSFORMULAR ÖFFNEN
+    ======================================= -->
+
+    <button
+        type="button"
+        class="urlaub-btn"
+        onclick="
+            window.location.href='urlaubformular.html'
+        ">
+
+        📄 Urlaubformular öffnen
+
+    </button>
+
+
+    <!-- ======================================
+         ZURÜCK ZUM DASHBOARD
+    ======================================= -->
+
+    <button
+        type="button"
+        class="zurueck-btn"
+        onclick="
+            window.location.href='dashboard.html'
+        ">
+
+        ← Zurück zum Dashboard
+
+    </button>
+
+
+</div>
+
+
+<!-- ==========================================
+     JAVASCRIPT
+========================================== -->
+
+<script>
+
+
+/* ==========================================
+   URLAUBSDATEN LADEN
+========================================== */
+
+function ladeUrlaubsdaten(){
+
+
+    /*
+       Gespeicherte Daten aus LocalStorage
+       holen
+    */
+
+    const gespeicherteDaten =
+        localStorage.getItem(
+            "urlaubDaten"
+        );
+
+
+    /*
+       Wenn keine Daten vorhanden sind,
+       bleiben die Standardwerte stehen.
+    */
+
+    if(!gespeicherteDaten){
+
+        return;
+
+    }
+
+
+    let daten;
+
+
+    try{
+
+        daten =
+            JSON.parse(
+                gespeicherteDaten
+            );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Fehler beim Lesen der Urlaubsdaten:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    /* ======================================
+       URLAUBSTAGE
+    ======================================= */
+
+    if(
+        daten.urlaubstage !== undefined &&
+        daten.urlaubstage !== ""
+    ){
+
+        document.getElementById(
+            "urlaubstage"
+        ).innerText =
+            daten.urlaubstage;
+
+    }
+
+
+    /* ======================================
+       GENOMMEN
+    ======================================= */
+
+    if(
+        daten.genommen !== undefined &&
+        daten.genommen !== ""
+    ){
+
+        document.getElementById(
+            "genommen"
+        ).innerText =
+            daten.genommen;
+
+    }
+
+
+    /* ======================================
+       VERFÜGBAR
+    ======================================= */
+
+    if(
+        daten.verfuegbar !== undefined &&
+        daten.verfuegbar !== ""
+    ){
+
+        document.getElementById(
+            "verfuegbar"
+        ).innerText =
+            daten.verfuegbar;
+
+    }
+
+
+    /* ======================================
+       OFFEN
+    ======================================= */
+
+    if(
+        daten.offen !== undefined &&
+        daten.offen !== ""
+    ){
+
+        document.getElementById(
+            "offen"
+        ).innerText =
+            daten.offen;
+
+    }
+
+
+    /* ======================================
+       GENEHMIGT
+    ======================================= */
+
+    if(
+        daten.genehmigt !== undefined &&
+        daten.genehmigt !== ""
+    ){
+
+        document.getElementById(
+            "genehmigt"
+        ).innerText =
+            daten.genehmigt;
+
+    }
+
+}
+
+
+/* ==========================================
+   URLAUBSDATEN LADEN
+========================================== */
+
+ladeUrlaubsdaten();
+
+
+</script>
+
+
+</body>
+
+</html>
