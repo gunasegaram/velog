@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materialversandanzeige - VE-Log</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:#8e2f2b;
+    color:white;
+    padding:15px 30px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px;
+}
+
+h1{
+    margin:0;
+}
+
+.nav-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.nav-card{
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    cursor:pointer;
+    transition:.3s;
+    border-left:5px solid #8e2f2b;
+}
+
+.nav-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+
+.nav-card h3{
+    color:#8e2f2b;
+    margin-bottom:10px;
+}
+
+.nav-card p{
+    color:#555;
+}
+
+.back-btn{
+    background:#8e2f2b;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.back-btn:hover{
+    background:#742522;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <h1>📤 Materialversandanzeige</h1>
+</header>
+
+<div class="container">
+
+    <div class="nav-cards">
+
+        <div class="nav-card"
+             onclick="window.location.href='m.empfaenger.html'">
+            <h3>👤 Empfänger</h3>
+            <p>Empfängerdaten verwalten und auswählen.</p>
+        </div>
+
+        <div class="nav-card"
+             onclick="window.location.href='fuhrunternehmer.html'">
+            <h3>🚛 Fuhrunternehmer</h3>
+            <p>Fuhrunternehmer erfassen und verwalten.</p>
+        </div>
+
+        <div class="nav-card"
+             onclick="window.location.href='m.baustelle.html'">
+            <h3>🏗️ Baustelle</h3>
+            <p>Baustellen auswählen und verwalten.</p>
+        </div>
+
+        <div class="nav-card"
+             onclick="window.location.href='m.absender.html'">
+            <h3>📤 Absender</h3>
+            <p>Absenderdaten verwalten und auswählen.</p>
+        </div>
+
+    </div>
+
+    <button class="back-btn"
+            onclick="window.location.href='formular.html'">
+        ← Zurück zu den Formularen
+    </button>
+
+</div>
+
+</body>
+</html>
