@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VE-LOG | Benutzerkonto</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+    transition:0.3s;
+}
+
+header{
+    background:#8e2f2b;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo img{
+    height:70px;
+}
+
+.logo span{
+    font-size:32px;
+    font-weight:bold;
+}
+
+.container{
+    padding:30px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
+    margin-bottom:20px;
+    border-left:5px solid #8e2f2b;
+}
+
+.card h2{
+    color:#8e2f2b;
+    margin-bottom:20px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+.form-group input,
+.form-group select{
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.btn{
+    border:none;
+    border-radius:8px;
+    padding:12px 20px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#8e2f2b;
+    color:white;
+}
+
+.btn-primary:hover{
+    opacity:.9;
+}
+
+.btn-back{
+    background:white;
+    color:#8e2f2b;
+}
+
+.profilbild{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #8e2f2b;
+}
+
+.info-box{
+    background:#f8f8f8;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+#passwortStaerke{
+    margin-top:10px;
+    font-weight:bold;
+}
+
+.dark-mode{
+    background:#121212;
+    color:white;
+}
+
+.dark-mode .card{
+    background:#1f1f1f;
+    color:white;
+}
+
+.dark-mode input,
+.dark-mode select{
+    background:#2d2d2d;
+    color:white;
+    border-color:#555;
+}
+
+.dark-mode .info-box{
+    background:#2d2d2d;
+}
+
+@media(max-width:768px){
+
+header{
+    flex-direction:column;
+    text-align:center;
+    gap:15px;
+}
+
+.logo{
+    flex-direction:column;
+}
+
+.container{
+    padding:15px;
+}
+
+.form-grid{
+    grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<header>
+
+<div class="logo">
+<img src="logo.png" alt="VE-LOG">
+<span>Benutzerkonto</span>
+</div>
+
+<button
+class="btn btn-back"
+onclick="window.location.href='einstellungen.html'">
+← Einstellungen
+</button>
+
+</header>
+
+<div class="container">
+
+<!-- Profilbild -->
+
+<div class="card">
+
+<h2>📷 Profilbild</h2>
+
+<center>
+
+<img
+src="https://via.placeholder.com/150"
+id="profilbild"
+class="profilbildUpload"
+accept="image/*">
+
+</center>
+
+</div>
+
+<!-- Persönliche Daten -->
+
+<div class="card">
+
+<h2>👤 Persönliche Daten</h2>
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Vorname</label>
+<input type="text" id="vorname">
+</div>
+
+<div class="form-group">
+<label>Nachname</label>
+<input type="text" id="nachname">
+</div>
+
+<div class="form-group">
+<label>E-Mail</label>
+<input type="email" id="email">
+</div>
+
+<div class="form-group">
+<label>Telefonnummer</label>
+<input type="tel" id="telefon">
+</div>
+
+<div class="form-group">
+<label>Benutzername</label>
+<input type="text" id="benutzername">
+</div>
+
+<div class="form-group">
+<label>Rolle</label>
+<select id="rolle">
+<option>Administrator</option>
+<option>Personal</option>
+<option>Disponent</option>
+<option>Mitarbeiter</option>
+</select>
+</div>
+
+<div class="form-group full">
+<button
+class="btn btn-primary"
+onclick="speichernProfil()">
+💾 Profil speichern
+</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- Passwort ändern -->
+
+<div class="card">
+
+    <h2>🔐 Passwort ändern</h2>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+            <label>Aktuelles Passwort</label>
+            <input
+                type="password"
+                id="aktuellesPasswort">
+        </div>
+
+        <div class="form-group">
+            <label>Neues Passwort</label>
+            <input
+                type="password"
+                id="neuesPasswort">
+        </div>
+
+        <div class="form-group full">
+            <label>Passwort bestätigen</label>
+            <input
+                type="password"
+                id="passwortBestaetigen">
+        </div>
+
+    </div>
+
+    <div id="passwortStaerke"></div>
+
+    <button
+        class="btn-passwort"
+        onclick="passwortAendern()">
+        🔑 Passwort ändern
+    </button>
+
+</div>
+
+<!-- Zwei Faktor -->
+
+<div class="card">
+
+<h2>🔐 Zwei-Faktor-Authentifizierung</h2>
+
+<label>
+<input type="checkbox" id="twoFactor">
+ Zwei-Faktor aktivieren
+</label>
+
+</div>
+
+<!-- Dark Mode -->
+
+<div class="card">
+
+<h2>🌙 Dark Mode</h2>
+
+<label>
+<input type="checkbox" id="darkModeToggle">
+ Dark Mode aktivieren
+</label>
+
+</div>
+
+<!-- E-Mail -->
+
+<div class="card">
+
+<h2>📧 E-Mail Benachrichtigungen</h2>
+
+<label><input type="checkbox"> Urlaubsanträge</label>
+<br><br>
+<label><input type="checkbox"> Krankmeldungen</label>
+<br><br>
+<label><input type="checkbox"> Neue Mitarbeiter</label>
+
+</div>
+
+<!-- API -->
+
+<div class="card">
+
+<h2>🔑 API-Key Verwaltung</h2>
+
+<input
+type="text"
+id="apiKey"
+placeholder="API-Key eingeben">
+
+<br><br>
+
+<button
+class="btn btn-primary"
+onclick="saveApiKey()">
+API-Key speichern
+</button>
+
+</div>
+
+<!-- Historie -->
+
+<div class="card">
+
+<h2>🕒 Login-Historie</h2>
+
+<ul id="loginHistorie"></ul>
+
+</div>
+
+<!-- Konto -->
+
+<div class="card">
+
+<h2>🗑 Konto löschen</h2>
+
+<button
+class="btn btn-primary"
+style="background:#c62828"
+onclick="kontoLoeschen()">
+Konto löschen
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* Profilbild */
+
+document.getElementById("profilbildUpload")
+.addEventListener("change",function(){
+
+const file=this.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(e){
+
+document.getElementById("profilbild").src=
+e.target.result;
+
+localStorage.setItem(
+"profilbild",
+e.target.result
+);
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+const savedImage=
+localStorage.getItem("profilbild");
+
+if(savedImage){
+document.getElementById("profilbild").src=savedImage;
+}
+
+/* Profil speichern */
+
+function speichernProfil(){
+
+const daten={
+
+vorname:
+document.getElementById("vorname").value,
+
+nachname:
+document.getElementById("nachname").value,
+
+email:
+document.getElementById("email").value,
+
+telefon:
+document.getElementById("telefon").value,
+
+benutzername:
+document.getElementById("benutzername").value,
+
+rolle:
+document.getElementById("rolle").value
+
+};
+
+localStorage.setItem(
+"profilDaten",
+JSON.stringify(daten)
+);
+
+alert("Profil gespeichert.");
+
+}
+
+const daten=
+JSON.parse(
+localStorage.getItem("profilDaten")
+);
+
+if(daten){
+
+vorname.value=daten.vorname || "";
+nachname.value=daten.nachname || "";
+email.value=daten.email || "";
+telefon.value=daten.telefon || "";
+benutzername.value=daten.benutzername || "";
+rolle.value=daten.rolle || "Mitarbeiter";
+
+}
+
+/* Passwortprüfung */
+
+document.getElementById("neuesPasswort")
+.addEventListener("input",function(){
+
+const pw=this.value;
+
+const status=
+document.getElementById("passwortStaerke");
+
+let s=0;
+
+if(pw.length>=8) s++;
+if(/[A-Z]/.test(pw)) s++;
+if(/[0-9]/.test(pw)) s++;
+if(/[!@#$%^&*]/.test(pw)) s++;
+
+if(s<=1){
+status.innerHTML="🔴 Schwach";
+status.style.color="red";
+}
+else if(s<=3){
+status.innerHTML="🟠 Mittel";
+status.style.color="orange";
+}
+else{
+status.innerHTML="🟢 Stark";
+status.style.color="green";
+}
+
+});
+
+/* Dark Mode */
+
+const toggle=
+document.getElementById("darkModeToggle");
+
+if(localStorage.getItem("darkMode")==="true"){
+document.body.classList.add("dark-mode");
+toggle.checked=true;
+}
+
+toggle.addEventListener("change",function(){
+
+document.body.classList.toggle("dark-mode");
+
+localStorage.setItem(
+"darkMode",
+this.checked
+);
+
+});
+
+/* 2FA */
+
+const twoFactor=
+document.getElementById("twoFactor");
+
+if(localStorage.getItem("twoFactor")==="true"){
+twoFactor.checked=true;
+}
+
+twoFactor.addEventListener("change",function(){
+
+localStorage.setItem(
+"twoFactor",
+this.checked
+);
+
+});
+
+/* API */
+
+function saveApiKey(){
+
+localStorage.setItem(
+"apiKey",
+document.getElementById("apiKey").value
+);
+
+alert("API-Key gespeichert");
+
+}
+
+document.getElementById("apiKey").value=
+localStorage.getItem("apiKey") || "";
+
+/* Login Historie */
+
+let history=
+JSON.parse(
+localStorage.getItem("loginHistory")
+) || [];
+
+if(history.length===0){
+
+history.push(
+new Date().toLocaleString("de-DE")
+);
+
+localStorage.setItem(
+"loginHistory",
+JSON.stringify(history)
+);
+
+}
+
+const list=
+document.getElementById("loginHistorie");
+
+history.forEach(item=>{
+
+list.innerHTML+=`<li>${item}</li>`;
+
+});
+
+/* Konto löschen */
+
+function kontoLoeschen(){
+
+if(confirm(
+"Benutzerkonto wirklich löschen?"
+)){
+
+localStorage.clear();
+
+window.location.href="index.html";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
