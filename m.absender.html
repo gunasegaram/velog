@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>Absender - Materialversandanzeige</title>
+
+
+<style>
+
+/* =========================================================
+   GRUNDLAYOUT
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    width:100%;
+    overflow-x:hidden;
+}
+
+body{
+    width:100%;
+    min-height:100vh;
+
+    font-family:Arial, sans-serif;
+
+    background:#f4f4f4;
+
+    color:#222;
+
+    overflow-x:hidden;
+
+    -webkit-text-size-adjust:100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+    background:#8e2f2b;
+    color:white;
+
+    padding:18px 30px;
+
+    width:100%;
+}
+
+header h1{
+    font-size:24px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container{
+    width:100%;
+    max-width:1400px;
+
+    margin:auto;
+
+    padding:30px;
+}
+
+.form-card{
+    width:100%;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+
+/* =========================================================
+   EINGABEFELDER
+========================================================= */
+
+.row{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+    margin-bottom:15px;
+}
+
+.field{
+    width:100%;
+}
+
+label{
+    display:block;
+
+    font-weight:bold;
+
+    margin-bottom:6px;
+
+    font-size:15px;
+}
+
+input{
+    width:100%;
+
+    min-height:44px;
+
+    padding:10px 12px;
+
+    border:1px solid #ccc;
+
+    border-radius:7px;
+
+    font-size:16px;
+
+    background:white;
+
+    outline:none;
+}
+
+input:focus{
+    border-color:#8e2f2b;
+
+    box-shadow:0 0 0 2px rgba(142,47,43,0.12);
+}
+
+
+/* =========================================================
+   TABELLE
+========================================================= */
+
+.table-container{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    -webkit-overflow-scrolling:touch;
+
+    margin-top:25px;
+
+    border-radius:6px;
+}
+
+table{
+
+    width:100%;
+
+    min-width:850px;
+
+    border-collapse:collapse;
+
+    table-layout:fixed;
+}
+
+th{
+
+    background:#8e2f2b;
+
+    color:white;
+
+    padding:12px 8px;
+
+    text-align:center;
+
+    font-size:14px;
+}
+
+td{
+
+    border:1px solid #ccc;
+
+    padding:4px;
+
+    vertical-align:top;
+
+    background:white;
+}
+
+.klein{
+
+    width:100%;
+
+    min-height:110px;
+
+    border:none;
+
+    resize:none;
+
+    padding:8px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:15px;
+
+    background:transparent;
+
+    outline:none;
+}
+
+.gegenstand{
+
+    width:100%;
+
+    min-height:110px;
+
+    border:none;
+
+    resize:vertical;
+
+    padding:8px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:15px;
+
+    background:transparent;
+
+    outline:none;
+}
+
+
+/* =========================================================
+   UNTERSCHRIFTEN
+========================================================= */
+
+.signature{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap:20px;
+
+    margin-top:30px;
+}
+
+.sig-box{
+
+    border:1px solid #ccc;
+
+    padding:15px;
+
+    min-height:220px;
+
+    border-radius:8px;
+
+    background:#fff;
+}
+
+.sig-box strong{
+
+    display:inline-block;
+
+    margin-bottom:4px;
+
+    font-size:16px;
+}
+
+
+/* =========================================================
+   DIGITALE UNTERSCHRIFT
+========================================================= */
+
+.signature-wrapper{
+
+    margin-top:12px;
+
+    width:100%;
+}
+
+.signature-title{
+
+    font-weight:bold;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+}
+
+.signature-pad{
+
+    width:100%;
+
+    height:150px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    background:white;
+
+    display:block;
+
+    touch-action:none;
+
+    cursor:crosshair;
+}
+
+.signature-buttons{
+
+    display:flex;
+
+    gap:7px;
+
+    flex-wrap:wrap;
+
+    margin-top:10px;
+}
+
+.signature-btn{
+
+    border:none;
+
+    padding:10px 12px;
+
+    border-radius:6px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:bold;
+
+    font-size:13px;
+
+    min-height:42px;
+}
+
+.signature-clear{
+    background:#9b2c2c;
+}
+
+.signature-upload{
+    background:#444;
+}
+
+.signature-save{
+    background:#1f4e79;
+}
+
+.signature-btn:hover{
+    opacity:0.9;
+}
+
+.signature-file{
+    display:none;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.button-group{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin-top:25px;
+}
+
+.btn{
+
+    border:none;
+
+    padding:13px 20px;
+
+    min-height:46px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:bold;
+
+    font-size:15px;
+
+    touch-action:manipulation;
+}
+
+.speichern-btn{
+    background:#8e2f2b;
+}
+
+.druck-btn{
+    background:#444;
+}
+
+.pdf-btn{
+    background:#1f4e79;
+}
+
+.back-btn{
+    background:#666;
+}
+
+.btn:hover{
+    opacity:0.9;
+}
+
+
+/* =========================================================
+   TABLET
+   901px - 1200px
+========================================================= */
+
+@media (max-width:1200px){
+
+    .container{
+        padding:20px;
+    }
+
+    .form-card{
+        padding:20px;
+    }
+
+    .signature{
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+/* =========================================================
+   TABLET / KLEINER LAPTOP
+   601px - 900px
+========================================================= */
+
+@media (max-width:900px){
+
+    header{
+        padding:16px 20px;
+    }
+
+    header h1{
+        font-size:22px;
+    }
+
+    .container{
+        padding:15px;
+    }
+
+    .form-card{
+        padding:18px;
+        border-radius:12px;
+    }
+
+    .row{
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap:15px;
+
+    }
+
+    .signature{
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap:15px;
+
+    }
+
+    .signature-pad{
+        height:160px;
+    }
+
+}
+
+
+/* =========================================================
+   HANDY
+   bis 600px
+========================================================= */
+
+@media (max-width:600px){
+
+    body{
+        background:white;
+    }
+
+    header{
+
+        padding:
+            14px 15px;
+
+        position:relative;
+    }
+
+    header h1{
+
+        font-size:20px;
+
+        line-height:1.3;
+    }
+
+
+    .container{
+
+        padding:0;
+
+        width:100%;
+    }
+
+
+    .form-card{
+
+        padding:15px;
+
+        border-radius:0;
+
+        box-shadow:none;
+    }
+
+
+    /* Eingabefelder untereinander */
+
+    .row{
+
+        grid-template-columns:
+            1fr;
+
+        gap:12px;
+
+        margin-bottom:12px;
+    }
+
+
+    label{
+        font-size:14px;
+    }
+
+
+    input{
+
+        min-height:46px;
+
+        font-size:16px;
+
+        padding:
+            10px 12px;
+    }
+
+
+    /* Tabelle */
+
+    .table-container{
+
+        margin-left:-15px;
+
+        margin-right:-15px;
+
+        width:
+            calc(100% + 30px);
+
+        border-radius:0;
+    }
+
+
+    table{
+
+        min-width:820px;
+    }
+
+
+    th{
+
+        font-size:13px;
+
+        padding:10px 6px;
+    }
+
+
+    td{
+
+        padding:3px;
+    }
+
+
+    .klein,
+    .gegenstand{
+
+        font-size:14px;
+
+        min-height:100px;
+
+        padding:7px;
+    }
+
+
+    /* Unterschriften */
+
+    .signature{
+
+        grid-template-columns:
+            1fr;
+
+        gap:15px;
+
+        margin-top:20px;
+    }
+
+
+    .sig-box{
+
+        width:100%;
+
+        padding:15px;
+
+        min-height:auto;
+    }
+
+
+    .signature-pad{
+
+        width:100%;
+
+        height:170px;
+
+        border-radius:8px;
+    }
+
+
+    .signature-buttons{
+
+        display:grid;
+
+        grid-template-columns:
+            1fr;
+
+        gap:8px;
+    }
+
+
+    .signature-btn{
+
+        width:100%;
+
+        min-height:46px;
+
+        font-size:14px;
+    }
+
+
+    /* Hauptbuttons */
+
+    .button-group{
+
+        display:grid;
+
+        grid-template-columns:
+            1fr;
+
+        gap:10px;
+
+        margin-top:20px;
+    }
+
+
+    .btn{
+
+        width:100%;
+
+        min-height:50px;
+
+        font-size:16px;
+    }
+
+}
+
+
+/* =========================================================
+   SEHR KLEINES HANDY
+   bis 380px
+========================================================= */
+
+@media (max-width:380px){
+
+    .form-card{
+        padding:12px;
+    }
+
+    header{
+        padding:13px 12px;
+    }
+
+    header h1{
+        font-size:18px;
+    }
+
+    .table-container{
+
+        margin-left:-12px;
+
+        margin-right:-12px;
+
+        width:
+            calc(100% + 24px);
+    }
+
+    .signature-pad{
+        height:160px;
+    }
+
+}
+
+
+/* =========================================================
+   QUERFORMAT HANDY
+========================================================= */
+
+@media (
+    max-width:900px
+) and (
+    orientation:landscape
+){
+
+    .row{
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .signature{
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .signature-pad{
+
+        height:130px;
+    }
+
+}
+
+
+/* =========================================================
+   DRUCKANSICHT
+========================================================= */
+
+@media print{
+
+    @page{
+
+        size:A4 landscape;
+
+        margin:10mm;
+    }
+
+
+    body{
+
+        background:white;
+
+        font-size:11px;
+    }
+
+
+    header,
+    .button-group,
+    .signature-buttons{
+
+        display:none !important;
+    }
+
+
+    .container{
+
+        max-width:none;
+
+        padding:0;
+    }
+
+
+    .form-card{
+
+        box-shadow:none;
+
+        padding:0;
+    }
+
+
+    .table-container{
+
+        overflow:visible;
+    }
+
+
+    table{
+
+        min-width:0;
+
+        width:100%;
+    }
+
+
+    .signature{
+
+        grid-template-columns:
+            repeat(4,1fr);
+
+        gap:10px;
+    }
+
+
+    .sig-box{
+
+        break-inside:avoid;
+    }
+
+
+    .signature-pad{
+
+        height:120px;
+    }
+
+
+    input{
+
+        border:none;
+
+        padding:3px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>📤 Absender</h1>
+
+</header>
+
+
+<div class="container">
+
+<div class="form-card">
+
+
+<!-- =====================================================
+     GRUNDINFORMATIONEN
+===================================================== -->
+
+<div class="row">
+
+
+    <div class="field">
+
+        <label>
+            Name Abholer
+        </label>
+
+        <input
+            type="text"
+            id="nameAbholer"
+        >
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Baustelle / Lager
+        </label>
+
+        <input
+            type="text"
+            id="baustelle"
+        >
+
+    </div>
+
+
+</div>
+
+
+
+<div class="row">
+
+
+    <div class="field">
+
+        <label>
+            Name Anforderer
+        </label>
+
+        <input
+            type="text"
+            id="nameAnforderer"
+        >
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Baustelle / Lager
+        </label>
+
+        <input
+            type="text"
+            id="empfaenger"
+        >
+
+    </div>
+
+
+</div>
+
+
+
+<div class="row">
+
+
+    <div class="field">
+
+        <label>
+            Versand mit LKW Nr.
+        </label>
+
+        <input
+            type="text"
+            id="lkw"
+        >
+
+    </div>
+
+
+    <div class="field">
+
+        <label>
+            Fremdfahrzeug
+        </label>
+
+        <input
+            type="text"
+            id="fremdfahrzeug"
+        >
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     MATERIALTABELLE
+===================================================== -->
+
+<div class="table-container">
+
+<table>
+
+
+<tr>
+
+    <th style="width:8%">
+        Bestell-Menge
+    </th>
+
+    <th style="width:8%">
+        Liefer-Menge
+    </th>
+
+    <th style="width:8%">
+        Einheit
+    </th>
+
+    <th style="width:56%">
+        Gegenstand
+    </th>
+
+    <th style="width:10%">
+        neu = n<br>
+        gebr. = g
+    </th>
+
+    <th style="width:10%">
+        Invent.-Nr.
+    </th>
+
+</tr>
+
+
+
+<!-- ZEILE 1 -->
+
+<tr>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="gegenstand"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+</tr>
+
+
+
+<!-- ZEILE 2 -->
+
+<tr>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="gegenstand"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+</tr>
+
+
+
+<!-- ZEILE 3 -->
+
+<tr>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="gegenstand"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+</tr>
+
+
+
+<!-- ZEILE 4 -->
+
+<tr>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="gegenstand"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+</tr>
+
+
+
+<!-- ZEILE 5 -->
+
+<tr>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="gegenstand"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+    <td>
+        <textarea class="klein"></textarea>
+    </td>
+
+</tr>
+
+
+</table>
+
+</div>
+
+
+
+<!-- =====================================================
+     UNTERSCHRIFTEN
+===================================================== -->
+
+<div class="signature">
+
+
+<!-- =====================================================
+     ABSENDER
+===================================================== -->
+
+<div class="sig-box">
+
+    <strong>
+        Absender
+    </strong>
+
+    <br>
+
+    für den richtigen Versand
+
+
+    <div class="signature-wrapper">
+
+        <div class="signature-title">
+            Unterschrift
+        </div>
+
+
+        <canvas
+            id="signatureAbsender"
+            class="signature-pad"
+        ></canvas>
+
+
+        <div class="signature-buttons">
+
+
+            <button
+                type="button"
+                class="signature-btn signature-clear"
+                onclick="clearSignature('signatureAbsender')"
+            >
+                🗑️ Löschen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-btn signature-upload"
+                onclick="uploadSignature('signatureAbsender')"
+            >
+                📁 Signatur hochladen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-btn signature-save"
+                onclick="saveSignaturePNG('signatureAbsender')"
+            >
+                💾 Als PNG speichern
+            </button>
+
+
+        </div>
+
+
+        <input
+            type="file"
+            id="file-signatureAbsender"
+            class="signature-file"
+            accept="image/png,image/jpeg,image/jpg"
+            onchange="loadSignatureImage(this,'signatureAbsender')"
+        >
+
+    </div>
+
+
+    <br>
+
+
+    <label>
+        Tag
+    </label>
+
+    <input
+        type="date"
+        id="tagAbsender"
+        class="sig-input"
+    >
+
+
+    <label>
+        Uhrzeit
+    </label>
+
+    <input
+        type="time"
+        id="zeitAbsender"
+        class="sig-input"
+    >
+
+</div>
+
+
+
+<!-- =====================================================
+     FUHRUNTERNEHMER
+===================================================== -->
+
+<div class="sig-box">
+
+    <strong>
+        Fuhrunternehmer
+    </strong>
+
+    <br>
+
+    für die richtige Übernahme
+
+
+    <div class="signature-wrapper">
+
+        <div class="signature-title">
+            Unterschrift
+        </div>
+
+
+        <canvas
+            id="signatureFuhrunternehmer"
+            class="signature-pad"
+        ></canvas>
+
+
+        <div class="signature-buttons">
+
+
+            <button
+                type="button"
+                class="signature-btn signature-clear"
+                onclick="clearSignature('signatureFuhrunternehmer')"
+            >
+                🗑️ Löschen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-btn signature-upload"
+                onclick="uploadSignature('signatureFuhrunternehmer')"
+            >
+                📁 Signatur hochladen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-btn signature-save"
+                onclick="saveSignaturePNG('signatureFuhrunternehmer')"
+            >
+                💾 Als PNG speichern
+            </button>
+
+
+        </div>
+
+
+        <input
+            type="file"
+            id="file-signatureFuhrunternehmer"
+            class="signature-file"
+            accept="image/png,image/jpeg,image/jpg"
+            onchange="loadSignatureImage(this,'signatureFuhrunternehmer')"
+        >
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     EMPFÄNGER
+===================================================== -->
+
+<div class="sig-box">
+
+    <strong>
+        Empfänger
+    </strong>
+
+
+    <div class="signature-wrapper">
+
+        <div class="signature-title">
+            Unterschrift
+        </div>
+
+
+        <canvas
+            id="signatureEmpfaenger"
+            class="signature-pad"
+        ></canvas>
+
+
+        <div class="signature-buttons">
+
+
+            <button
+                type="button"
+                class="signature-btn signature-clear"
+                onclick="clearSignature('signatureEmpfaenger')"
+            >
+                🗑️ Löschen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-btn signature-upload"
+                onclick="uploadSignature('signatureEmpfaenger')"
+            >
+                📁 Signatur hochladen
+            </button>
+
+
+            <button
+                type="button"
+                class="signature-btn signature-save"
+                onclick="saveSignaturePNG('signatureEmpfaenger')"
+            >
+                💾 Als PNG speichern
+            </button>
+
+
+        </div>
+
+
+        <input
+            type="file"
+            id="file-signatureEmpfaenger"
+            class="signature-file"
+            accept="image/png,image/jpeg,image/jpg"
+            onchange="loadSignatureImage(this,'signatureEmpfaenger')"
+        >
+
+    </div>
+
+
+    <br>
+
+
+    <label>
+        Tag
+    </label>
+
+    <input
+        type="date"
+        id="tagEmpfaenger"
+        class="sig-input"
+    >
+
+</div>
+
+
+
+<!-- =====================================================
+     EXTERNE ABRECHNUNG
+===================================================== -->
+
+<div class="sig-box">
+
+    <strong>
+        Externe Abrechnung
+    </strong>
+
+    <br><br>
+
+
+    <label>
+        Rz
+    </label>
+
+    <input
+        type="text"
+        id="rz"
+        class="sig-input"
+    >
+
+
+    <label>
+        Betr
+    </label>
+
+    <input
+        type="text"
+        id="betr"
+        class="sig-input"
+    >
+
+
+    <label>
+        Tarif
+    </label>
+
+    <input
+        type="text"
+        id="tarif"
+        class="sig-input"
+    >
+
+</div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     BUTTONS
+===================================================== -->
+
+<div class="button-group">
+
+
+    <button
+        class="btn speichern-btn"
+        onclick="speichernFormular()"
+    >
+        💾 Speichern
+    </button>
+
+
+    <button
+        class="btn druck-btn"
+        onclick="window.print()"
+    >
+        🖨️ Drucken
+    </button>
+
+
+    <button
+        class="btn pdf-btn"
+        onclick="window.print()"
+    >
+        📄 Als PDF speichern
+    </button>
+
+
+    <button
+        class="btn back-btn"
+        onclick="window.location.href='materialversand.html'"
+    >
+        ← Zurück
+    </button>
+
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   SIGNATUR-PADS
+========================================================= */
+
+const signaturePads = {};
+
+
+
+function initSignaturePad(canvasId){
+
+    const canvas =
+        document.getElementById(canvasId);
+
+    if(!canvas) return;
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    let drawing = false;
+
+
+    function resizeCanvas(){
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        const ratio =
+            window.devicePixelRatio || 1;
+
+
+        canvas.width =
+            rect.width * ratio;
+
+
+        canvas.height =
+            rect.height * ratio;
+
+
+        ctx.setTransform(
+            ratio,
+            0,
+            0,
+            ratio,
+            0,
+            0
+        );
+
+
+        ctx.lineWidth = 2;
+
+        ctx.lineCap = "round";
+
+        ctx.lineJoin = "round";
+
+        ctx.strokeStyle = "#000";
+
+    }
+
+
+    resizeCanvas();
+
+
+    window.addEventListener(
+        "resize",
+        resizeCanvas
+    );
+
+
+    function getPosition(event){
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+
+        return {
+
+            x:
+                event.clientX -
+                rect.left,
+
+            y:
+                event.clientY -
+                rect.top
+
+        };
+
+    }
+
+
+    canvas.addEventListener(
+        "pointerdown",
+        function(event){
+
+            drawing = true;
+
+            canvas.setPointerCapture(
+                event.pointerId
+            );
+
+
+            const position =
+                getPosition(event);
+
+
+            ctx.beginPath();
+
+
+            ctx.moveTo(
+                position.x,
+                position.y
+            );
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointermove",
+        function(event){
+
+            if(!drawing) return;
+
+
+            const position =
+                getPosition(event);
+
+
+            ctx.lineTo(
+                position.x,
+                position.y
+            );
+
+
+            ctx.stroke();
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointerup",
+        function(){
+
+            drawing = false;
+
+        }
+    );
+
+
+    canvas.addEventListener(
+        "pointercancel",
+        function(){
+
+            drawing = false;
+
+        }
+    );
+
+
+    signaturePads[canvasId] = {
+
+        canvas:canvas,
+
+        ctx:ctx
+
+    };
+
+}
+
+
+
+/* =========================================================
+   SIGNATUR LÖSCHEN
+========================================================= */
+
+function clearSignature(canvasId){
+
+    const pad =
+        signaturePads[canvasId];
+
+
+    if(!pad) return;
+
+
+    pad.ctx.clearRect(
+
+        0,
+        0,
+        pad.canvas.width,
+        pad.canvas.height
+
+    );
+
+
+    localStorage.removeItem(
+        canvasId
+    );
+
+}
+
+
+
+/* =========================================================
+   SIGNATUR HOCHLADEN
+========================================================= */
+
+function uploadSignature(canvasId){
+
+    const fileInput =
+        document.getElementById(
+            "file-" + canvasId
+        );
+
+
+    if(fileInput){
+
+        fileInput.click();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   BILD LADEN
+========================================================= */
+
+function loadSignatureImage(
+    input,
+    canvasId
+){
+
+    const file =
+        input.files[0];
+
+
+    if(!file) return;
+
+
+    if(!file.type.startsWith("image/")){
+
+        alert(
+            "Bitte eine Bilddatei auswählen."
+        );
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(event){
+
+            const image =
+                new Image();
+
+
+            image.onload =
+                function(){
+
+                    const pad =
+                        signaturePads[canvasId];
+
+
+                    if(!pad) return;
+
+
+                    const canvas =
+                        pad.canvas;
+
+                    const ctx =
+                        pad.ctx;
+
+
+                    const width =
+                        canvas.clientWidth;
+
+                    const height =
+                        canvas.clientHeight;
+
+
+                    ctx.clearRect(
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+
+                    const scale =
+                        Math.min(
+
+                            width / image.width,
+
+                            height / image.height
+
+                        );
+
+
+                    const imageWidth =
+                        image.width * scale;
+
+
+                    const imageHeight =
+                        image.height * scale;
+
+
+                    const x =
+                        (width - imageWidth) / 2;
+
+
+                    const y =
+                        (height - imageHeight) / 2;
+
+
+                    ctx.drawImage(
+
+                        image,
+
+                        x,
+                        y,
+
+                        imageWidth,
+                        imageHeight
+
+                    );
+
+                };
+
+
+            image.src =
+                event.target.result;
+
+        };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+
+/* =========================================================
+   PNG SPEICHERN
+========================================================= */
+
+function saveSignaturePNG(canvasId){
+
+    const pad =
+        signaturePads[canvasId];
+
+
+    if(!pad) return;
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.download =
+        canvasId + ".png";
+
+
+    link.href =
+        pad.canvas.toDataURL(
+            "image/png"
+        );
+
+
+    link.click();
+
+}
+
+
+
+/* =========================================================
+   SIGNATUR SPEICHERN
+========================================================= */
+
+function saveSignatureToStorage(canvasId){
+
+    const pad =
+        signaturePads[canvasId];
+
+
+    if(!pad) return;
+
+
+    const imageData =
+        pad.canvas.toDataURL(
+            "image/png"
+        );
+
+
+    localStorage.setItem(
+        canvasId,
+        imageData
+    );
+
+}
+
+
+
+/* =========================================================
+   SIGNATUR LADEN
+========================================================= */
+
+function loadSignatureFromStorage(canvasId){
+
+    const imageData =
+        localStorage.getItem(canvasId);
+
+
+    if(!imageData) return;
+
+
+    const image =
+        new Image();
+
+
+    image.onload =
+        function(){
+
+            const pad =
+                signaturePads[canvasId];
+
+
+            if(!pad) return;
+
+
+            const canvas =
+                pad.canvas;
+
+            const ctx =
+                pad.ctx;
+
+
+            const width =
+                canvas.clientWidth;
+
+            const height =
+                canvas.clientHeight;
+
+
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            const scale =
+                Math.min(
+
+                    width / image.width,
+
+                    height / image.height
+
+                );
+
+
+            const imageWidth =
+                image.width * scale;
+
+
+            const imageHeight =
+                image.height * scale;
+
+
+            const x =
+                (width - imageWidth) / 2;
+
+
+            const y =
+                (height - imageHeight) / 2;
+
+
+            ctx.drawImage(
+
+                image,
+
+                x,
+                y,
+
+                imageWidth,
+                imageHeight
+
+            );
+
+        };
+
+
+    image.src =
+        imageData;
+
+}
+
+
+
+/* =========================================================
+   FORMULAR SPEICHERN
+========================================================= */
+
+function speichernFormular(){
+
+
+    saveSignatureToStorage(
+        "signatureAbsender"
+    );
+
+
+    saveSignatureToStorage(
+        "signatureFuhrunternehmer"
+    );
+
+
+    saveSignatureToStorage(
+        "signatureEmpfaenger"
+    );
+
+
+    const daten = {
+
+        nameAbholer:
+            document.getElementById(
+                "nameAbholer"
+            ).value,
+
+        baustelle:
+            document.getElementById(
+                "baustelle"
+            ).value,
+
+        nameAnforderer:
+            document.getElementById(
+                "nameAnforderer"
+            ).value,
+
+        empfaenger:
+            document.getElementById(
+                "empfaenger"
+            ).value,
+
+        lkw:
+            document.getElementById(
+                "lkw"
+            ).value,
+
+        fremdfahrzeug:
+            document.getElementById(
+                "fremdfahrzeug"
+            ).value,
+
+        tagAbsender:
+            document.getElementById(
+                "tagAbsender"
+            ).value,
+
+        zeitAbsender:
+            document.getElementById(
+                "zeitAbsender"
+            ).value,
+
+        tagEmpfaenger:
+            document.getElementById(
+                "tagEmpfaenger"
+            ).value,
+
+        rz:
+            document.getElementById(
+                "rz"
+            ).value,
+
+        betr:
+            document.getElementById(
+                "betr"
+            ).value,
+
+        tarif:
+            document.getElementById(
+                "tarif"
+            ).value
+
+    };
+
+
+    localStorage.setItem(
+
+        "materialEmpfaenger",
+
+        JSON.stringify(daten)
+
+    );
+
+
+    alert(
+        "✅ Formular und Unterschriften wurden gespeichert."
+    );
+
+}
+
+
+
+/* =========================================================
+   FORMULAR LADEN
+========================================================= */
+
+function ladeFormular(){
+
+
+    const daten =
+        JSON.parse(
+
+            localStorage.getItem(
+                "materialEmpfaenger"
+            )
+
+        );
+
+
+    if(daten){
+
+        document.getElementById(
+            "nameAbholer"
+        ).value =
+            daten.nameAbholer || "";
+
+
+        document.getElementById(
+            "baustelle"
+        ).value =
+            daten.baustelle || "";
+
+
+        document.getElementById(
+            "nameAnforderer"
+        ).value =
+            daten.nameAnforderer || "";
+
+
+        document.getElementById(
+            "empfaenger"
+        ).value =
+            daten.empfaenger || "";
+
+
+        document.getElementById(
+            "lkw"
+        ).value =
+            daten.lkw || "";
+
+
+        document.getElementById(
+            "fremdfahrzeug"
+        ).value =
+            daten.fremdfahrzeug || "";
+
+
+        document.getElementById(
+            "tagAbsender"
+        ).value =
+            daten.tagAbsender || "";
+
+
+        document.getElementById(
+            "zeitAbsender"
+        ).value =
+            daten.zeitAbsender || "";
+
+
+        document.getElementById(
+            "tagEmpfaenger"
+        ).value =
+            daten.tagEmpfaenger || "";
+
+
+        document.getElementById(
+            "rz"
+        ).value =
+            daten.rz || "";
+
+
+        document.getElementById(
+            "betr"
+        ).value =
+            daten.betr || "";
+
+
+        document.getElementById(
+            "tarif"
+        ).value =
+            daten.tarif || "";
+
+    }
+
+
+    loadSignatureFromStorage(
+        "signatureAbsender"
+    );
+
+
+    loadSignatureFromStorage(
+        "signatureFuhrunternehmer"
+    );
+
+
+    loadSignatureFromStorage(
+        "signatureEmpfaenger"
+    );
+
+}
+
+
+
+/* =========================================================
+   START
+========================================================= */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        initSignaturePad(
+            "signatureAbsender"
+        );
+
+
+        initSignaturePad(
+            "signatureFuhrunternehmer"
+        );
+
+
+        initSignaturePad(
+            "signatureEmpfaenger"
+        );
+
+
+        ladeFormular();
+
+    }
+);
+
+</script>
+
+
+</body>
+</html>
