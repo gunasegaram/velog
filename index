@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VE-Log Login</title>
 
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#ececec;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+}
+
+.login-box{
+    background:white;
+    width:420px;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.logo img{
+    max-width:200px;
+}
+
+h1{
+    color:#1d3557;
+    margin-bottom:10px;
+}
+
+p{
+    color:#666;
+}
+
+label{
+    display:block;
+    margin-top:20px;
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:#8e2f2b;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#762522;
+}
+
+.register{
+    text-align:center;
+    margin-top:25px;
+}
+
+.register a{
+    color:#8e2f2b;
+    text-decoration:none;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="login-box">
+
+    <div class="logo">
+        <img src="logo.png" alt="VE-LOG">
+    </div>
+
+    <h1>Herzlich Willkommen</h1>
+
+    <p>Melde dich mit deinem Mitarbeiterkonto an.</p>
+
+    <label>E-Mail-Adresse</label>
+    <input id="email" type="email" placeholder="name@unternehmen.de">
+
+    <label>Passwort</label>
+    <input id="passwort" type="password" placeholder="Passwort eingeben">
+
+    <button onclick="anmelden()">Anmelden</button>
+
+    <div class="register">
+        <p>Noch kein Konto?</p>
+        <a href="registrieren.html">Jetzt registrieren</a>
+    </div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+  authDomain: "ve-log.firebaseapp.com",
+  databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ve-log",
+  storageBucket: "ve-log.firebasestorage.app",
+  messagingSenderId: "749978080433",
+  appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.anmelden = function () {
+
+    const email = document.getElementById("email").value;
+    const passwort = document.getElementById("passwort").value;
+
+    signInWithEmailAndPassword(auth, email, passwort)
+    .then(() => {
+
+        window.location.href = "dashboard.html";
+
+    })
+    .catch((error) => {
+
+        alert("Anmeldung fehlgeschlagen: " + error.message);
+
+    });
+};
+
+</script>
+    
+
+</body>
+</html>
