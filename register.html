@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registrierung</title>
+<title>VE-Log Registrierung</title>
 
 <style>
 body{
-    font-family: Arial,sans-serif;
-    background:#f0f0f0;
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f0f2f5;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -16,11 +17,16 @@ body{
 }
 
 .box{
-    background:white;
+    background:#fff;
     padding:30px;
+    width:380px;
     border-radius:15px;
-    width:350px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+}
+
+h2{
+    text-align:center;
+    margin-bottom:20px;
 }
 
 input{
@@ -35,26 +41,37 @@ input{
 button{
     width:100%;
     padding:12px;
-    background:#9b2d2d;
-    color:white;
     border:none;
     border-radius:8px;
     cursor:pointer;
-    margin-top:10px;
     font-size:15px;
 }
 
-button:hover{
-    opacity:0.9;
+.register-btn{
+    margin-top:10px;
+    background:#9b2d2d;
+    color:white;
+}
+
+.register-btn:hover{
+    background:#7d2323;
 }
 
 .back-btn{
     background:#666;
-    margin-bottom:10px;
+    color:white;
+    margin-bottom:15px;
 }
 
 .back-btn:hover{
     background:#555;
+}
+
+.info{
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+    text-align:center;
 }
 </style>
 </head>
@@ -62,8 +79,9 @@ button:hover{
 
 <div class="box">
 
-    <button class="back-btn" onclick="window.location.href='index.html'">
-        ← Zurück zum Anmelden
+    <button class="back-btn"
+        onclick="window.location.href='index.html'">
+        ← Zurück zum Login
     </button>
 
     <h2>Registrierung</h2>
@@ -71,11 +89,18 @@ button:hover{
     <input id="vorname" type="text" placeholder="Vorname">
     <input id="nachname" type="text" placeholder="Nachname">
     <input id="email" type="email" placeholder="E-Mail">
-    <input id="handy" type="text" placeholder="Handynummer">
+    <input id="handy" type="text" placeholder="Telefonnummer">
     <input id="passwort" type="password" placeholder="Passwort">
     <input id="passwort2" type="password" placeholder="Passwort wiederholen">
 
-    <button onclick="registrieren()">Registrieren</button>
+    <button class="register-btn"
+        onclick="registrieren()">
+        Registrieren
+    </button>
+
+    <div class="info">
+        VE-Log Mitarbeiterkonto erstellen
+    </div>
 
 </div>
 
@@ -86,50 +111,87 @@ import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-  authDomain: "ve-log.firebaseapp.com",
-  databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ve-log",
-  storageBucket: "ve-log.firebasestorage.app",
-  messagingSenderId: "749978080433",
-  appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+    apiKey: "DEIN_API_KEY",
+    authDomain: "ve-log.firebaseapp.com",
+    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ve-log",
+    storageBucket: "ve-log.firebasestorage.app",
+    messagingSenderId: "749978080433",
+    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const database = getDatabase(app);
 
-window.registrieren = function() {
+window.registrieren = async function() {
 
-    const vorname = document.getElementById("vorname").value;
-    const nachname = document.getElementById("nachname").value;
-    const email = document.getElementById("email").value;
-    const handy = document.getElementById("handy").value;
+    const vorname = document.getElementById("vorname").value.trim();
+    const nachname = document.getElementById("nachname").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const handy = document.getElementById("handy").value.trim();
     const passwort = document.getElementById("passwort").value;
     const passwort2 = document.getElementById("passwort2").value;
 
-    if(passwort !== passwort2){
-        alert("Passwörter stimmen nicht überein!");
+    if(!vorname || !nachname || !email || !passwort){
+        alert("Bitte alle Pflichtfelder ausfüllen.");
         return;
     }
 
-    createUserWithEmailAndPassword(auth,email,passwort)
-    .then((userCredential) => {
+    if(passwort !== passwort2){
+        alert("Passwörter stimmen nicht überein.");
+        return;
+    }
 
-        set(ref(database,"users/" + userCredential.user.uid),{
+    try{
+
+        const userCredential =
+            await createUserWithEmailAndPassword(
+                auth,
+                email,
+                passwort
+            );
+
+        const uid = userCredential.user.uid;
+
+        await set(ref(database, "users/" + uid), {
+            uid: uid,
             vorname: vorname,
             nachname: nachname,
             email: email,
-            handy: handy
+            handy: handy,
+            rolle: "mitarbeiter",
+            aktiv: true,
+            erstelltAm: new Date().toISOString()
         });
 
-        alert("Registrierung erfolgreich!");
+        await set(
+            ref(database, "roles/" + uid),
+            "mitarbeiter"
+        );
+
+        alert("Registrierung erfolgreich.");
+
         window.location.href = "index.html";
-    })
-    .catch((error) => {
-        alert(error.message);
-    });
-}
+
+    } catch(error){
+
+        console.error(error);
+
+        if(error.code === "auth/email-already-in-use"){
+            alert("Diese E-Mail ist bereits registriert.");
+        }
+        else if(error.code === "auth/weak-password"){
+            alert("Passwort muss mindestens 6 Zeichen lang sein.");
+        }
+        else if(error.code === "auth/invalid-email"){
+            alert("Ungültige E-Mail-Adresse.");
+        }
+        else{
+            alert(error.message);
+        }
+    }
+};
 
 </script>
 
