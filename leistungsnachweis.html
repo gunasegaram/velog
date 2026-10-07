@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VE-LOG | Leistungsnachweis</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    padding:20px;
+    margin:0;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.nav-buttons{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.nav-btn{
+    background:#8e2f2b;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.nav-btn:hover{
+    background:#742522;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:25px;
+}
+
+.logo{
+    text-align:right;
+}
+
+.logo-img{
+    width:260px;
+    height:auto;
+    display:block;
+    margin-left:auto;
+    margin-bottom:8px;
+}
+
+.logo p{
+    font-size:13px;
+    line-height:1.4;
+    color:#555;
+}
+
+.title{
+    font-size:22px;
+    font-weight:bold;
+    color:#233247;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-bottom:15px;
+}
+
+.field{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.field label{
+    min-width:90px;
+    font-weight:bold;
+}
+
+.field input{
+    flex:1;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"]{
+    border:none;
+    border-bottom:1px solid #999;
+    padding:6px;
+    background:transparent;
+}
+
+.baustelle{
+    margin-top:20px;
+}
+
+.baustelle input{
+    width:100%;
+    border:none;
+    border-bottom:1px solid #999;
+    padding:6px;
+}
+
+.option{
+    margin-top:20px;
+}
+
+.option label{
+    font-size:15px;
+}
+
+.fahrzeuge{
+    margin-top:15px;
+    margin-left:20px;
+}
+
+.fahrzeug{
+    display:grid;
+    grid-template-columns:25px 240px 1fr 25px;
+    gap:10px;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.fahrzeug input[type="number"]{
+    width:100%;
+}
+
+.small-line{
+    width:100%;
+    border:none;
+    border-bottom:1px solid #999;
+    margin-top:8px;
+}
+
+.signatures{
+    display:flex;
+    justify-content:space-between;
+    margin-top:60px;
+}
+
+.sign{
+    width:250px;
+    text-align:center;
+}
+
+.sign hr{
+    border:none;
+    border-top:1px solid #000;
+    margin-bottom:8px;
+}
+
+.print{
+    margin-top:25px;
+    background:#8e2f2b;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.print:hover{
+    background:#742522;
+}
+
+@media(max-width:768px){
+
+    .row{
+        grid-template-columns:1fr;
+    }
+
+    .header{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .fahrzeug{
+        grid-template-columns:25px 1fr 120px 20px;
+    }
+
+    .signatures{
+        flex-direction:column;
+        gap:40px;
+    }
+
+    .sign{
+        width:100%;
+    }
+}
+
+@media print{
+
+    .nav-buttons,
+    .print{
+        display:none;
+    }
+
+    body{
+        background:white;
+        padding:0;
+    }
+
+    .container{
+        box-shadow:none;
+        border-radius:0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="nav-buttons">
+
+        <button class="nav-btn"
+        onclick="window.location.href='formular.html'">
+            📋 Formular
+        </button>
+
+        <button class="nav-btn"
+        onclick="window.location.href='dashboard.html'">
+            🏠 Zum Dashboard
+        </button>
+
+    </div>
+
+    <div class="header">
+
+        <div>
+            <div class="title">
+                Leistungsnachweis
+            </div>
+        </div>
+
+        <div class="logo">
+
+            <img src="logo.png" alt="VE-LOG Logo" class="logo-img">
+
+            <p>
+                Flächenmanagement · Umschlag · Transport<br>
+                Sperberweg 15 · 91056 Erlangen<br>
+                Tel. 09131 / 7515-10
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="field">
+            <label>Firma</label>
+            <input type="text">
+        </div>
+
+        <div class="field">
+            <label>Datum:</label>
+            <input type="date">
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="field">
+            <label></label>
+            <input type="text">
+        </div>
+
+        <div class="field">
+            <label>Kfz / M-Nr.:</label>
+            <input type="text">
+        </div>
+
+    </div>
+
+    <div class="baustelle">
+        <label><b>Baustelle:</b></label>
+        <input type="text">
+    </div>
+
+    <div class="option">
+
+        <label>
+            <input type="radio" name="leistung">
+            geliefert / abgeholt
+        </label>
+
+        <input class="small-line" type="text">
+
+    </div>
+
+    <div class="option">
+
+        <label>
+            <input type="radio" name="leistung">
+            Fahrzeug gestellt
+        </label>
+
+        <div class="fahrzeuge">
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Zweiachser</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Dreiachser</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Vierachser</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Sattel / Zug</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Tieflader / bis 22 to</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Tieflader / ab 22 to</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Bagger / Radbagger</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Radlader</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Kehrbesen</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+            <div class="fahrzeug">
+                <input type="radio">
+                <span>Traktor mit Kippmulde</span>
+                <input type="number">
+                <span>h</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="option">
+
+        <label>
+            <input type="radio">
+            Wartezeit für LKW
+        </label>
+
+        <input class="small-line" type="number">
+
+    </div>
+
+    <div class="option">
+        <input class="small-line" type="text">
+    </div>
+
+    <div class="signatures">
+
+        <div class="sign">
+            <hr>
+            VE-Log GmbH
+        </div>
+
+        <div class="sign">
+            <hr>
+            Empfänger
+        </div>
+
+    </div>
+
+    <button class="print" onclick="window.print()">
+        🖨️ Drucken
+    </button>
+
+</div>
+
+</body>
+</html>
