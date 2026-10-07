@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formular - VE-Log</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+}
+
+header{
+    background: #8e2f2b;
+    color: white;
+    padding: 15px 30px;
+}
+
+.container{
+    max-width: 1000px;
+    margin: auto;
+    padding: 30px;
+}
+
+h1{
+    margin: 0;
+}
+
+.options{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.option-card{
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.option-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.option-card h3{
+    color: #8e2f2b;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.option-card p{
+    margin: 0;
+    color: #333;
+}
+
+.back-btn{
+    margin-top: 30px;
+    background: #8e2f2b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.back-btn:hover{
+    background: #742522;
+}
+
+@media(max-width:768px){
+    .container{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📋 Formular</h1>
+</header>
+
+<div class="container">
+
+    <div class="options">
+
+        <div class="option-card"
+             onclick="window.location.href='arbeitsnachweis.html'">
+            <h3>📄 Arbeitsnachweis</h3>
+            <p>Standard Arbeitsnachweis erfassen.</p>
+        </div>
+
+        <div class="option-card"
+             onclick="window.location.href='arbeitsnachweis-lkw.html'">
+            <h3>🚛 Arbeitsnachweis LKW</h3>
+            <p>Arbeitsnachweis für Fahrer.</p>
+        </div>
+
+        <div class="option-card"
+             onclick="window.location.href='lieferschein.html'">
+            <h3>🚚 Liefer-/Empfangsschein</h3>
+            <p>Lieferungen und Wareneingänge erfassen.</p>
+        </div>
+
+        <div class="option-card"
+             onclick="window.location.href='leistungsnachweis.html'">
+            <h3>✅ Leistungsnachweis</h3>
+            <p>Leistungen dokumentieren.</p>
+        </div>
+        
+        <div class="option-card"
+             onclick="window.location.href='materialausgabe.html'">
+            <h3>📦 Materialausgabe</h3>
+            <p>Materialausgaben dokumentieren und quittieren.</p>
+        </div>
+        
+        <div class="option-card"
+             onclick="window.location.href='materialversand.html'">
+            <h3>📤 Materialversandanzeige</h3>
+            <p>Materialversand erfassen und dokumentieren.</p>
+        </div>
+
+    </div>
+
+    <button class="back-btn"
+            onclick="window.location.href='dashboard.html'">
+        ← Zurück zum Dashboard
+    </button>
+
+</div>
+</body>
+</html>
