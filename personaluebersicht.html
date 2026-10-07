@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VE-LOG | Personalübersicht</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f5f5f5;
+    margin:0;
+}
+
+.header{
+    background:#8e2f2b;
+    color:#fff;
+    padding:20px;
+}
+
+.container{
+    max-width:1200px;
+    margin:20px auto;
+    padding:20px;
+}
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+.btn{
+    background:#1f4e79;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:20px;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.info-box{
+    background:#fafafa;
+    padding:20px;
+    border-left:5px solid #8e2f2b;
+    border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>👥 Personalübersicht</h1>
+</div>
+
+<div class="container">
+
+<button class="btn"
+onclick="window.location.href='mitarbeiter.html'">
+← Zurück zum Personalmanagement
+</button>
+
+<div class="card">
+
+<h2>Mitarbeiterdaten</h2>
+
+<div class="info-grid">
+
+<div class="info-box">
+<h3>Gesamt Mitarbeiter</h3>
+<p>38</p>
+</div>
+
+<div class="info-box">
+<h3>Aktive Mitarbeiter</h3>
+<p>34</p>
+</div>
+
+<div class="info-box">
+<h3>Urlaub</h3>
+<p>2 Mitarbeiter</p>
+</div>
+
+<div class="info-box">
+<h3>Krank</h3>
+<p>2 Mitarbeiter</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
