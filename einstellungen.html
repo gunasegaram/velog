@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VE-Log | Einstellungen</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:#8e2f2b;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo img{
+    height:70px;
+    width:auto;
+}
+
+.logo span{
+    font-size:32px;
+    font-weight:bold;
+}
+
+.container{
+    padding:30px;
+}
+
+.welcome{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    cursor:pointer;
+    transition:all .3s ease;
+    border-left:5px solid #8e2f2b;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card h3{
+    margin-bottom:10px;
+    color:#8e2f2b;
+    font-size:22px;
+}
+
+.card p{
+    color:#555;
+    line-height:1.5;
+}
+
+.btn{
+    background:white;
+    color:#8e2f2b;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn:hover{
+    background:#ececec;
+}
+
+@media(max-width:768px){
+
+    header{
+        flex-direction:column;
+        gap:15px;
+        text-align:center;
+    }
+
+    .logo{
+        flex-direction:column;
+    }
+
+    .container{
+        padding:15px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        <img src="logo.png" alt="VE-Log Logo">
+        <span>VE-Log Einstellungen</span>
+    </div>
+
+    <button
+        class="btn"
+        onclick="window.location.href='dashboard.html'">
+        ← Dashboard
+    </button>
+
+</header>
+
+<div class="container">
+
+    <div class="welcome">
+        <h1>⚙️ Einstellungen</h1>
+        <p>
+            Verwaltung von Benutzerkonten,
+            Unternehmensdaten, Sicherheit und Systemeinstellungen.
+        </p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card"
+             onclick="window.location.href='benutzerkonto.html'">
+            <h3>👤 Benutzerkonto</h3>
+            <p>
+                Persönliche Daten, E-Mail-Adresse,
+                Passwort und Profileinstellungen verwalten.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='unternehmensdaten.html'">
+            <h3>🏢 Unternehmensdaten</h3>
+            <p>
+                Firmenname, Adresse,
+                Kontaktinformationen und Logo bearbeiten.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='benutzerverwaltung.html'">
+            <h3>👥 Benutzerverwaltung</h3>
+            <p>
+                Benutzer anlegen, bearbeiten,
+                löschen und Rollen vergeben.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='sicherheit.html'">
+            <h3>🔒 Sicherheit</h3>
+            <p>
+                Passwort-Richtlinien,
+                API-Schlüssel und Login-Schutz verwalten.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='email.html'">
+            <h3>📧 E-Mail Einstellungen</h3>
+            <p>
+                SMTP-Daten,
+                Benachrichtigungen und Versandoptionen konfigurieren.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='formulareinstellung.html'">
+            <h3>📋 Formulare</h3>
+            <p>
+                Formularvorlagen, PDF-Einstellungen
+                und digitale Unterschriften konfigurieren.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='backup.html'">
+            <h3>☁️ Backup & Daten</h3>
+            <p>
+                Datensicherungen erstellen,
+                herunterladen und wiederherstellen.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='design.html'">
+            <h3>🎨 Design</h3>
+            <p>
+                Logo, Farben,
+                Dashboard-Darstellung und Layout anpassen.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='protokolle.html'">
+            <h3>📜 Systemprotokolle</h3>
+            <p>
+                Benutzeraktivitäten,
+                Anmeldungen und Änderungen überwachen.
+            </p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='datenexport.html'">
+            <h3>📤 Datenexport</h3>
+            <p>
+                Mitarbeiter-, Urlaubs- und Formulardaten
+                als Excel oder PDF exportieren.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
