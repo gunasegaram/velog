@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VE-Log Dashboard</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:#8e2f2b;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo img{
+    height:70px;
+    width:auto;
+}
+
+.logo span{
+    font-size:32px;
+    font-weight:bold;
+    color:white;
+}
+
+.container{
+    padding:30px;
+}
+
+.welcome{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    cursor:pointer;
+    transition:all .3s ease;
+    border-left:5px solid #8e2f2b;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 20px rgba(0,0,0,0.15);
+}
+
+.card h3{
+    margin-bottom:10px;
+    color:#8e2f2b;
+    font-size:22px;
+}
+
+.card p{
+    color:#555;
+    line-height:1.5;
+}
+
+button{
+    background:white;
+    color:#8e2f2b;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#ececec;
+}
+
+#userEmail{
+    margin-top:10px;
+    color:#666;
+}
+
+@media(max-width:768px){
+
+    header{
+        flex-direction:column;
+        gap:15px;
+        text-align:center;
+    }
+
+    .logo{
+        flex-direction:column;
+    }
+
+    .container{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        <img src="logo.png" alt="VE-Log Logo">
+        <span>VE-Log Dashboard</span>
+    </div>
+
+    <button onclick="logout()">Abmelden</button>
+
+</header>
+
+<div class="container">
+
+    <div class="welcome">
+        <h1>Willkommen bei VE-Log</h1>
+        <p id="userEmail">Angemeldet als:</p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card"
+             onclick="window.location.href='formular.html'">
+            <h3>📋 Formulare</h3>
+            <p>Arbeitsnachweise, Lieferscheine und weitere Formulare verwalten.</p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='personalmanagement.html'">
+            <h3>👥 Personalmanagement</h3>
+            <p>Mitarbeiterinformationen anzeigen.</p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='urlaub.html'">
+            <h3>🗓️ Urlaub</h3>
+            <p>Urlaubsanträge verwalten.</p>
+        </div>
+
+        <div class="card"
+             onclick="window.location.href='einstellungen.html'">
+            <h3>⚙️ Einstellungen</h3>
+            <p>Kontoeinstellungen bearbeiten.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const userEmail = localStorage.getItem("userEmail");
+
+if(userEmail){
+
+    document.getElementById("userEmail").innerHTML =
+    "Angemeldet als: <strong>" + userEmail + "</strong>";
+
+}else{
+
+    document.getElementById("userEmail").innerHTML =
+    "Kein Benutzer angemeldet";
+
+}
+
+function logout(){
+
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("uid");
+
+    window.location.href = "index.html";
+
+}
+
+</script>
+
+</body>
+</html>
