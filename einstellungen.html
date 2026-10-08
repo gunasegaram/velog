@@ -1,306 +1,131 @@
 <!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="color-scheme" content="light"><title>Einstellungen · VE-Log</title><style>
+:root{--brand:#8e2f2b;--brand-dark:#68201f;--ink:#232735;--muted:#727785;--line:#e9e9ed;--bg:#f5f6f8;--radius:18px;--shadow:0 5px 24px #21253606}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit;text-decoration:none}button,input{font:inherit}button,a,input{ -webkit-tap-highlight-color:transparent}button{cursor:pointer}button:disabled{cursor:default}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #bd7774;outline-offset:4px}[hidden]{display:none!important}.icon{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}.defs{position:absolute;width:0;height:0;overflow:hidden}.skip{position:absolute;left:20px;top:-100px;background:white;padding:12px;z-index:10}.skip:focus{top:12px}
+.sidebar{position:fixed;inset:0 auto 0 0;width:248px;background:white;border-right:1px solid var(--line);padding:30px 20px;display:flex;flex-direction:column;z-index:3}.brand{display:flex;align-items:center;gap:12px;padding:0 10px 32px}.brand-image{max-width:120px;max-height:58px;object-fit:contain}.wordmark{font-size:29px;font-weight:850;color:var(--brand);letter-spacing:-1px}.brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:650}.nav-label{font-size:10px;letter-spacing:1.5px;color:var(--muted);padding:12px 14px;font-weight:700}.nav{display:grid;gap:6px}.nav a{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:10px;font-weight:550;color:#626675}.nav a:hover{background:#f7f7f9}.nav a.active{background:#f7eae9;color:var(--brand);font-weight:700}.side-bottom{margin-top:auto;padding-top:30px}.side-note{border-top:1px solid var(--line);padding:18px 14px 0;color:var(--muted);font-size:12px}
+.shell{margin-left:248px}.topbar{height:86px;padding:0 40px;display:flex;justify-content:space-between;align-items:center;background:#ffffffd9;border-bottom:1px solid var(--line);gap:16px}.breadcrumb{font-size:13px;color:var(--muted)}.breadcrumb strong{color:var(--ink);font-weight:600}.account{display:flex;align-items:center;gap:12px;min-width:0}.avatar{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#f7eae9;color:var(--brand);font-weight:750}.account-copy{max-width:220px;font-size:12px}.account-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.account-copy span{color:var(--muted)}.quiet-button{border:1px solid var(--line);background:white;border-radius:9px;padding:9px 12px;color:#555;display:flex;align-items:center;gap:8px}.quiet-button:hover{background:var(--bg)}main{max-width:1500px;margin:auto;padding:34px 40px 25px}.intro{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}.eyebrow{font-size:10px;font-weight:750;letter-spacing:1.7px;color:var(--brand);text-transform:uppercase}h1{font-size:clamp(25px,3vw,34px);line-height:1.25;letter-spacing:-1px;margin:7px 0 8px}p{margin:0}.muted{color:var(--muted)}.date{font-size:13px;display:flex;align-items:center;gap:9px;white-space:nowrap}.notice{padding:13px 18px;background:#fff4de;border:1px solid #f1dfb4;border-radius:12px;margin-bottom:22px;font-size:13px}.notice a{text-decoration:underline;font-weight:700}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:24px}.stat{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:21px;box-shadow:var(--shadow)}.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}.icon-box{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:11px;background:#f8eceb;color:var(--brand)}.icon-box.blue{background:#edf2fd;color:#5470a5}.icon-box.green{background:#edf5ee;color:#547c60}.icon-box.gold{background:#fbf3e7;color:#ac8542}.stat-value{font-size:30px;font-weight:750;line-height:1.3;margin:13px 0 4px;letter-spacing:-1px}.stat-note{font-size:11px;color:var(--muted)}.workspace{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr);gap:22px;margin-bottom:26px}.panel{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}h2{font-size:17px;letter-spacing:-.3px;margin:0}.tag{font-size:10px;background:#f4f5f7;color:var(--muted);border-radius:6px;padding:4px 8px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.action{border:1px solid var(--line);border-radius:12px;padding:17px 13px;display:flex;flex-direction:column;gap:12px;font-size:12px;font-weight:650;transition:background .2s,border-color .2s}.action:hover{background:#fbf5f5;border-color:#d9b9b7}.action .icon{color:var(--brand)}.action small{font-weight:400;font-size:11px;color:var(--muted);display:block;margin-top:4px}.feature{margin-top:20px;padding:18px 20px;border-radius:12px;background:linear-gradient(115deg,var(--brand-dark),var(--brand));color:white;display:flex;justify-content:space-between;align-items:center;gap:15px}.feature p{font-size:12px;color:#efd5d3;margin-top:5px}.feature strong{font-size:14px}.feature a{background:white;color:var(--brand);border-radius:8px;padding:8px 13px;font-size:12px;font-weight:700;white-space:nowrap}.task-form{display:flex;gap:8px;margin-top:16px}.task-form input{min-width:0;flex:1;border:1px solid #dce0e6;border-radius:8px;padding:9px 10px;font-size:12px}.add{background:var(--brand);color:white;border:0;border-radius:8px;width:38px;font-size:21px}.tasks{list-style:none;margin:0;padding:0;max-height:225px;overflow:auto}.task{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13px}.task label{display:flex;align-items:center;gap:10px;flex:1;min-width:0;overflow-wrap:anywhere}.task input{accent-color:var(--brand);width:17px;height:17px;flex-shrink:0}.task.done label span{text-decoration:line-through;color:var(--muted)}.delete{border:0;background:transparent;color:var(--muted);padding:4px;display:flex}.empty{background:#fafafb;border:1px dashed #e0e2e7;padding:20px;border-radius:12px;color:var(--muted);font-size:12px;text-align:center}.empty .icon{margin-bottom:6px;color:#9da3ae}.private-note{margin-top:10px;font-size:11px;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:16px}.search{display:flex;align-items:center;gap:9px;background:white;border:1px solid var(--line);border-radius:9px;padding:8px 12px;color:var(--muted)}.search input{border:0;outline:none;background:transparent;width:185px;font-size:12px;min-width:0}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.module{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:23px;transition:transform .2s,box-shadow .2s}.module:hover{transform:translateY(-3px);box-shadow:0 10px 25px #252b3810}.module-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.arrow{color:#999}.module h3{font-size:15px;margin:0 0 7px}.module p{color:var(--muted);font-size:12px;line-height:1.7}.bottom{display:flex;justify-content:space-between;margin-top:24px;font-size:11px;color:var(--muted);gap:16px}.bottom a:hover{text-decoration:underline}.storage-warning{font-size:12px;color:#8c5422;margin-top:8px}
+@media(min-width:1600px){main{padding-top:45px}.workspace{margin-top:30px}}
+@media(max-width:1200px){.sidebar{width:215px}.shell{margin-left:215px}.topbar{padding:0 26px}main{padding:28px 26px}.stats,.modules{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:1fr}.date{font-size:11px}}
+@media(max-width:760px){.sidebar{position:static;width:100%;padding:16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 4px 15px}.brand-image{max-height:42px}.wordmark{font-size:25px}.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto;gap:6px}.nav a{white-space:nowrap;padding:10px;font-size:12px;gap:7px}.nav .icon{width:17px;height:17px}.shell{margin:0}.topbar{height:66px;padding:0 18px}.breadcrumb{display:none}.account{width:100%}.account-copy{flex:1;max-width:none}.quiet-button{margin-left:auto;font-size:12px}main{padding:24px 18px}.intro{align-items:flex-start;flex-direction:column;gap:10px}h1{font-size:27px}.intro p{font-size:13px}.stats,.modules{gap:12px}.stat{padding:16px}.stat-top{font-size:11px}.stat .icon-box{width:30px;height:30px}.stat-value{font-size:27px}.panel{padding:18px}.actions{gap:8px}.action{padding:13px 10px;font-size:11px}.action small{display:none}.feature{padding:16px}.section-head{align-items:flex-start;flex-direction:column;gap:12px}.search{width:100%}.search input{width:100%}.module{padding:18px}.module p{font-size:11px}.bottom{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 
-<title>VE-Log | Einstellungen</title>
+/* Logo und Portalbezeichnung stehen jetzt sauber untereinander. */
+.brand{flex-direction:column;align-items:flex-start;gap:8px;padding:0 10px 28px;min-width:0}.brand-image{max-width:145px;max-height:65px}.brand small{font-size:9px;letter-spacing:1.4px;white-space:normal}.sidebar{overflow-y:auto}.admin-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}.admin-heading p{font-size:12px;color:var(--muted);margin-top:4px}.demo-banner{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 17px;background:#fff6e6;border:1px solid #f0dfb9;border-radius:12px;margin-bottom:24px;color:#805b23;font-size:12px}.demo-toggle{display:flex;align-items:center;gap:8px;white-space:nowrap;font-weight:650}.demo-toggle input{accent-color:var(--brand)}.admin-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(260px,1fr);gap:22px;margin-bottom:24px}.admin-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-actions .action{background:white;text-align:left;min-height:114px;font:inherit;font-size:12px;font-weight:650}.admin-actions .action:hover{background:#fbf5f5}.profile-card{text-align:center}.profile-avatar{display:grid;place-items:center;width:76px;height:76px;border-radius:22px;margin:18px auto 15px;background:linear-gradient(145deg,#8e2f2b,#bb6660);color:white;font-size:25px;font-weight:750;border:5px solid #fbefee}.profile-card h3{font-size:18px;margin:0 0 7px;overflow-wrap:anywhere}.role-pill{display:inline-block;border-radius:20px;padding:5px 12px;font-size:11px;background:#f8eceb;color:var(--brand);font-weight:700}.profile-login{margin-top:22px;padding-top:15px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.profile-login strong{display:block;color:var(--ink);margin-top:5px;font-size:13px}.profile-link{display:inline-flex;justify-content:center;gap:8px;align-items:center;margin-top:20px;font-size:12px;color:var(--brand);font-weight:650}.activity-list{list-style:none;margin:0;padding:0}.activity-item{display:flex;align-items:flex-start;gap:14px;padding:15px 0;border-bottom:1px solid var(--line)}.activity-item:last-child{border-bottom:0}.activity-time{font-size:12px;color:var(--muted);min-width:40px;padding-top:5px}.activity-item .icon-box{width:32px;height:32px}.activity-item p{font-size:13px;padding-top:4px}.activity-note{font-size:11px;color:var(--muted);margin-top:13px}.section-link{font-size:11px;color:var(--brand);font-weight:650}.stat-link:hover .stat-value{color:var(--brand)}.pill{font-size:10px;padding:5px 9px;background:#f7eae9;color:var(--brand);border-radius:6px;font-weight:700;white-space:nowrap}.dialog{border:1px solid var(--line);border-radius:20px;padding:26px;width:min(540px,calc(100% - 32px));color:var(--ink);box-shadow:0 24px 90px #2223}.dialog::backdrop{background:#25273670}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:20px}.dialog-close{border:0;background:#f4f5f7;border-radius:8px;padding:7px 11px;font-size:18px}.dialog-content{font-size:13px}.dialog-content p{margin-bottom:15px}.dialog-content input{max-width:100%;margin:6px 0 15px}.upload-list{padding-left:20px;overflow-wrap:anywhere}.report-table{width:100%;border-collapse:collapse;font-size:13px}.report-table td{padding:10px 0;border-bottom:1px solid var(--line)}.report-table td:last-child{text-align:right;font-weight:700}.report-table caption{text-align:left;margin-bottom:12px;color:var(--muted)}
+@media(max-width:1200px){.admin-layout{grid-template-columns:minmax(0,1.4fr) minmax(240px,1fr)}}
+@media(max-width:760px){.brand{align-items:center;align-self:flex-start;gap:5px;padding:0 4px 16px}.brand-image{max-width:110px;max-height:50px}.brand small{font-size:8px;letter-spacing:1px}.admin-layout{grid-template-columns:1fr}.admin-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-actions .action{min-height:100px;font-size:12px}.demo-banner{align-items:flex-start;flex-direction:column;gap:10px}.admin-heading{align-items:flex-start}.activity-item{gap:10px}.profile-card{padding-bottom:22px}}
+@media(max-width:380px){.stats{grid-template-columns:1fr}.admin-heading{flex-direction:column}}
 
-<style>
+.auth-page{min-height:100vh;display:grid;grid-template-columns:minmax(340px,.95fr) minmax(480px,1.05fr)}.auth-story{background:linear-gradient(145deg,#68201f,#8e2f2b 60%,#a84b43);color:white;padding:48px clamp(30px,5vw,85px);display:flex;flex-direction:column;position:relative;overflow:hidden}.auth-story::after{content:"";position:absolute;width:460px;height:460px;border:1px solid #ffffff12;border-radius:50%;right:-240px;bottom:-180px;box-shadow:0 0 0 75px #ffffff04,0 0 0 150px #ffffff03;pointer-events:none}.auth-brand{display:flex;flex-direction:column;align-items:flex-start;gap:8px}.auth-brand img{max-width:155px;max-height:72px;background:white;border-radius:8px;padding:7px}.auth-brand strong{font-size:30px;letter-spacing:-1px}.auth-brand small{font-size:9px;letter-spacing:2px;color:#eed3d1}.story-content{margin:auto 0;padding:60px 0;position:relative;z-index:1}.story-content .eyebrow{color:#e7b9b6}.story-content h2{font-size:clamp(32px,4vw,52px);line-height:1.15;letter-spacing:-1.5px;margin:18px 0}.story-content p{color:#eed5d3;font-size:15px;max-width:380px;line-height:1.8}.story-list{list-style:none;padding:0;margin:30px 0 0;display:grid;gap:17px;font-size:13px}.story-list li{display:flex;gap:12px;align-items:center}.story-list .icon{width:19px;color:#eec5c1}.story-footer{font-size:11px;color:#e8c3c0}.auth-main{display:grid;place-items:center;padding:44px 30px;background:#f6f7f9}.auth-card{width:100%;max-width:490px;background:white;border:1px solid var(--line);border-radius:24px;padding:clamp(24px,4vw,42px);box-shadow:0 16px 55px #252b3808}.auth-card h1{font-size:28px;margin:10px 0}.auth-card .intro-copy{font-size:13px;color:var(--muted);margin-bottom:28px}.auth-form{display:grid;gap:17px}.field label{display:block;font-size:12px;font-weight:650;margin-bottom:7px}.field input{width:100%;border:1px solid #dce0e6;border-radius:10px;background:#fff;padding:12px 13px;min-height:46px;color:var(--ink);font-size:14px}.field input:hover{border-color:#c5cad3}.field input:focus{border-color:var(--brand)}.field small{display:block;margin-top:6px;color:var(--muted);font-size:11px}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.password-wrap{position:relative}.password-wrap input{padding-right:82px}.password-toggle{position:absolute;right:9px;top:8px;padding:6px;border:0;background:white;color:var(--brand);font-size:11px;font-weight:650;border-radius:5px}.submit{width:100%;padding:13px 18px;min-height:47px;border:0;border-radius:10px;background:var(--brand);color:white;font-weight:650;font-size:14px;margin-top:5px}.submit:hover{background:var(--brand-dark)}.submit:disabled{opacity:.6;cursor:wait}.form-message{font-size:12px;padding:12px 14px;background:#fff2f0;border:1px solid #ecc9c4;border-radius:9px;color:#8e2f2b;margin:0 0 18px;overflow-wrap:anywhere}.form-message.success{color:#3d6a48;background:#edf6ef;border-color:#c7dfcd}.auth-bottom{text-align:center;padding-top:24px;margin-top:25px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.auth-bottom a{color:var(--brand);font-weight:700;display:inline-block;margin-left:4px}.back-link{display:inline-flex;gap:8px;align-items:center;color:var(--muted);font-size:12px;margin-bottom:22px}.auth-note{text-align:center;color:var(--muted);font-size:11px;margin-top:18px}.required-note{font-size:11px;color:var(--muted);margin:0 0 15px}.catalog{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.catalog .module{padding:25px;display:flex;flex-direction:column;min-height:230px}.catalog .module h3{font-size:17px}.catalog .module p{font-size:13px}.catalog-link{font-size:12px;color:var(--brand);font-weight:650;margin-top:auto;padding-top:22px;display:flex;align-items:center;justify-content:space-between}.catalog-label{font-size:10px;letter-spacing:1px;color:var(--muted)}
+@media(max-width:1050px){.catalog{grid-template-columns:repeat(2,minmax(0,1fr))}.auth-story{padding:35px}.auth-page{grid-template-columns:minmax(290px,.8fr) minmax(420px,1fr)}}
+@media(max-width:760px){.auth-page{display:block}.auth-story{padding:22px 24px}.auth-brand{flex-direction:row;align-items:center;gap:15px}.auth-brand img{max-width:105px;max-height:50px}.auth-brand small{max-width:150px;font-size:8px;line-height:1.7}.story-content,.story-footer{display:none}.auth-main{padding:26px 16px;min-height:calc(100vh - 95px)}.auth-card{padding:25px;max-width:490px}.catalog{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.catalog .module{padding:18px;min-height:220px}.catalog .module h3{font-size:15px}.catalog .module p{font-size:12px}}
+@media(max-width:420px){.field-row,.catalog{grid-template-columns:1fr}.catalog .module{min-height:190px}}
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+.shipping-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.shipping-grid .module{min-height:235px;padding:28px}.shipping-grid .icon-box{width:48px;height:48px;border-radius:14px}.shipping-grid .icon-box .icon{width:24px;height:24px}.shipping-grid h3{font-size:19px}.shipping-grid p{max-width:350px}.shipping-info{display:flex;align-items:center;gap:14px;padding:20px 24px;margin-top:24px;border:1px solid var(--line);border-radius:16px;background:#fff}.shipping-info p{font-size:13px;color:var(--muted)}.shipping-info strong{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}.shipping-info .icon-box{flex-shrink:0}.shipping-header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:18px}.shipping-header h2{font-size:17px}.shipping-label{font-size:10px;letter-spacing:1.2px;color:var(--muted)}
+@media(max-width:760px){.shipping-grid .module{min-height:220px;padding:21px}.shipping-grid h3{font-size:17px}.shipping-info{padding:18px}.shipping-header{flex-wrap:wrap;gap:8px}}
+@media(max-width:520px){.shipping-grid{grid-template-columns:1fr}.shipping-grid .module{min-height:205px}.shipping-label{font-size:9px}}
+
+.people-toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}.filter-list{display:flex;gap:7px;flex-wrap:wrap}.filter-button{border:1px solid var(--line);background:white;color:var(--muted);border-radius:9px;padding:9px 12px;font-size:12px;font-weight:600}.filter-button:hover{border-color:#d8b7b4;color:var(--brand)}.filter-button[aria-pressed="true"]{background:#f7eae9;border-color:#e8cdca;color:var(--brand)}.people-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.people-grid .module{min-height:235px}.people-actions{display:flex;gap:10px;flex-wrap:wrap}.primary-link{display:inline-flex;gap:8px;align-items:center;background:var(--brand);color:white;padding:11px 15px;border-radius:10px;font-weight:650;font-size:12px}.primary-link:hover{background:var(--brand-dark)}.secondary-link{background:white;color:var(--brand);border:1px solid var(--line)}.secondary-link:hover{background:#f7eae9}.section-count{font-size:12px;font-weight:500;color:var(--muted);margin-left:8px}.people-grid .catalog-label{font-size:9px}.people-grid .module h3{font-size:17px}.people-grid .module p{font-size:12px}
+@media(max-width:1200px){.people-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.people-actions{width:100%}.people-toolbar{align-items:stretch;flex-direction:column}.filter-button{font-size:11px;padding:8px 10px}.people-grid .module{min-height:230px}.people-grid .module h3{font-size:15px}.people-grid .catalog-label{font-size:8px}}
+@media(max-width:520px){.people-grid{grid-template-columns:1fr}.people-grid .module{min-height:200px}}
+
+.settings-intro{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:28px}.identity-panel{display:flex;align-items:center;gap:12px;padding:15px 19px;border:1px solid var(--line);background:white;border-radius:14px;max-width:350px;min-width:220px}.identity-panel .avatar{flex-shrink:0}.identity-copy{min-width:0}.identity-copy strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.identity-copy span{display:block;font-size:11px;color:var(--muted)}.settings-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.settings-grid .module{min-height:235px}.access-label{font-size:9px;letter-spacing:.4px;color:var(--muted);padding:4px 7px;background:#f5f6f8;border-radius:5px}.status-panel{border:1px solid var(--line);border-radius:14px;padding:20px;background:white;color:var(--muted);font-size:13px;margin-bottom:20px}.status-panel.error{background:#fff3ef;color:#8e2f2b;border-color:#edccc3}.account-link{font-size:12px;color:var(--brand);font-weight:650}.settings-footnote{font-size:11px;color:var(--muted);margin-top:22px}.settings-grid .module h3{font-size:16px}.settings-grid .module p{font-size:12px}
+@media(max-width:1200px){.settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-intro{align-items:flex-start;flex-direction:column}.identity-panel{max-width:100%}}
+@media(max-width:520px){.settings-grid{grid-template-columns:1fr}.settings-grid .module{min-height:200px}.identity-panel{width:100%}}
+</style></head><body><svg class="defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+<symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+<symbol id="file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h6"/></symbol>
+<symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M21 21v-2a6 6 0 0 0-4-5"/></symbol>
+<symbol id="calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2M8 18h2"/></symbol>
+<symbol id="settings" viewBox="0 0 24 24"><path d="m9 3-.6 3-2 .9-2.7-1.1-2 3.4 2.2 2v2l-2.2 2 2 3.4 2.7-1.1 2 .9.6 2.6h6l.6-2.6 2-.9 2.7 1.1 2-3.4-2.2-2v-2l2.2-2-2-3.4-2.7 1.1-2-.9L15 3z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+<symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="check" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="m7 12 3 3 7-7"/></symbol>
+<symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+<symbol id="logout" viewBox="0 0 24 24"><path d="M9 4H4v16h5M9 12h12M17 8l4 4-4 4"/></symbol>
+<symbol id="trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+<symbol id="truck" viewBox="0 0 24 24"><path d="M3 5h11v12H3zM14 9h4l3 4v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+<symbol id="chart" viewBox="0 0 24 24"><path d="M4 3v18h17M9 16v-5M14 16V7M19 16V4"/></symbol>
+<symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V3M7 8l5-5 5 5M4 15v6h16v-6"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="building" viewBox="0 0 24 24"><path d="M3 21h18M6 21V4h12v17M9 8h1M14 8h1M9 12h1M14 12h1M10 21v-5h4v5"/></symbol><symbol id="book" viewBox="0 0 24 24"><path d="M12 5v16M12 5C9 3 6 3 3 4v15c3-1 6-1 9 2 3-3 6-3 9-2V4c-3-1-6-1-9 1z"/></symbol><symbol id="shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></symbol><symbol id="health" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M12 7v10M7 12h10"/></symbol><symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></symbol><symbol id="cloud" viewBox="0 0 24 24"><path d="M7 19h11a4 4 0 0 0 1-8 7 7 0 0 0-13-2 5 5 0 0 0 1 10z"/></symbol><symbol id="palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-4 2 2 0 0 1 1-4h3a3 3 0 0 0 3-3c0-4-4-7-9-7z"/><circle cx="7" cy="10" r=".8"/><circle cx="10" cy="7" r=".8"/><circle cx="15" cy="7" r=".8"/></symbol></defs></svg><a class="skip" href="#main">Zum Inhalt springen</a><aside class="sidebar" aria-label="Hauptnavigation">
+<a class="brand" href="dashboard.html" aria-label="VE-Log Dashboard"><img class="brand-image" id="brandLogo" src="logo.png" alt="VE-Log"><div><span class="wordmark" id="brandFallback" hidden>VE-Log</span><small>MITARBEITERPORTAL</small></div></a>
+<div class="nav-label">ARBEITSPLATZ</div>
+<nav class="nav">
+<a href="dashboard.html"><svg class="icon" aria-hidden="true"><use href="#grid"/></svg>Dashboard</a>
+<a href="personalmanagement.html" data-nav-admin hidden><svg class="icon" aria-hidden="true"><use href="#users"/></svg>Mitarbeiter</a>
+<a href="formular.html"><svg class="icon" aria-hidden="true"><use href="#file"/></svg>Formulare</a>
+<a href="urlaub.html"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg>Urlaub</a>
+
+
+<a class="active" href="einstellungen.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#settings"/></svg>Einstellungen</a></nav>
+<div class="side-bottom"><div class="side-note">Alles für deinen Arbeitsalltag.<br>Einfach an einem Ort.</div></div>
+</aside><div class="shell"><header class="topbar"><div class="breadcrumb"><a href="dashboard.html">Arbeitsplatz</a> &nbsp;/&nbsp; <strong>Einstellungen</strong></div><a class="quiet-button" href="dashboard.html">← Dashboard</a></header><main id="main"><section class="settings-intro" aria-labelledby="pageTitle"><div><div class="eyebrow">Dein Portal · Deine Einstellungen</div><h1 id="pageTitle">Einstellungen</h1><p class="muted">Konto, Unternehmensdaten und Systemoptionen übersichtlich verwalten.</p></div><div class="identity-panel"><div class="avatar" id="accountAvatar" aria-hidden="true">VE</div><div class="identity-copy"><strong id="accountName">Anmeldung wird geprüft …</strong><span id="accountRole">Rolle wird geladen</span></div></div></section><div class="status-panel" id="pageStatus" role="status">Deine Anmeldung und Berechtigungen werden geprüft …</div><div class="section-head"><h2 id="areasTitle">Einstellungsbereiche <span class="section-count" id="areaCount" aria-live="polite">0 Bereiche</span></h2></div><div class="people-toolbar"><div class="filter-list" role="group" aria-label="Einstellungen filtern"><button class="filter-button" type="button" data-filter="alle" aria-pressed="true">Alle</button><button class="filter-button" type="button" data-filter="konto" aria-pressed="false">Mein Konto</button><button class="filter-button" type="button" data-filter="organisation" aria-pressed="false">Organisation</button><button class="filter-button" type="button" data-filter="vorlagen" aria-pressed="false">Vorlagen &amp; Design</button><button class="filter-button" type="button" data-filter="system" aria-pressed="false">System</button></div><div class="search"><svg class="icon" aria-hidden="true"><use href="#search"/></svg><label for="areaSearch" hidden>Einstellungen durchsuchen</label><input id="areaSearch" type="search" placeholder="Einstellung suchen …"></div></div><section class="modules catalog settings-grid" aria-labelledby="areasTitle"><a class="module" id="benutzerkonto-card" href="benutzerkonto.html" data-category="konto" data-roles="mitarbeiter admin superadmin" hidden><div class="module-top"><span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span><span class="access-label">ALLE ROLLEN</span></div><h3>Benutzerkonto</h3><p>Persönliche Daten, E-Mail-Adresse, Passwort und Profileinstellungen verwalten.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="unternehmensdaten-card" href="unternehmensdaten.html" data-category="organisation" data-roles="admin superadmin" hidden><div class="module-top"><span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#building"/></svg></span><span class="access-label">ADMINISTRATION</span></div><h3>Unternehmensdaten</h3><p>Firmenname, Adresse, Kontaktinformationen und Logo bearbeiten.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="benutzerverwaltung-card" href="benutzerverwaltung.html" data-category="organisation" data-roles="admin superadmin" hidden><div class="module-top"><span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span><span class="access-label">ADMINISTRATION</span></div><h3>Benutzerverwaltung</h3><p>Benutzerkonten und zugehörige Rollen verwalten.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="sicherheit-card" href="sicherheit.html" data-category="system" data-roles="superadmin" hidden><div class="module-top"><span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#shield"/></svg></span><span class="access-label">SUPERADMIN</span></div><h3>Sicherheit</h3><p>Passwort-Richtlinien und Login-Schutz verwalten.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="email-card" href="email.html" data-category="system" data-roles="superadmin" hidden><div class="module-top"><span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#mail"/></svg></span><span class="access-label">SUPERADMIN</span></div><h3>E-Mail-Einstellungen</h3><p>Benachrichtigungen und Versandoptionen konfigurieren.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="formulare-card" href="formulareinstellung.html" data-category="vorlagen" data-roles="mitarbeiter admin superadmin" hidden><div class="module-top"><span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#file"/></svg></span><span class="access-label">ALLE ROLLEN</span></div><h3>Formulare</h3><p>Formularvorlagen, PDF-Einstellungen und digitale Unterschriften konfigurieren.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="backup-card" href="backup.html" data-category="system" data-roles="superadmin" hidden><div class="module-top"><span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#cloud"/></svg></span><span class="access-label">SUPERADMIN</span></div><h3>Backup &amp; Daten</h3><p>Datensicherungen erstellen, herunterladen und wiederherstellen.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="design-card" href="design.html" data-category="vorlagen" data-roles="admin superadmin" hidden><div class="module-top"><span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#palette"/></svg></span><span class="access-label">ADMINISTRATION</span></div><h3>Design</h3><p>Logo, Farben, Dashboard-Darstellung und Layout anpassen.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="protokolle-card" href="protokolle.html" data-category="system" data-roles="superadmin" hidden><div class="module-top"><span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg></span><span class="access-label">SUPERADMIN</span></div><h3>Systemprotokolle</h3><p>Benutzeraktivitäten, Anmeldungen und Änderungen überwachen.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" id="datenexport-card" href="datenexport.html" data-category="organisation" data-roles="admin superadmin" hidden><div class="module-top"><span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#upload"/></svg></span><span class="access-label">ADMINISTRATION</span></div><h3>Datenexport</h3><p>Mitarbeiter-, Urlaubs- und Formulardaten als Excel oder PDF exportieren.</p><span class="catalog-link">Einstellungen öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a></section><div class="empty" id="noAreas" hidden>Keine passenden Einstellungen gefunden. Ändere den Suchbegriff oder den Filter.</div><p class="settings-footnote">Die sichtbaren Bereiche richten sich nach deiner zentralen Benutzerrolle.</p><footer class="bottom"><span>VE-Log · Mitarbeiterportal</span><a href="dashboard.html">← Zurück zum Dashboard</a></footer></main></div><script type="module">
+'use strict';
+const $=id=>document.getElementById(id);
+const logo=$('brandLogo');
+function showBrandFallback(){logo.hidden=true;$('brandFallback').hidden=false;}
+logo.addEventListener('error',showBrandFallback);
+if(logo.complete && !logo.naturalWidth)showBrandFallback();
+let currentRole=null;let selectedCategory='alle';let stopRoleListener=null;let stopNameListener=null;
+function setStatus(text,error=false){$('pageStatus').textContent=text;$('pageStatus').classList.toggle('error',error);$('pageStatus').hidden=false;}
+function renderAreas(){
+ const query=$('areaSearch').value.trim().toLocaleLowerCase('de-DE');let count=0;
+ document.querySelectorAll('.settings-grid .module').forEach(card=>{
+  const allowed=card.dataset.roles.split(' ').includes(currentRole);
+  card.hidden=!allowed || (selectedCategory!=='alle' && card.dataset.category!==selectedCategory) || !card.textContent.toLocaleLowerCase('de-DE').includes(query);
+  if(!card.hidden)count++;
+ });
+ $('areaCount').textContent=count+' '+(count===1?'Bereich':'Bereiche');
+ $('noAreas').hidden=!currentRole || count>0;
+ document.querySelectorAll('[data-nav-admin]').forEach(link=>{link.hidden=!['admin','superadmin'].includes(currentRole);});
 }
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "DEIN_API_KEY",
-    authDomain: "ve-log.firebaseapp.com",
-    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "ve-log",
-    storageBucket: "ve-log.firebasestorage.app",
-    messagingSenderId: "749978080433",
-    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-onAuthStateChanged(auth, async (user) => {
-
-    if (!user) {
-        window.location.href = "index.html";
-        return;
-    }
-
-    const snap = await get(ref(db, "roles/" + user.uid));
-
-    if (!snap.exists()) return;
-
-    const rolle = snap.val();
-
-    if (rolle === "mitarbeiter") {
-
-        document.getElementById("unternehmensdaten-card").style.display = "none";
-        document.getElementById("benutzerverwaltung-card").style.display = "none";
-        document.getElementById("sicherheit-card").style.display = "none";
-        document.getElementById("email-card").style.display = "none";
-        document.getElementById("backup-card").style.display = "none";
-        document.getElementById("design-card").style.display = "none";
-        document.getElementById("protokolle-card").style.display = "none";
-        document.getElementById("datenexport-card").style.display = "none";
-    }
-
-    if (rolle === "admin") {
-
-        document.getElementById("sicherheit-card").style.display = "none";
-        document.getElementById("email-card").style.display = "none";
-        document.getElementById("backup-card").style.display = "none";
-        document.getElementById("protokolle-card").style.display = "none";
-    }
-
-});
-
-</script>
-    
-body{
-    font-family:Arial,sans-serif;
-    background:#f4f4f4;
+$('areaSearch').addEventListener('input',renderAreas);
+document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{
+ selectedCategory=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(other=>other.setAttribute('aria-pressed',String(other===button)));renderAreas();
+}));
+const roleLabels={mitarbeiter:'Mitarbeiter',admin:'Administrator',superadmin:'Superadministrator'};
+async function initializeSettings(){
+ try{
+  let firebaseConfig;
+  try{({firebaseConfig}=await import('./firebase-config.js'));}
+  catch{setStatus('Die gemeinsame Datei firebase-config.js fehlt oder kann nicht geladen werden. Lege sie aus dem VE-Log-Webseiten-Paket in denselben Website-Ordner.',true);return;}
+  if(!firebaseConfig.apiKey || firebaseConfig.apiKey.startsWith('DEIN_')){setStatus('Trage deinen aktuellen Firebase API-Schlüssel in firebase-config.js ein.',true);return;}
+  const [appSDK,authSDK,dbSDK]=await Promise.all([
+   import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+   import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
+   import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')
+  ]);
+  const app=appSDK.initializeApp(firebaseConfig);const auth=authSDK.getAuth(app);const db=dbSDK.getDatabase(app);
+  authSDK.onAuthStateChanged(auth,user=>{
+   if(stopRoleListener){stopRoleListener();stopRoleListener=null;}
+   if(stopNameListener){stopNameListener();stopNameListener=null;}
+   currentRole=null;renderAreas();
+   if(!user){$('accountName').textContent='Nicht angemeldet';$('accountRole').textContent='Gast';window.location.href='index.html';return;}
+   $('accountName').textContent=user.email || 'Benutzer';$('accountRole').textContent='Rolle wird geladen';setStatus('Deine Berechtigungen werden geladen …');
+   stopRoleListener=dbSDK.onValue(dbSDK.ref(db,'roles/'+user.uid),snapshot=>{
+    if(auth.currentUser?.uid!==user.uid)return;
+    const role=snapshot.val();currentRole=Object.hasOwn(roleLabels,role)?role:null;
+    $('accountRole').textContent=currentRole?roleLabels[currentRole]:'Keine gültige Rolle';renderAreas();
+    if(currentRole){$('pageStatus').hidden=true;}else{setStatus('Für dein Konto ist keine gültige Rolle hinterlegt. Bitte wende dich an die Administration.',true);}
+   },error=>{
+    if(auth.currentUser?.uid!==user.uid)return;
+    currentRole=null;$('accountRole').textContent='Rolle nicht verfügbar';renderAreas();
+    setStatus(String(error.code || '').toLowerCase().includes('permission')?'Die Benutzerrolle darf nicht gelesen werden. Prüfe die Firebase-Regeln für roles/'+user.uid+'.':'Die Benutzerrolle konnte nicht geladen werden. Prüfe die Verbindung.',true);
+   });
+   stopNameListener=dbSDK.onValue(dbSDK.ref(db,'users/'+user.uid),snapshot=>{
+    if(auth.currentUser?.uid!==user.uid)return;
+    const profile=snapshot.val() || {};const name=[profile.vorname,profile.nachname].filter(v=>typeof v==='string' && v.trim()).map(v=>v.trim()).join(' ');
+    $('accountName').textContent=name || user.email || 'Benutzer';$('accountName').title=user.email || '';
+    $('accountAvatar').textContent=name?name.split(/\s+/).slice(0,2).map(v=>v[0]).join('').toUpperCase():(user.email || 'VE').slice(0,2).toUpperCase();
+   },()=>{/* Die Rolle bleibt unabhängig vom optionalen Profil lesbar. */});
+  },()=>{currentRole=null;renderAreas();setStatus('Die Anmeldung konnte nicht geprüft werden. Bitte melde dich erneut an.',true);});
+ }catch(error){
+  currentRole=null;renderAreas();const code=String(error.code || '');
+  setStatus(code.includes('api-key')?'Der Firebase API-Schlüssel ist ungültig oder abgelaufen. Aktualisiere firebase-config.js.':'Firebase konnte nicht geladen werden. Prüfe die Verbindung und öffne die Seite über deine Website oder einen lokalen Webserver.',true);
+ }
 }
-
-header{
-    background:#8e2f2b;
-    color:white;
-    padding:15px 30px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.logo img{
-    height:70px;
-    width:auto;
-}
-
-.logo span{
-    font-size:32px;
-    font-weight:bold;
-}
-
-.container{
-    padding:30px;
-}
-
-.welcome{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-    margin-bottom:20px;
-}
-
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-    cursor:pointer;
-    transition:all .3s ease;
-    border-left:5px solid #8e2f2b;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 10px 20px rgba(0,0,0,0.15);
-}
-
-.card h3{
-    margin-bottom:10px;
-    color:#8e2f2b;
-    font-size:22px;
-}
-
-.card p{
-    color:#555;
-    line-height:1.5;
-}
-
-.btn{
-    background:white;
-    color:#8e2f2b;
-    border:none;
-    padding:10px 20px;
-    border-radius:8px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.btn:hover{
-    background:#ececec;
-}
-
-@media(max-width:768px){
-
-    header{
-        flex-direction:column;
-        gap:15px;
-        text-align:center;
-    }
-
-    .logo{
-        flex-direction:column;
-    }
-
-    .container{
-        padding:15px;
-    }
-
-}
-
-</style>
-</head>
-
-<body>
-
-<header>
-
-    <div class="logo">
-        <img src="logo.png" alt="VE-Log Logo">
-        <span>VE-Log Einstellungen</span>
-    </div>
-
-    <button
-        class="btn"
-        onclick="window.location.href='dashboard.html'">
-        ← Dashboard
-    </button>
-
-</header>
-
-<div class="container">
-
-    <div class="welcome">
-        <h1>⚙️ Einstellungen</h1>
-        <p>
-            Verwaltung von Benutzerkonten,
-            Unternehmensdaten, Sicherheit und Systemeinstellungen.
-        </p>
-    </div>
-
-    <div class="cards">
-
-        <div class="card"
-             onclick="window.location.href='benutzerkonto.html'">
-            <h3>👤 Benutzerkonto</h3>
-            <p>
-                Persönliche Daten, E-Mail-Adresse,
-                Passwort und Profileinstellungen verwalten.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='unternehmensdaten.html'">
-            <h3>🏢 Unternehmensdaten</h3>
-            <p>
-                Firmenname, Adresse,
-                Kontaktinformationen und Logo bearbeiten.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='benutzerverwaltung.html'">
-            <h3>👥 Benutzerverwaltung</h3>
-            <p>
-                Benutzer anlegen, bearbeiten,
-                löschen und Rollen vergeben.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='sicherheit.html'">
-            <h3>🔒 Sicherheit</h3>
-            <p>
-                Passwort-Richtlinien,
-                API-Schlüssel und Login-Schutz verwalten.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='email.html'">
-            <h3>📧 E-Mail Einstellungen</h3>
-            <p>
-                SMTP-Daten,
-                Benachrichtigungen und Versandoptionen konfigurieren.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='formulareinstellung.html'">
-            <h3>📋 Formulare</h3>
-            <p>
-                Formularvorlagen, PDF-Einstellungen
-                und digitale Unterschriften konfigurieren.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='backup.html'">
-            <h3>☁️ Backup & Daten</h3>
-            <p>
-                Datensicherungen erstellen,
-                herunterladen und wiederherstellen.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='design.html'">
-            <h3>🎨 Design</h3>
-            <p>
-                Logo, Farben,
-                Dashboard-Darstellung und Layout anpassen.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='protokolle.html'">
-            <h3>📜 Systemprotokolle</h3>
-            <p>
-                Benutzeraktivitäten,
-                Anmeldungen und Änderungen überwachen.
-            </p>
-        </div>
-
-        <div class="card"
-             onclick="window.location.href='datenexport.html'">
-            <h3>📤 Datenexport</h3>
-            <p>
-                Mitarbeiter-, Urlaubs- und Formulardaten
-                als Excel oder PDF exportieren.
-            </p>
-        </div>
-
-    </div>
-
-</div>
-
-</body>
-</html>
+renderAreas();initializeSettings();
+// Die Anzeige steuert nur die Navigation. Lese- und Schreibrechte der Zielseiten
+// müssen zusätzlich durch Firebase-Regeln bzw. das Backend geprüft werden.
+</script></body></html>
