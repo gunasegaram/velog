@@ -43,32 +43,33 @@
 <a class="skip" href="#main">Zum Inhalt springen</a>
 <aside class="sidebar" aria-label="Hauptnavigation">
 <a class="brand" href="dashboard.html" aria-label="VE-Log Dashboard"><img class="brand-image" id="brandLogo" src="logo.png" alt="VE-Log"><div><span class="wordmark" id="brandFallback" hidden>VE-Log</span><small>MITARBEITERPORTAL</small></div></a>
-<div class="nav-label">VERWALTUNG</div>
+<div class="nav-label">ARBEITSPLATZ</div>
 <nav class="nav">
 <a class="active" href="dashboard.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#grid"/></svg>Dashboard</a>
-<a href="personalmanagement.html"><svg class="icon" aria-hidden="true"><use href="#users"/></svg>Mitarbeiter</a>
+<a href="personalmanagement.html" data-admin-only><svg class="icon" aria-hidden="true"><use href="#users"/></svg>Mitarbeiter</a>
 <a href="formular.html"><svg class="icon" aria-hidden="true"><use href="#file"/></svg>Formulare</a>
 <a href="urlaub.html"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg>Urlaub</a>
-<a href="#vehicleDialog" data-dialog="vehicleDialog"><svg class="icon" aria-hidden="true"><use href="#truck"/></svg>Fahrzeuge</a>
-<a href="#reportDialog" data-dialog="reportDialog"><svg class="icon" aria-hidden="true"><use href="#chart"/></svg>Berichte</a>
+<a href="#vehicleDialog" data-dialog="vehicleDialog" data-admin-only><svg class="icon" aria-hidden="true"><use href="#truck"/></svg>Fahrzeuge</a>
+<a href="#reportDialog" data-dialog="reportDialog" data-admin-only><svg class="icon" aria-hidden="true"><use href="#chart"/></svg>Berichte</a>
 </nav>
 <div class="side-bottom"><div class="side-note">Alles für deinen Arbeitsalltag.<br>Einfach an einem Ort.</div></div>
 </aside>
 <div class="shell">
-<header class="topbar"><div class="breadcrumb">Arbeitsplatz &nbsp;/&nbsp; <strong>Dashboard</strong></div><div class="account"><div class="avatar" id="avatar" aria-hidden="true">VE</div><div class="account-copy"><strong id="userEmail">Gastansicht</strong><span id="sessionLabel">Nicht angemeldet</span></div><button class="quiet-button" id="sessionButton" type="button"><svg class="icon" aria-hidden="true"><use href="#logout"/></svg><span id="sessionAction">Anmelden</span></button></div></header>
+<header class="topbar"><div class="breadcrumb">Arbeitsplatz &nbsp;/&nbsp; <strong>Dashboard</strong></div><div class="account"><div class="avatar" id="avatar" aria-hidden="true">VE</div><div class="account-copy"><strong id="userEmail">Anmeldung wird geprüft …</strong><span id="sessionLabel">Firebase wird geladen</span></div><button class="quiet-button" id="sessionButton" type="button"><svg class="icon" aria-hidden="true"><use href="#logout"/></svg><span id="sessionAction">Anmelden</span></button></div></header>
 <main id="main">
 <section class="intro" aria-labelledby="greeting"><div><div class="eyebrow">Verwaltung · Überblick</div><h1 id="greeting">Willkommen bei VE-Log.</h1><p class="muted">Personal, Anträge und Betrieb auf einen Blick.</p></div><div class="date muted"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg><time id="today"></time></div></section>
-<div class="notice" id="guestNotice">Du bist nicht angemeldet. <a href="index.html">Zur Anmeldung</a></div>
-<div class="demo-banner"><span id="demoExplanation"><strong>Demoansicht:</strong> Kennzahlen, Profil und Aktivitäten zeigen Beispielwerte – keine echten Betriebsdaten.</span><label class="demo-toggle"><input type="checkbox" id="demoToggle" checked> Beispieldaten anzeigen</label></div><div class="admin-heading"><div><h2>Dashboard-Kennzahlen</h2><p>Dein Unternehmen auf einen Blick</p></div><span class="pill" id="dataBadge">BEISPIELDATEN</span></div><section class="stats" aria-label="Administrator-Kennzahlen"><a class="stat stat-link" href="personalmanagement.html"><div class="stat-top">Mitarbeiter gesamt<span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" data-metric="employees">—</div><p class="stat-note">Alle Mitarbeiter</p></a><a class="stat stat-link" href="personalmanagement.html"><div class="stat-top">Aktive Mitarbeiter<span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" data-metric="active">—</div><p class="stat-note">Aktiver Beschäftigungsstatus</p></a><a class="stat stat-link" href="urlaub.html"><div class="stat-top">Offene Urlaubsanträge<span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg></span></div><div class="stat-value" data-metric="leave">—</div><p class="stat-note">Warten auf eine Entscheidung</p></a><a class="stat stat-link" href="personalmanagement.html"><div class="stat-top">Krankmeldungen<span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" data-metric="sick">—</div><p class="stat-note">Heute abwesend</p></a><a class="stat stat-link" href="#vehicleDialog" data-dialog="vehicleDialog"><div class="stat-top">Fahrzeuge im Einsatz<span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#truck"/></svg></span></div><div class="stat-value" data-metric="vehicles">—</div><p class="stat-note">Aktuell zugeordnete Fahrzeuge</p></a><a class="stat stat-link" href="formular.html"><div class="stat-top">Dokumente<span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#file"/></svg></span></div><div class="stat-value" data-metric="documents">—</div><p class="stat-note">Erfasste Dokumente</p></a><a class="stat stat-link" href="#taskTitle"><div class="stat-top">Offene Aufgaben<span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#check"/></svg></span></div><div class="stat-value" data-metric="tasks">—</div><p class="stat-note">Betriebliche Aufgaben</p></a><a class="stat stat-link" href="#reportDialog" data-dialog="reportDialog"><div class="stat-top">Überstunden<span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg></span></div><div class="stat-value" data-metric="overtime">—</div><p class="stat-note">Summe im aktuellen Monat</p></a></section>
+<div class="notice" id="guestNotice" hidden>Du bist nicht angemeldet. <a href="index.html">Zur Anmeldung</a></div><div class="notice" id="profileError" role="status" hidden></div>
+<div class="demo-banner"><span id="demoExplanation"><strong>Demoansicht:</strong> Kennzahlen und Aktivitäten zeigen Beispielwerte – keine echten Betriebsdaten.</span><label class="demo-toggle"><input type="checkbox" id="demoToggle"> Beispieldaten anzeigen</label></div><div class="admin-heading" data-admin-only><div><h2>Dashboard-Kennzahlen</h2><p>Dein Unternehmen auf einen Blick</p></div><span class="pill" id="dataBadge">BEISPIELDATEN</span></div><section class="stats" aria-label="Administrator-Kennzahlen" data-admin-only><a class="stat stat-link" href="personalmanagement.html"><div class="stat-top">Mitarbeiter gesamt<span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" data-metric="employees">—</div><p class="stat-note">Alle Mitarbeiter</p></a><a class="stat stat-link" href="personalmanagement.html"><div class="stat-top">Aktive Mitarbeiter<span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" data-metric="active">—</div><p class="stat-note">Aktiver Beschäftigungsstatus</p></a><a class="stat stat-link" href="urlaub.html"><div class="stat-top">Offene Urlaubsanträge<span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg></span></div><div class="stat-value" data-metric="leave">—</div><p class="stat-note">Warten auf eine Entscheidung</p></a><a class="stat stat-link" href="personalmanagement.html"><div class="stat-top">Krankmeldungen<span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" data-metric="sick">—</div><p class="stat-note">Heute abwesend</p></a><a class="stat stat-link" href="#vehicleDialog" data-dialog="vehicleDialog"><div class="stat-top">Fahrzeuge im Einsatz<span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#truck"/></svg></span></div><div class="stat-value" data-metric="vehicles">—</div><p class="stat-note">Aktuell zugeordnete Fahrzeuge</p></a><a class="stat stat-link" href="formular.html"><div class="stat-top">Dokumente<span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#file"/></svg></span></div><div class="stat-value" data-metric="documents">—</div><p class="stat-note">Erfasste Dokumente</p></a><a class="stat stat-link" href="#taskTitle"><div class="stat-top">Offene Aufgaben<span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#check"/></svg></span></div><div class="stat-value" data-metric="tasks">—</div><p class="stat-note">Betriebliche Aufgaben</p></a><a class="stat stat-link" href="#reportDialog" data-dialog="reportDialog"><div class="stat-top">Überstunden<span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg></span></div><div class="stat-value" data-metric="overtime">—</div><p class="stat-note">Summe im aktuellen Monat</p></a></section>
 <div class="admin-layout"><section class="panel" aria-labelledby="quickTitle"><div class="panel-head"><h2 id="quickTitle">Schnellaktionen</h2><span class="tag">ADMINISTRATION</span></div><div class="actions admin-actions">
-<a class="action" href="personalmanagement.html"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg><span>Mitarbeiter anlegen<small>Personalverwaltung öffnen</small></span></a>
+<a class="action" href="personalmanagement.html" data-admin-only><svg class="icon" aria-hidden="true"><use href="#plus"/></svg><span>Mitarbeiter anlegen<small>Personalverwaltung öffnen</small></span></a>
 <a class="action" href="formular.html"><svg class="icon" aria-hidden="true"><use href="#file"/></svg><span>Formulare erstellen<small>Arbeitsnachweise &amp; Lieferscheine</small></span></a>
-<a class="action" href="urlaub.html"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg><span>Urlaub genehmigen<small>Urlaubsverwaltung öffnen</small></span></a>
+<a class="action" href="urlaub.html" data-admin-only><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg><span>Urlaub genehmigen<small>Urlaubsverwaltung öffnen</small></span></a>
+<a class="action" href="urlaub.html" id="employeeVacation"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg><span>Urlaub beantragen<small>Urlaubsbereich öffnen</small></span></a>
 <button class="action" type="button" data-dialog="uploadDialog"><svg class="icon" aria-hidden="true"><use href="#upload"/></svg><span>Dokument hochladen<small>Lokale Dateiauswahl · Vorschau</small></span></button>
-<button class="action" type="button" data-dialog="vehicleDialog"><svg class="icon" aria-hidden="true"><use href="#truck"/></svg><span>Fahrzeug verwalten<small>Fahrzeugübersicht öffnen</small></span></button>
-<button class="action" type="button" data-dialog="reportDialog"><svg class="icon" aria-hidden="true"><use href="#chart"/></svg><span>Berichte anzeigen<small>Kennzahlenübersicht öffnen</small></span></button>
+<button class="action" type="button" data-dialog="vehicleDialog" data-admin-only><svg class="icon" aria-hidden="true"><use href="#truck"/></svg><span>Fahrzeug verwalten<small>Fahrzeugübersicht öffnen</small></span></button>
+<button class="action" type="button" data-dialog="reportDialog" data-admin-only><svg class="icon" aria-hidden="true"><use href="#chart"/></svg><span>Berichte anzeigen<small>Kennzahlenübersicht öffnen</small></span></button>
 </div></section>
-<section class="panel profile-card" aria-labelledby="profileTitle"><div class="panel-head"><h2 id="profileTitle">Benutzerkarte</h2><span class="tag" id="profileBadge">DEMO</span></div><div class="profile-avatar" id="profileAvatar" aria-label="Profilplatzhalter">PG</div><h3 id="profileName">Prasath Gunasegaram</h3><span class="role-pill" id="profileRole">Administrator · Demo</span><div class="profile-login">Letzter Login<strong id="lastLogin">Heute 07:30 Uhr · Beispiel</strong></div><a class="profile-link" href="einstellungen.html"><svg class="icon" aria-hidden="true"><use href="#settings"/></svg>Profil &amp; Einstellungen</a></section></div>
+<section class="panel profile-card" aria-labelledby="profileTitle"><div class="panel-head"><h2 id="profileTitle">Benutzerkarte</h2><span class="tag" id="profileBadge">PROFIL</span></div><div class="profile-avatar" id="profileAvatar" aria-label="Profilplatzhalter">VE</div><h3 id="profileName">Profil wird geladen …</h3><span class="role-pill" id="profileRole">Bitte warten</span><p class="muted" id="profileEmail" style="font-size:12px;margin-top:14px;overflow-wrap:anywhere"></p><p class="muted" id="profilePhone" style="font-size:12px;margin-top:4px"></p><div class="profile-login">Letzter Login<strong id="lastLogin">Nicht verfügbar</strong></div><a class="profile-link" href="einstellungen.html"><svg class="icon" aria-hidden="true"><use href="#settings"/></svg>Profil &amp; Einstellungen</a></section></div>
 <div class="workspace"><section class="panel" aria-labelledby="activityTitle"><div class="panel-head"><h2 id="activityTitle">Aktivitäten</h2><span class="tag" id="activityBadge">DEMO · KEIN LIVE-FEED</span></div><ol class="activity-list" id="activityList"></ol><div class="empty" id="activityEmpty" hidden>Noch keine Aktivitäten angebunden.</div><p class="activity-note" id="activityNote">Beispiele für den späteren Live-Bereich. Automatische Aktualisierung benötigt eine Datenanbindung.</p></section>
 <section class="panel" aria-labelledby="taskTitle"><div class="panel-head"><h2 id="taskTitle">Meine Aufgaben</h2><span class="tag" id="taskCount">0 OFFEN</span></div><p class="private-note" style="margin:0 0 14px"><strong id="openCount">0</strong> persönliche Aufgaben offen · getrennt von betrieblichen Aufgaben</p><ul class="tasks" id="taskList"></ul><div class="empty" id="taskEmpty"><svg class="icon" aria-hidden="true"><use href="#check"/></svg><p>Noch keine Aufgaben.<br>Füge deine erste Erinnerung hinzu.</p></div><form class="task-form" id="taskForm"><label for="taskInput" hidden>Neue Aufgabe</label><input id="taskInput" maxlength="120" placeholder="Neue Aufgabe hinzufügen …" required autocomplete="off"><button class="add" type="submit" aria-label="Aufgabe hinzufügen">+</button></form><p class="private-note">Persönliche Checkliste · nur in diesem Browser gespeichert.</p><p class="storage-warning" id="storageWarning" role="status" hidden></p><p id="taskStatus" role="status" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)"></p></section>
 </div>
@@ -76,9 +77,9 @@
 <section class="panel" aria-labelledby="documentsTitle"><div class="panel-head"><h2 id="documentsTitle">Zuletzt bearbeitete Dokumente</h2><a class="tag" href="formular.html">FORMULARE ÖFFNEN →</a></div><div class="empty"><svg class="icon" aria-hidden="true"><use href="#file"/></svg><p>Deine letzten Arbeitsnachweise und Lieferscheine erscheinen hier,<br>sobald die Dokumentenübersicht angebunden ist.</p></div></section>
 <section class="panel" aria-labelledby="datesTitle"><div class="panel-head"><h2 id="datesTitle">Anstehende Termine</h2><span class="tag">AUSBLICK</span></div><div class="empty"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg><p>Hier ist Platz für deinen nächsten Urlaub,<br>Schulungen und wichtige Abgabefristen.</p></div><p class="private-note">Termine sind noch nicht angebunden.</p></section>
 </div>
-<section aria-labelledby="modulesTitle"><div class="section-head"><h2 id="modulesTitle">Verwaltungsbereiche</h2><div class="search"><svg class="icon" aria-hidden="true"><use href="#search"/></svg><label for="moduleSearch" hidden>Bereiche durchsuchen</label><input type="search" id="moduleSearch" placeholder="Bereiche durchsuchen …"></div></div><div class="modules" id="modules">
-<a class="module" href="personalmanagement.html"><div class="module-top"><span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span><svg class="icon arrow" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Personalmanagement</h3><p>Mitarbeiter, Beschäftigungsstatus und Personaldaten verwalten.</p></a>
-<a class="module" href="#vehicleDialog" data-dialog="vehicleDialog"><div class="module-top"><span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#truck"/></svg></span><svg class="icon arrow" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Fuhrpark</h3><p>Fahrzeugübersicht für die spätere Fuhrparkverwaltung.</p></a>
+<section aria-labelledby="modulesTitle"><div class="section-head"><h2 id="modulesTitle">Deine Bereiche</h2><div class="search"><svg class="icon" aria-hidden="true"><use href="#search"/></svg><label for="moduleSearch" hidden>Bereiche durchsuchen</label><input type="search" id="moduleSearch" placeholder="Bereiche durchsuchen …"></div></div><div class="modules" id="modules">
+<a class="module" href="personalmanagement.html" data-admin-only><div class="module-top"><span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span><svg class="icon arrow" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Personalmanagement</h3><p>Mitarbeiter, Beschäftigungsstatus und Personaldaten verwalten.</p></a>
+<a class="module" href="#vehicleDialog" data-dialog="vehicleDialog" data-admin-only><div class="module-top"><span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#truck"/></svg></span><svg class="icon arrow" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Fuhrpark</h3><p>Fahrzeugübersicht für die spätere Fuhrparkverwaltung.</p></a>
 <a class="module" href="formular.html"><div class="module-top"><span class="icon-box"><svg class="icon" aria-hidden="true"><use href="#file"/></svg></span><svg class="icon arrow" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Formulare</h3><p>Arbeitsnachweise, Lieferscheine und weitere Dokumente verwalten.</p></a>
 <a class="module" href="urlaub.html"><div class="module-top"><span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg></span><svg class="icon arrow" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Urlaub</h3><p>Urlaub planen und deine Anträge im Urlaubsbereich verwalten.</p></a>
 </div><p class="empty" id="searchEmpty" role="status" hidden>Kein Bereich gefunden. Versuche einen anderen Suchbegriff.</p></section>
@@ -87,44 +88,51 @@
 <dialog class="dialog" id="uploadDialog" aria-labelledby="uploadTitle"><div class="dialog-head"><h2 id="uploadTitle">Dokument hochladen</h2><button class="dialog-close" type="button" data-close aria-label="Schließen">×</button></div><div class="dialog-content"><p>Wähle Dokumente für eine lokale Vorschau. Die Dateien werden noch nicht an einen Server übertragen oder dauerhaft gespeichert.</p><label for="documentFiles">Dokumente auswählen</label><input type="file" id="documentFiles" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg"><ul class="upload-list" id="uploadFiles"></ul><p id="uploadStatus" role="status">Noch keine Dateien ausgewählt.</p></div></dialog>
 <dialog class="dialog" id="vehicleDialog" aria-labelledby="vehicleTitle"><div class="dialog-head"><h2 id="vehicleTitle">Fahrzeugübersicht</h2><button class="dialog-close" type="button" data-close aria-label="Schließen">×</button></div><div class="dialog-content"><p id="vehicleSummary"></p><div class="empty">Noch keine Fahrzeugliste angebunden.</div><p class="private-note">Für die Verwaltung: Kennzeichen, Fahrerzuordnung, Einsatzstatus und Wartungstermine aus deinem System laden.</p></div></dialog>
 <dialog class="dialog" id="reportDialog" aria-labelledby="reportTitle"><div class="dialog-head"><h2 id="reportTitle">Berichte · Kennzahlen</h2><button class="dialog-close" type="button" data-close aria-label="Schließen">×</button></div><div class="dialog-content"><table class="report-table"><caption id="reportCaption">Beispieldaten</caption><tbody id="reportRows"></tbody></table><p class="private-note">Zeitraumfilter und Exporte können mit der Datenanbindung ergänzt werden.</p></div></dialog>
-<script>
+<script type="module">
 'use strict';
-// Bestehende Anmeldung beibehalten. localStorage ersetzt keine serverseitige
-// Authentifizierung oder Berechtigungsprüfung der verlinkten Seiten.
+// Firebase Auth ist die Quelle für den angemeldeten Benutzer.
+// localStorage wird nur für die persönliche Aufgabenliste verwendet.
 const $ = id => document.getElementById(id);
 let email = '';
 let storageAvailable = true;
-try { email = (localStorage.getItem('userEmail') || '').trim(); } catch { storageAvailable = false; }
+let firebaseAuth = null;
+let firebaseSignOut = null;
+let signedInUser = null;
+let stopProfileListener = null;
+let stopRoleListener = null;
+let currentProfileRecord = {};
+let currentRole = null;
+$('sessionButton').disabled = true;
 $('brandLogo').addEventListener('error', () => { $('brandLogo').hidden = true; $('brandFallback').hidden = false; });
 if ($('brandLogo').complete && !$('brandLogo').naturalWidth) { $('brandLogo').hidden = true; $('brandFallback').hidden = false; }
 const now = new Date();
 $('today').textContent = new Intl.DateTimeFormat('de-DE', { weekday:'long',day:'numeric',month:'long',year:'numeric' }).format(now);
 $('today').dateTime = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 $('year').textContent = now.getFullYear();
-if (email) {
- $('userEmail').textContent = email;
- $('userEmail').title = email;
- $('sessionLabel').textContent = 'Angemeldet';
- $('sessionAction').textContent = 'Abmelden';
- $('avatar').textContent = email.slice(0,2).toUpperCase();
- $('guestNotice').hidden = true;
- const hour = now.getHours();
- $('greeting').textContent = hour < 11 ? 'Guten Morgen bei VE-Log.' : hour < 18 ? 'Guten Tag bei VE-Log.' : 'Guten Abend bei VE-Log.';
-}
-$('sessionButton').addEventListener('click', () => {
- if (email) {
-  try { localStorage.removeItem('userEmail'); localStorage.removeItem('uid'); }
-  catch { $('storageWarning').textContent = 'Die Abmeldung konnte nicht gespeichert werden. Bitte prüfe deine Browsereinstellungen.'; $('storageWarning').hidden = false; return; }
+$('sessionButton').addEventListener('click', async () => {
+ $('sessionButton').disabled = true;
+ try {
+  if (signedInUser && firebaseAuth) await firebaseSignOut(firebaseAuth);
+  // Alte Login-Kopien nur zur Kompatibilität entfernen.
+  try { localStorage.removeItem('userEmail'); localStorage.removeItem('uid'); } catch {}
+  window.location.href = 'index.html';
+ } catch {
+  $('profileError').textContent = 'Die Abmeldung ist fehlgeschlagen. Bitte versuche es erneut.';
+  $('profileError').hidden = false;
+  $('sessionButton').disabled = false;
  }
- window.location.href = 'index.html';
 });
 // Nur selbst angelegte Aufgaben; keine erfundenen Geschäftsdaten.
-const taskKey = 'velog:dashboard:tasks:' + (email || 'guest');
+let taskKey = 'velog:dashboard:tasks:guest';
 let tasks = [];
-try {
- const saved = JSON.parse(localStorage.getItem(taskKey) || '[]');
- if (Array.isArray(saved)) tasks = saved.filter(t => t && typeof t.id === 'string' && typeof t.text === 'string' && typeof t.done === 'boolean').map(t => ({id:t.id,text:t.text.slice(0,120),done:t.done}));
-} catch { storageAvailable = false; }
+function loadTasks() {
+ tasks = [];
+ try {
+  const saved = JSON.parse(localStorage.getItem(taskKey) || '[]');
+  if (Array.isArray(saved)) tasks = saved.filter(t => t && typeof t.id === 'string' && typeof t.text === 'string' && typeof t.done === 'boolean').map(t => ({id:t.id,text:t.text.slice(0,120),done:t.done}));
+ } catch { storageMessage(); }
+ renderTasks();
+}
 function storageMessage() {
  $('storageWarning').textContent = 'Aufgaben bleiben aktuell nur bis zum Neuladen erhalten: Der Browserspeicher ist nicht verfügbar oder die gespeicherten Daten sind ungültig.';
  $('storageWarning').hidden = false;
@@ -162,7 +170,7 @@ $('taskForm').addEventListener('submit', event => {
 renderTasks();
 $('moduleSearch').addEventListener('input', event => {
  const query = event.target.value.trim().toLocaleLowerCase('de-DE'); let visible = 0;
- document.querySelectorAll('.module').forEach(module => { module.hidden = !module.textContent.toLocaleLowerCase('de-DE').includes(query); if (!module.hidden) visible++; });
+ document.querySelectorAll('.module').forEach(module => { const allowed = !module.hasAttribute('data-admin-only') || $('demoToggle').checked || ['admin','superadmin'].includes(currentRole); module.hidden = !allowed || !module.textContent.toLocaleLowerCase('de-DE').includes(query); if (!module.hidden) visible++; });
  $('searchEmpty').hidden = visible > 0;
 });
 // Hier später echte Dashboard-Kennzahlen aus deinem Backend laden.
@@ -180,7 +188,7 @@ const demoData = {
 // null bedeutet unbekannt; 0 ist ein tatsächlicher Nullwert.
 let dashboardData = {
  metrics:{employees:null,active:null,leave:null,sick:null,vehicles:null,documents:null,tasks:null,overtime:null},
- profile:{name:email || 'Nicht angemeldet',role:'Rolle nicht angebunden',initials:email ? email.slice(0,2).toUpperCase() : 'VE',lastLogin:'Nicht verfügbar'},activities:[]
+ profile:{name:'Anmeldung wird geprüft …',role:'Bitte warten',initials:'VE',lastLogin:'Nicht verfügbar',phone:''},activities:[]
 };
 function metricValue(key,value) { return value == null ? '—' : new Intl.NumberFormat('de-DE',{maximumFractionDigits:1}).format(value) + (key === 'overtime' ? ' Std.' : ''); }
 function makeIcon(name) {
@@ -189,10 +197,15 @@ function makeIcon(name) {
 }
 function renderAdmin() {
  const demo=$('demoToggle').checked; const data=demo ? demoData : dashboardData;
+ $('employeeVacation').hidden=demo || ['admin','superadmin'].includes(currentRole);
+ document.querySelectorAll('[data-admin-only]').forEach(el=>{el.hidden=!demo && !['admin','superadmin'].includes(currentRole);});
  $('dataBadge').textContent=demo ? 'BEISPIELDATEN' : 'DATENANBINDUNG VORBEREITET';
- $('demoExplanation').textContent=demo ? 'Demoansicht: Kennzahlen, Profil und Aktivitäten zeigen Beispielwerte – keine echten Betriebsdaten.' : 'Beispieldaten ausgeblendet. Unbekannte Kennzahlen erscheinen als Strich, bis echte Daten geladen werden.';
+ $('demoExplanation').textContent=demo ? 'Demoansicht: Kennzahlen und Aktivitäten zeigen Beispielwerte – keine echten Betriebsdaten.' : 'Beispieldaten ausgeblendet. Unbekannte Kennzahlen erscheinen als Strich, bis echte Daten geladen werden.';
  document.querySelectorAll('[data-metric]').forEach(el=>{ const key=el.dataset.metric;el.textContent=metricValue(key,data.metrics[key]); });
- $('profileName').textContent=data.profile.name;$('profileRole').textContent=data.profile.role;$('profileAvatar').textContent=data.profile.initials;$('lastLogin').textContent=data.profile.lastLogin;$('profileBadge').textContent=demo ? 'DEMO' : 'PROFIL';
+ const profile = dashboardData.profile; // Das echte Benutzerprofil wird niemals durch die Demo ersetzt.
+ $('profileName').textContent=profile.name;$('profileRole').textContent=profile.role;$('profileAvatar').textContent=profile.initials;$('lastLogin').textContent=profile.lastLogin;$('profileBadge').textContent=signedInUser ? 'FIREBASE' : 'PROFIL';
+ $('profileEmail').textContent=email;
+ $('profilePhone').textContent=profile.phone ? 'Telefon: '+profile.phone : '';
  $('activityBadge').textContent=demo ? 'DEMO · KEIN LIVE-FEED' : 'AKTIVITÄTEN';
  $('activityList').replaceChildren();$('activityEmpty').hidden=data.activities.length>0;
  for(const activity of data.activities) {
@@ -216,6 +229,97 @@ $('documentFiles').addEventListener('change',event=>{
  for(const file of files){const item=document.createElement('li');item.textContent=file.name+' · '+new Intl.NumberFormat('de-DE',{maximumFractionDigits:1}).format(file.size/1024)+' KB';$('uploadFiles').append(item);}
  $('uploadStatus').textContent=files.length ? files.length+' Datei(en) ausgewählt. Nur lokale Vorschau – noch nicht hochgeladen.' : 'Noch keine Dateien ausgewählt.';
 });
+
+
+const firebaseConfig = {
+ apiKey: "AIzaSyAeHeDYRadHkcdZRy1ybdlL0vcpyTCZlXM",
+ authDomain: "ve-log.firebaseapp.com",
+ databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+ projectId: "ve-log",
+ storageBucket: "ve-log.firebasestorage.app",
+ messagingSenderId: "749978080433",
+ appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+};
+function readableRole(role) {
+ return {mitarbeiter:'Mitarbeiter',administrator:'Administrator',admin:'Administrator',superadmin:'Superadministrator'}[role] || 'Rolle nicht hinterlegt';
+}
+function loginTime(user) {
+ const date = new Date(user?.metadata?.lastSignInTime || '');
+ return Number.isNaN(date.getTime()) ? 'Nicht verfügbar' : new Intl.DateTimeFormat('de-DE',{dateStyle:'short',timeStyle:'short'}).format(date);
+}
+function showProfile(user, record = {}, role = currentRole) {
+ const first = typeof record.vorname === 'string' ? record.vorname.trim() : '';
+ const last = typeof record.nachname === 'string' ? record.nachname.trim() : '';
+ const name = [first,last].filter(Boolean).join(' ') || user.displayName || user.email || 'Benutzer';
+ const initials = [first,last].filter(Boolean).map(part=>part.slice(0,1)).join('').toUpperCase() || name.slice(0,2).toUpperCase();
+ dashboardData.profile = {name,initials,role:readableRole(role),lastLogin:loginTime(user),phone:typeof record.handy === 'string' ? record.handy : ''};
+ $('userEmail').textContent=name;
+ $('userEmail').title=user.email || name;
+ $('sessionLabel').textContent=user.email || 'Angemeldet';
+ $('avatar').textContent=initials;
+ const hour = new Date().getHours();
+ const salutation=hour < 11 ? 'Guten Morgen' : hour < 18 ? 'Guten Tag' : 'Guten Abend';
+ $('greeting').textContent=first ? `${salutation}, ${first}.` : `${salutation} bei VE-Log.`;
+ renderAdmin();
+}
+async function startFirebase() {
+ try {
+  const [appSDK,authSDK,databaseSDK] = await Promise.all([
+   import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+   import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
+   import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')
+  ]);
+  const app = appSDK.initializeApp(firebaseConfig);
+  firebaseAuth=authSDK.getAuth(app);firebaseSignOut=authSDK.signOut;
+  const database=databaseSDK.getDatabase(app);
+  authSDK.onAuthStateChanged(firebaseAuth, user => {
+   if(stopProfileListener){stopProfileListener();stopProfileListener=null;}
+   if(stopRoleListener){stopRoleListener();stopRoleListener=null;}
+   currentProfileRecord={};currentRole=null;
+   signedInUser=user;email=user?.email || '';
+   $('profileError').hidden=true;$('sessionButton').disabled=false;
+   $('sessionAction').textContent=user ? 'Abmelden' : 'Anmelden';
+   $('guestNotice').hidden=!!user;
+   taskKey='velog:dashboard:tasks:'+(email || 'guest');loadTasks();
+   if(!user){
+    dashboardData.profile={name:'Nicht angemeldet',role:'Gast',initials:'VE',lastLogin:'Nicht verfügbar',phone:''};
+    $('userEmail').textContent='Gastansicht';$('userEmail').title='';$('sessionLabel').textContent='Nicht angemeldet';$('avatar').textContent='VE';$('greeting').textContent='Willkommen bei VE-Log.';renderAdmin();return;
+   }
+   showProfile(user);
+   // Exakt der Pfad und die Felder aus deiner Registrierung.
+   stopProfileListener=databaseSDK.onValue(databaseSDK.ref(database,'users/'+user.uid),snapshot=>{
+    if(signedInUser?.uid !== user.uid) return;
+    if(!snapshot.exists()){
+     showProfile(user);$('profileError').textContent='Du bist angemeldet, aber unter users/'+user.uid+' ist noch kein Mitarbeiterprofil gespeichert. Prüfe, ob die Registrierung vollständig abgeschlossen wurde.';$('profileError').hidden=false;return;
+    }
+    currentProfileRecord=snapshot.val() || {};
+    $('profileError').hidden=true;showProfile(user,currentProfileRecord);
+   },error=>{
+    if(signedInUser?.uid !== user.uid) return;
+    $('profileError').textContent=String(error.code || '').toLowerCase().includes('permission') ? 'Du bist angemeldet, aber das Profil darf nicht gelesen werden. Prüfe die Firebase-Datenbankregeln für users/'+user.uid+'.' : 'Das Mitarbeiterprofil konnte nicht geladen werden. Prüfe Verbindung und Datenbank-Konfiguration.';
+    $('profileError').hidden=false;
+   });
+   // Zentrale Rolle lesen; das Feld users/{uid}/rolle ist keine Berechtigungsquelle.
+   stopRoleListener=databaseSDK.onValue(databaseSDK.ref(database,'roles/'+user.uid),snapshot=>{
+    if(signedInUser?.uid !== user.uid) return;
+    currentRole=typeof snapshot.val() === 'string' ? snapshot.val() : null;
+    showProfile(user,currentProfileRecord);
+   },()=>{
+    if(signedInUser?.uid !== user.uid) return;
+    currentRole=null;showProfile(user,currentProfileRecord);
+    $('profileError').textContent='Die zentrale Benutzerrolle konnte nicht geladen werden. Prüfe die Regeln für roles/'+user.uid+'.';$('profileError').hidden=false;
+   });
+  },()=>{
+   $('profileError').textContent='Die Firebase-Anmeldung konnte nicht geprüft werden. Bitte melde dich erneut an.';$('profileError').hidden=false;$('guestNotice').hidden=false;
+  });
+ } catch {
+  $('profileError').textContent='Firebase konnte nicht geladen werden. Prüfe deine Internetverbindung und öffne die Seite über deine Website oder einen lokalen Webserver.';
+  $('profileError').hidden=false;$('sessionLabel').textContent='Verbindung fehlgeschlagen';
+  dashboardData.profile={name:'Profil nicht geladen',role:'Nicht verfügbar',initials:'VE',lastLogin:'Nicht verfügbar',phone:''};
+  $('guestNotice').hidden=false;renderAdmin();
+ }
+}
+startFirebase();
 
 </script>
 </body>
