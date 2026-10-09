@@ -32,6 +32,9 @@
 .overview-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:18px}.overview-grid .module{min-height:215px}.overview-message{background:#fff6e6;border:1px solid #f0dfb9;border-radius:12px;padding:13px 17px;font-size:12px;color:#805b23;margin-bottom:23px}.people-summary{margin-top:24px}.people-summary p{font-size:13px;color:var(--muted);line-height:1.8}.people-summary strong{color:var(--ink)}
 @media(max-width:1100px){.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.overview-grid{grid-template-columns:1fr}.overview-grid .module{min-height:190px}}
+
+.list-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:20px 0}.list-toolbar .search{flex:1;min-width:210px}.list-toolbar .search input{width:100%}.filter-select{border:1px solid var(--line);background:white;padding:10px 12px;border-radius:9px;font:inherit;font-size:12px;max-width:230px;min-height:40px}.staff-table-wrap{overflow-x:auto}.staff-table{width:100%;border-collapse:collapse;font-size:12px;min-width:730px}.staff-table th{text-align:left;font-size:10px;letter-spacing:.4px;color:var(--muted);background:#fafafb;padding:13px 12px;border-bottom:1px solid var(--line);white-space:nowrap}.staff-table td{padding:15px 12px;border-bottom:1px solid var(--line);vertical-align:middle;max-width:250px;overflow-wrap:anywhere}.staff-table tr:last-child td{border-bottom:0}.staff-name{font-weight:650;font-size:13px}.staff-number{font-size:10px;color:var(--muted);margin-top:4px}.staff-contact{font-size:11px;color:var(--muted);display:block;margin-top:4px}.status-badge{display:inline-block;font-size:10px;padding:5px 9px;border-radius:6px;white-space:nowrap;background:#f4f5f7;color:var(--muted)}.status-badge.active{background:#eaf5ed;color:#39744c}.status-badge.inactive{background:#fff1ec;color:#96533c}.details-button{border:1px solid var(--line);background:white;border-radius:8px;padding:8px 10px;color:var(--brand);font-size:11px;font-weight:650}.details-button:hover{background:#fbf2f1}.staff-status{border:1px solid var(--line);border-radius:12px;padding:14px 17px;font-size:12px;margin-bottom:22px;color:var(--muted);background:white;line-height:1.8}.staff-status.error{border-color:#ecc4bf;background:#fff2ef;color:var(--brand)}.compact-actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}.compact-actions a{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:9px;background:white;padding:10px 13px;font-size:12px;font-weight:650}.pagination{display:flex;justify-content:space-between;align-items:center;gap:15px;border-top:1px solid var(--line);padding-top:16px;margin-top:15px;color:var(--muted);font-size:11px}.pagination-buttons{display:flex;gap:8px}.pagination button{border:1px solid var(--line);background:white;color:var(--brand);border-radius:7px;padding:7px 10px;font-size:11px}.pagination button:disabled{color:#aeb3bd;cursor:default}.profile-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}.profile-detail-grid dt{font-size:10px;color:var(--muted);margin-bottom:4px}.profile-detail-grid dd{margin:0;font-size:13px;overflow-wrap:anywhere}.detail-uid{font-size:10px;color:var(--muted);overflow-wrap:anywhere;margin-top:22px}.role-overview{color:var(--muted);font-size:12px}.settings-note{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.8}select:focus-visible{outline:3px solid #bd7774;outline-offset:3px}
+@media(max-width:760px){.list-toolbar{align-items:stretch}.filter-select{max-width:none;flex:1}.staff-table th,.staff-table td{padding:12px 9px}.pagination{align-items:flex-start;flex-direction:column}.profile-detail-grid{grid-template-columns:1fr}.compact-actions a{font-size:11px}}
 </style></head><body><svg class="defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
 <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
 <symbol id="file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h6"/></symbol>
@@ -58,11 +61,131 @@
 <a href="urlaub.html"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg>Urlaub</a>
 
 
-</nav>
+<a href="einstellungen.html"><svg class="icon" aria-hidden="true"><use href="#settings"/></svg>Einstellungen</a></nav>
 <div class="side-bottom"><div class="side-note">Alles für deinen Arbeitsalltag.<br>Einfach an einem Ort.</div></div>
-</aside><div class="shell"><header class="topbar"><div class="breadcrumb"><a href="dashboard.html">Arbeitsplatz</a> &nbsp;/&nbsp; <a href="personalmanagement.html">Personalmanagement</a> &nbsp;/&nbsp; <strong>Personalübersicht</strong></div><a class="quiet-button" href="personalmanagement.html">← Personalmanagement</a></header><main id="main"><section class="intro" aria-labelledby="pageTitle"><div><div class="eyebrow">Personalmanagement · Überblick</div><h1 id="pageTitle">Personalübersicht</h1><p class="muted">Mitarbeiterzahlen und Anwesenheit auf einen Blick.</p></div><a class="primary-link" href="mitarbeiter-anlegen.html"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Mitarbeiter anlegen</a></section><div class="overview-message" role="status"><strong>Beispielwerte:</strong> Die Zahlen stammen aus deinem bisherigen Code. Sie sind noch nicht mit aktuellen Mitarbeiterdaten verbunden.</div><section class="stats" aria-label="Mitarbeiterkennzahlen"><article class="stat"><div class="stat-top">Mitarbeiter gesamt<span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value">38</div><p class="stat-note">Alle Mitarbeiter · Beispiel</p></article><article class="stat"><div class="stat-top">Aktive Mitarbeiter<span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#check"/></svg></span></div><div class="stat-value">34</div><p class="stat-note">Aktive Mitarbeiter · Beispiel</p></article><article class="stat"><div class="stat-top">Im Urlaub<span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg></span></div><div class="stat-value">2</div><p class="stat-note">Mitarbeiter im Urlaub · Beispiel</p></article><article class="stat"><div class="stat-top">Krankgemeldet<span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#health"/></svg></span></div><div class="stat-value">2</div><p class="stat-note">Krankgemeldete Mitarbeiter · Beispiel</p></article></section><section aria-labelledby="quickTitle"><div class="section-head"><h2 id="quickTitle">Direkt weiterarbeiten</h2><span class="tag">PERSONALVERWALTUNG</span></div><div class="modules catalog overview-grid"><a class="module" href="mitarbeiter-anlegen.html"><div class="module-top"><span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg></span><svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Mitarbeiter anlegen</h3><p>Neue Mitarbeiter erfassen und Personalstammdaten anlegen.</p><span class="catalog-link">Bereich öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" href="urlaubverwaltung.html"><div class="module-top"><span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg></span><svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Urlaubsverwaltung</h3><p>Urlaubsanträge und Abwesenheiten verwalten.</p><span class="catalog-link">Bereich öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a><a class="module" href="arbeitszeiten.html"><div class="module-top"><span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg></span><svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></div><h3>Arbeitszeiten</h3><p>Arbeitszeiten, Anwesenheit und Überstunden verwalten.</p><span class="catalog-link">Bereich öffnen <svg class="icon" aria-hidden="true"><use href="#arrow"/></svg></span></a></div></section><section class="panel people-summary" aria-labelledby="dataTitle"><div class="panel-head"><h2 id="dataTitle">Mitarbeiterdaten</h2><span class="tag">DATENANBINDUNG OFFEN</span></div><p>Eine aktuelle Mitarbeiterliste benötigt eine Verbindung zu deinen gespeicherten Personaldaten. Sobald sie angebunden ist, können hier <strong>Name, Abteilung, Kontakt und Beschäftigungsstatus</strong> angezeigt werden.</p></section><footer class="bottom"><span>VE-Log · Mitarbeiterportal</span><a href="personalmanagement.html">← Zurück zum Personalmanagement</a></footer></main></div><script>'use strict';
-const logo=document.getElementById('brandLogo');
-function showBrandFallback(){logo.hidden=true;document.getElementById('brandFallback').hidden=false;}
-logo.addEventListener('error',showBrandFallback);
-if(logo.complete && !logo.naturalWidth)showBrandFallback();
+</aside><div class="shell"><header class="topbar"><div class="breadcrumb"><a href="dashboard.html">Arbeitsplatz</a> &nbsp;/&nbsp; <a href="personalmanagement.html">Personalmanagement</a> &nbsp;/&nbsp; <strong>Personalübersicht</strong></div><a class="quiet-button" href="personalmanagement.html">← Personalmanagement</a></header><main id="main"><section class="intro" aria-labelledby="pageTitle"><div><div class="eyebrow">Personalmanagement · Überblick</div><h1 id="pageTitle">Personalübersicht</h1><p class="muted" id="scopeDescription">Mitarbeiterdaten werden nach deiner Anmeldung geladen.</p></div><a class="primary-link" id="createEmployee" href="mitarbeiter-anlegen.html" hidden><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Mitarbeiter anlegen</a></section><div class="staff-status" id="loadStatus" role="status">Deine Anmeldung und Rolle werden geprüft …</div><section class="stats" aria-label="Mitarbeiterkennzahlen"><article class="stat"><div class="stat-top">Sichtbare Mitarbeiter<span class="icon-box blue"><svg class="icon" aria-hidden="true"><use href="#users"/></svg></span></div><div class="stat-value" id="totalEmployees">—</div><p class="stat-note" id="totalEmployeesNote">Dein berechtigter Bereich</p></article><article class="stat"><div class="stat-top">Aktive Mitarbeiter<span class="icon-box green"><svg class="icon" aria-hidden="true"><use href="#check"/></svg></span></div><div class="stat-value" id="activeEmployees">—</div><p class="stat-note" id="activeEmployeesNote">Beschäftigungsstatus aktiv</p></article><article class="stat"><div class="stat-top">Im Urlaub<span class="icon-box gold"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg></span></div><div class="stat-value" id="vacationEmployees">—</div><p class="stat-note" id="vacationEmployeesNote">Datenquelle noch nicht angebunden</p></article><article class="stat"><div class="stat-top">Krankgemeldet<span class="icon-box "><svg class="icon" aria-hidden="true"><use href="#health"/></svg></span></div><div class="stat-value" id="sickEmployees">—</div><p class="stat-note" id="sickEmployeesNote">Datenquelle noch nicht angebunden</p></article></section><section class="panel" aria-labelledby="staffTitle"><div class="panel-head"><h2 id="staffTitle">Mitarbeiterliste</h2><span class="tag" id="roleLabel">ROLLE WIRD GEPRÜFT</span></div><div class="list-toolbar"><div class="search"><svg class="icon" aria-hidden="true"><use href="#search"/></svg><label for="staffSearch" hidden>Mitarbeiter durchsuchen</label><input type="search" id="staffSearch" placeholder="Name, Personalnummer oder Kontakt suchen …"></div><label for="teamFilter" hidden>Nach Team filtern</label><select class="filter-select" id="teamFilter"><option value="">Alle Teams</option></select><label for="statusFilter" hidden>Nach Beschäftigungsstatus filtern</label><select class="filter-select" id="statusFilter"><option value="">Alle Beschäftigungsstatus</option><option value="active">Aktiv</option><option value="inactive">Inaktiv</option><option value="unknown">Nicht hinterlegt</option></select></div><div class="staff-table-wrap" id="tableWrap" hidden><table class="staff-table"><caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Mitarbeiter in deinem berechtigten Bereich</caption><thead><tr><th scope="col">Mitarbeiter</th><th scope="col">Team / Abteilung</th><th scope="col">Kontakt</th><th scope="col">Status</th><th scope="col">Details</th></tr></thead><tbody id="staffRows"></tbody></table></div><p class="empty" id="staffEmpty">Mitarbeiterdaten sind noch nicht geladen.</p><div class="pagination"><span id="resultCount" aria-live="polite">0 Ergebnisse</span><div class="pagination-buttons"><button type="button" id="previousPage" disabled>← Zurück</button><button type="button" id="nextPage" disabled>Weiter →</button></div></div><p class="settings-note">Die Liste liest Profile unter <strong>users/{uid}</strong>. Manager sehen ausschließlich ihre Teamzuordnung, Mitarbeiter ihr eigenes Profil. Datenrechte werden zusätzlich durch deine Firebase-Regeln geprüft.</p></section><div class="compact-actions"><a href="personalmanagement.html"><svg class="icon" aria-hidden="true"><use href="#users"/></svg>Personalmanagement</a><a href="urlaubverwaltung.html" data-management hidden><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg>Urlaubsverwaltung</a><a href="arbeitszeiten.html" data-management hidden><svg class="icon" aria-hidden="true"><use href="#clock"/></svg>Arbeitszeiten</a><a href="benutzerkonto.html" id="ownAccount"><svg class="icon" aria-hidden="true"><use href="#settings"/></svg>Mein Benutzerkonto</a></div><footer class="bottom"><span>VE-Log · Mitarbeiterportal</span><a href="personalmanagement.html">← Zurück zum Personalmanagement</a></footer></main></div><dialog class="dialog" id="employeeDialog" aria-labelledby="detailName"><div class="dialog-head"><h2 id="detailName">Mitarbeiterdetails</h2><button class="dialog-close" id="closeDetails" type="button" aria-label="Details schließen">×</button></div><dl class="profile-detail-grid" id="detailFields"></dl><p class="detail-uid" id="detailUid"></p></dialog><script type="module">
+
+'use strict';
+const $=id=>document.getElementById(id);
+const logo=$('brandLogo');function showLogoFallback(){logo.hidden=true;$('brandFallback').hidden=false;}
+logo.addEventListener('error',showLogoFallback);if(logo.complete && !logo.naturalWidth)showLogoFallback();
+// Wenn firebase-config.js vorhanden ist, wird deren Konfiguration bevorzugt.
+// Andernfalls aktuellen Web-apiKey hier eintragen; kein alter/abgelaufener Schlüssel.
+const inlineFirebaseConfig={
+ apiKey:'DEIN_AKTUELLER_FIREBASE_API_KEY',authDomain:'ve-log.firebaseapp.com',
+ databaseURL:'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',
+ projectId:'ve-log',storageBucket:'ve-log.firebasestorage.app',
+ messagingSenderId:'749978080433',appId:'1:749978080433:web:8f64ef99a557fe2346be90'
+};
+const roleNames={mitarbeiter:'Mitarbeiter',manager:'Manager',admin:'Administrator',superadmin:'Superadministrator'};
+let staff=[],loaded=false,role=null,ownProfile=null,ownLoaded=false,currentUser=null;
+let unsubscribeRole=null,unsubscribeOwn=null,unsubscribeList=null,scopeKey='',generation=0,listGeneration=0,page=0;
+const pageSize=20;
+function text(value){return typeof value==='string'?value.trim():typeof value==='number'?String(value):'';}
+function normalize(uid,record){
+ const first=text(record.vorname),last=text(record.nachname);
+ return {uid,name:[first,last].filter(Boolean).join(' ') || text(record.email) || 'Name nicht hinterlegt',number:text(record.personalnummer),team:text(record.teamId),department:text(record.abteilung),email:text(record.email),phone:text(record.handy),active:record.aktiv===true?'active':record.aktiv===false?'inactive':'unknown',created:text(record.erstelltAm)};
+}
+function statusName(value){return {active:'Aktiv',inactive:'Inaktiv',unknown:'Nicht hinterlegt'}[value];}
+function showStatus(message,error=false){$('loadStatus').textContent=message;$('loadStatus').classList.toggle('error',error);$('loadStatus').hidden=false;}
+function closeDetails(){if($('employeeDialog').open)$('employeeDialog').close();}
+function renderTeamOptions(){
+ const selected=$('teamFilter').value;$('teamFilter').replaceChildren();
+ const all=document.createElement('option');all.value='';all.textContent=role==='manager'?'Mein Team':'Alle Teams';$('teamFilter').append(all);
+ const teams=[...new Set(staff.map(person=>person.team).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'de'));
+ for(const team of teams){const option=document.createElement('option');option.value=team;option.textContent=team;$('teamFilter').append(option);}
+ $('teamFilter').value=teams.includes(selected)?selected:'';
+ $('teamFilter').disabled=role==='mitarbeiter';
+}
+function detail(person){
+ closeDetails();$('detailName').textContent=person.name;$('detailFields').replaceChildren();
+ const fields=[['Personalnummer',person.number],['Team',person.team],['Abteilung',person.department],['E-Mail',person.email],['Telefon',person.phone],['Beschäftigungsstatus',statusName(person.active)]];
+ if(person.created){const date=new Date(person.created);if(!Number.isNaN(date.getTime()))fields.push(['Profil angelegt',new Intl.DateTimeFormat('de-DE',{dateStyle:'medium'}).format(date)]);}
+ for(const [name,value]of fields){const group=document.createElement('div'),label=document.createElement('dt'),content=document.createElement('dd');label.textContent=name;content.textContent=value||'Nicht hinterlegt';group.append(label,content);$('detailFields').append(group);}
+ $('detailUid').textContent='Profil-ID: '+person.uid;$('employeeDialog').showModal();
+}
+function renderStaff(){
+ $('createEmployee').hidden=!['admin','superadmin'].includes(role);
+ document.querySelectorAll('[data-management]').forEach(link=>link.hidden=!['manager','admin','superadmin'].includes(role));
+ $('roleLabel').textContent=roleNames[role] || 'ROLLE NICHT VERFÜGBAR';
+ $('totalEmployees').textContent=loaded?staff.length:'—';
+ $('activeEmployees').textContent=loaded?staff.filter(p=>p.active==='active').length:'—';
+ const unknown=staff.filter(p=>p.active==='unknown').length;
+ $('activeEmployeesNote').textContent=loaded&&unknown?unknown+' Profile ohne Beschäftigungsstatus':'Beschäftigungsstatus aktiv';
+ const query=$('staffSearch').value.trim().toLocaleLowerCase('de-DE'),team=$('teamFilter').value,status=$('statusFilter').value;
+ const filtered=staff.filter(p=>(!team||p.team===team)&&(!status||p.active===status)&&[p.name,p.number,p.email,p.phone,p.team,p.department].join(' ').toLocaleLowerCase('de-DE').includes(query)).sort((a,b)=>a.name.localeCompare(b.name,'de'));
+ const pages=Math.max(1,Math.ceil(filtered.length/pageSize));page=Math.min(page,pages-1);
+ $('staffRows').replaceChildren();
+ for(const person of filtered.slice(page*pageSize,(page+1)*pageSize)){
+  const row=document.createElement('tr');const name=document.createElement('td'),title=document.createElement('p'),number=document.createElement('p');title.className='staff-name';title.textContent=person.name;number.className='staff-number';number.textContent=person.number?'Personalnummer: '+person.number:'Personalnummer nicht hinterlegt';name.append(title,number);
+  const department=document.createElement('td');department.textContent=person.team || 'Team nicht hinterlegt';if(person.department){const sub=document.createElement('span');sub.className='staff-contact';sub.textContent=person.department;department.append(sub);}
+  const contact=document.createElement('td');contact.textContent=person.email||'E-Mail nicht hinterlegt';if(person.phone){const phone=document.createElement('span');phone.className='staff-contact';phone.textContent=person.phone;contact.append(phone);}
+  const statusCell=document.createElement('td'),badge=document.createElement('span');badge.className='status-badge '+person.active;badge.textContent=statusName(person.active);statusCell.append(badge);
+  const action=document.createElement('td'),button=document.createElement('button');button.type='button';button.className='details-button';button.textContent='Ansehen';button.setAttribute('aria-label','Details ansehen: '+person.name);button.addEventListener('click',()=>detail(person));action.append(button);
+  row.append(name,department,contact,statusCell,action);$('staffRows').append(row);
+ }
+ $('tableWrap').hidden=!loaded||filtered.length===0;$('staffEmpty').hidden=loaded&&filtered.length>0;
+ $('staffEmpty').textContent=!loaded?'Noch keine Mitarbeiterdaten geladen.':staff.length===0?'In deinem berechtigten Bereich wurden keine Mitarbeiterprofile gefunden.':'Keine Treffer für diese Suche oder Filter.';
+ $('resultCount').textContent=filtered.length+' Ergebnisse'+(filtered.length?' · Seite '+(page+1)+' von '+pages:'');
+ $('previousPage').disabled=page===0;$('nextPage').disabled=page>=pages-1;
+}
+function clearList(){staff=[];loaded=false;page=0;closeDetails();renderTeamOptions();renderStaff();}
+function stopList(){if(unsubscribeList){unsubscribeList();unsubscribeList=null;}scopeKey='';listGeneration++;clearList();}
+['staffSearch','teamFilter','statusFilter'].forEach(id=>$(id).addEventListener(id==='staffSearch'?'input':'change',()=>{page=0;renderStaff();}));
+$('previousPage').addEventListener('click',()=>{page--;renderStaff();});$('nextPage').addEventListener('click',()=>{page++;renderStaff();});$('closeDetails').addEventListener('click',closeDetails);
+function applyScope(db,sdk,sessionGeneration){
+ if(!currentUser || !role)return;
+ const uid=currentUser.uid;
+ if(role==='mitarbeiter'){
+  if(scopeKey!=='own:'+uid){stopList();scopeKey='own:'+uid;}
+  $('scopeDescription').textContent='Dein eigenes Mitarbeiterprofil.';
+  if(!ownLoaded)return;
+  staff=ownProfile?[normalize(uid,ownProfile)]:[];loaded=true;renderTeamOptions();renderStaff();$('loadStatus').hidden=true;return;
+ }
+ const team=role==='manager'?text(ownProfile?.teamId):'';
+ if(role==='manager' && !team){stopList();$('scopeDescription').textContent='Mitarbeiter deines Teams.';showStatus(ownLoaded?'Für dein Managerkonto fehlt teamId. Ein Admin oder Superadmin muss die Teamzuordnung hinterlegen.':'Deine Teamzuordnung wird geladen …',ownLoaded);return;}
+ const key=role==='manager'?'team:'+team:'all';
+ if(scopeKey===key)return;
+ stopList();scopeKey=key;
+ $('scopeDescription').textContent=role==='manager'?'Mitarbeiter deines Teams: '+team:'Alle gespeicherten Mitarbeiterprofile.';
+ showStatus('Mitarbeiterdaten werden geladen …');
+ const source=role==='manager'?sdk.query(sdk.ref(db,'users'),sdk.orderByChild('teamId'),sdk.equalTo(team)):sdk.ref(db,'users');
+ const requestGeneration=listGeneration;
+ unsubscribeList=sdk.onValue(source,snapshot=>{
+  if(generation!==sessionGeneration || listGeneration!==requestGeneration)return;
+  closeDetails();const records=[];snapshot.forEach(child=>{const value=child.val();if(value && typeof value==='object'&&!Array.isArray(value)){if(role!=='manager'||text(value.teamId)===team)records.push(normalize(child.key,value));}});
+  staff=records;loaded=true;renderTeamOptions();renderStaff();$('loadStatus').hidden=true;
+ },error=>{
+  if(generation!==sessionGeneration || listGeneration!==requestGeneration)return;
+  clearList();showStatus(String(error.code||'').toLowerCase().includes('permission')?'Zugriff auf die Mitarbeiterliste verweigert. Verwende die ergänzten Firebase-Regeln: Admins benötigen Leserecht auf users, Manager eine Abfrage nach ihrer teamId.':'Die Mitarbeiterliste konnte nicht geladen werden. Prüfe deine Verbindung.',true);
+ });
+}
+async function start(){
+ let config=inlineFirebaseConfig;
+ try{const module=await import('./firebase-config.js');if(module.firebaseConfig?.apiKey&&!module.firebaseConfig.apiKey.startsWith('DEIN_'))config=module.firebaseConfig;}catch{/* Eingebettete Konfiguration als Alternative. */}
+ if(!config.apiKey||config.apiKey.startsWith('DEIN_')){showStatus('Trage deinen aktuellen Firebase apiKey in firebase-config.js oder oben im Code unter inlineFirebaseConfig ein. Danach können Anmeldung und Mitarbeiterdaten geladen werden.',true);return;}
+ try{
+  const [appSDK,authSDK,sdk]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')]);
+  const app=appSDK.initializeApp(config),auth=authSDK.getAuth(app),db=sdk.getDatabase(app);
+  authSDK.onAuthStateChanged(auth,user=>{
+   generation++;const sessionGeneration=generation;
+   if(unsubscribeRole){unsubscribeRole();unsubscribeRole=null;}if(unsubscribeOwn){unsubscribeOwn();unsubscribeOwn=null;}
+   currentUser=user;role=null;ownProfile=null;ownLoaded=false;stopList();
+   if(!user){showStatus('Bitte melde dich an.');window.location.href='index.html';return;}
+   showStatus('Deine Rolle wird geprüft …');
+   unsubscribeRole=sdk.onValue(sdk.ref(db,'roles/'+user.uid),snapshot=>{
+    if(generation!==sessionGeneration)return;
+    const newRole=snapshot.val();if(role!==newRole){role=Object.hasOwn(roleNames,newRole)?newRole:null;stopList();}
+    if(!role){showStatus('Für dein Konto ist keine gültige Rolle hinterlegt. Bitte wende dich an die Administration.',true);return;}
+    renderStaff();applyScope(db,sdk,sessionGeneration);
+   },()=>{if(generation!==sessionGeneration)return;role=null;stopList();showStatus('Deine Rolle konnte nicht gelesen werden. Prüfe die Firebase-Regeln für roles/'+user.uid+'.',true);});
+   unsubscribeOwn=sdk.onValue(sdk.ref(db,'users/'+user.uid),snapshot=>{
+    if(generation!==sessionGeneration)return;
+    const value=snapshot.val();ownProfile=value&&typeof value==='object'&&!Array.isArray(value)?value:null;ownLoaded=true;applyScope(db,sdk,sessionGeneration);
+   },()=>{if(generation!==sessionGeneration)return;ownLoaded=true;ownProfile=null;if(role==='mitarbeiter'||role==='manager'){stopList();showStatus('Dein eigenes Profil bzw. deine Teamzuordnung konnte nicht geladen werden.',true);}});
+  },()=>{generation++;currentUser=null;role=null;stopList();showStatus('Die Anmeldung konnte nicht geprüft werden. Bitte melde dich erneut an.',true);});
+ }catch(error){showStatus(String(error.code||'').includes('api-key')?'Der API-Schlüssel ist ungültig oder abgelaufen. Aktualisiere deine Firebase-Web-Konfiguration.':'Firebase konnte nicht geladen werden. Prüfe die Konfiguration, Verbindung und öffne die Seite über deine Website.',true);}
+}
+renderStaff();start();
+
 </script></body></html>
