@@ -5,10 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>VE-LOG Materialausgabe-Schein</title>
 
@@ -1205,59 +1202,32 @@ body{
 
 </style>
 
-</head>
+<style>@media print{.nachweis-links,#nachweisStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style></head>
 
 
-<body>
+<body data-nachweis-typ="materialausgabe" data-nachweis-titel="Materialausgabe">
 
 
 <!-- =====================================================
      GESPEICHERTE LIEFERSCHEINE
 ===================================================== -->
 
-<div
-    id="gespeicherteBox"
-    class="gespeicherte-box"
->
-
-    <h2>
-        📋 Gespeicherte Lieferscheine
-    </h2>
-
-    <div
-        id="lieferscheinListe"
-        class="lieferschein-liste"
-    ></div>
-
-</div>
-
-
-
 <!-- =====================================================
      HAUPTFORMULAR
 ===================================================== -->
 
-<div
-    class="formular"
-    id="formular"
->
+<div class="formular" id="formular">
 
 
-<!-- NAVIGATION -->
+<div class="nachweis-links" style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0"><a href="nachweise.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">▣ Meine Nachweise</a><a href="materialausgabe.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">+ Neuer Nachweis</a><a href="formular.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">← Formulare</a></div><!-- NAVIGATION -->
 
 <div class="top-buttons">
 
-    <a
-        href="formular.html"
-        class="top-button"
-    >
+    <a href="formular.html" class="top-button">
         📄 Formular
     </a>
 
-    <a
-        href="index.html"
-        class="top-button"
-    >
+    <a href="index.html" class="top-button">
         🏠 Zum Dashboard
     </a>
 
@@ -1279,9 +1249,7 @@ body{
 
             Lieferschein Nr.:
 
-            <span id="lieferscheinNr">
-                00000
-            </span>
+            <span id="lieferscheinNr">Wird beim Speichern vergeben</span>
 
         </div>
 
@@ -1290,11 +1258,7 @@ body{
 
     <div class="logo">
 
-        <img
-            src="logo.png"
-            alt="VE-LOG Logo"
-            class="logo-img"
-        >
+        <img src="logo.png" alt="VE-LOG Logo" class="logo-img">
 
         <p>
 
@@ -1327,10 +1291,7 @@ body{
             Empfänger
         </label>
 
-        <input
-            type="text"
-            id="empfaengerName"
-        >
+        <input type="text" id="empfaengerName">
 
     </div>
 
@@ -1341,10 +1302,7 @@ body{
             Datum
         </label>
 
-        <input
-            type="date"
-            id="datum"
-        >
+        <input type="date" id="datum" required="required">
 
     </div>
 
@@ -1355,10 +1313,7 @@ body{
             Gerät / Kennzeichen
         </label>
 
-        <input
-            type="text"
-            id="geraet"
-        >
+        <input type="text" id="geraet">
 
     </div>
 
@@ -1369,10 +1324,7 @@ body{
             Fahrername
         </label>
 
-        <input
-            type="text"
-            id="fahrer"
-        >
+        <input type="text" id="fahrer">
 
     </div>
 
@@ -1383,10 +1335,7 @@ body{
             Baustelle / Standort
         </label>
 
-        <input
-            type="text"
-            id="baustelle"
-        >
+        <input type="text" id="baustelle">
 
     </div>
 
@@ -1413,10 +1362,7 @@ body{
                 MATERIAL
             </label>
 
-            <input
-                type="text"
-                id="material"
-            >
+            <input type="text" id="material">
 
         </div>
 
@@ -1427,10 +1373,7 @@ body{
                 MENGE
             </label>
 
-            <input
-                type="text"
-                id="menge"
-            >
+            <input type="text" id="menge">
 
         </div>
 
@@ -1442,55 +1385,37 @@ body{
 
 
         <label>
-            <input
-                type="checkbox"
-                id="diesel"
-            >
+            <input type="checkbox" id="diesel">
             Diesel
         </label>
 
 
         <label>
-            <input
-                type="checkbox"
-                id="adblue"
-            >
+            <input type="checkbox" id="adblue">
             AdBlue
         </label>
 
 
         <label>
-            <input
-                type="checkbox"
-                id="fett"
-            >
+            <input type="checkbox" id="fett">
             Fett
         </label>
 
 
         <label>
-            <input
-                type="checkbox"
-                id="wasser"
-            >
+            <input type="checkbox" id="wasser">
             Wasser
         </label>
 
 
         <label>
-            <input
-                type="checkbox"
-                id="oel"
-            >
+            <input type="checkbox" id="oel">
             Öl
         </label>
 
 
         <label>
-            <input
-                type="checkbox"
-                id="sonstiges"
-            >
+            <input type="checkbox" id="sonstiges">
             Sonstiges
         </label>
 
@@ -1509,9 +1434,7 @@ body{
         BEMERKUNGEN
     </label>
 
-    <textarea
-        id="bemerkungen"
-    ></textarea>
+    <textarea id="bemerkungen"></textarea>
 
 </div>
 
@@ -1530,50 +1453,29 @@ body{
             Unterschrift Ausgeber
         </div>
 
-        <canvas
-            id="ausgeber"
-            class="signature-pad"
-        ></canvas>
+        <canvas id="ausgeber" class="signature-pad"></canvas>
 
 
         <div class="signature-buttons">
 
-            <button
-                type="button"
-                class="signature-button signature-delete"
-                onclick="clearCanvas('ausgeber')"
-            >
+            <button type="button" class="signature-button signature-delete" onclick="clearCanvas('ausgeber')">
                 🗑 Löschen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-button signature-upload"
-                onclick="uploadSignature('ausgeber')"
-            >
+            <button type="button" class="signature-button signature-upload" onclick="uploadSignature('ausgeber')">
                 📁 Hochladen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-button signature-png"
-                onclick="saveSignaturePNG('ausgeber')"
-            >
+            <button type="button" class="signature-button signature-png" onclick="saveSignaturePNG('ausgeber')">
                 💾 Als PNG
             </button>
 
         </div>
 
 
-        <input
-            type="file"
-            id="upload-ausgeber"
-            class="file-input"
-            accept="image/png,image/jpeg,image/jpg"
-            onchange="loadSignature(this,'ausgeber')"
-        >
+        <input type="file" id="upload-ausgeber" class="file-input" accept="image/png,image/jpeg,image/jpg" onchange="loadSignature(this,'ausgeber')">
 
 
         <div class="sign-text">
@@ -1592,50 +1494,29 @@ body{
             Unterschrift Empfänger
         </div>
 
-        <canvas
-            id="empfaengerSignatur"
-            class="signature-pad"
-        ></canvas>
+        <canvas id="empfaengerSignatur" class="signature-pad"></canvas>
 
 
         <div class="signature-buttons">
 
-            <button
-                type="button"
-                class="signature-button signature-delete"
-                onclick="clearCanvas('empfaengerSignatur')"
-            >
+            <button type="button" class="signature-button signature-delete" onclick="clearCanvas('empfaengerSignatur')">
                 🗑 Löschen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-button signature-upload"
-                onclick="uploadSignature('empfaengerSignatur')"
-            >
+            <button type="button" class="signature-button signature-upload" onclick="uploadSignature('empfaengerSignatur')">
                 📁 Hochladen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-button signature-png"
-                onclick="saveSignaturePNG('empfaengerSignatur')"
-            >
+            <button type="button" class="signature-button signature-png" onclick="saveSignaturePNG('empfaengerSignatur')">
                 💾 Als PNG
             </button>
 
         </div>
 
 
-        <input
-            type="file"
-            id="upload-empfaengerSignatur"
-            class="file-input"
-            accept="image/png,image/jpeg,image/jpg"
-            onchange="loadSignature(this,'empfaengerSignatur')"
-        >
+        <input type="file" id="upload-empfaengerSignatur" class="file-input" accept="image/png,image/jpeg,image/jpg" onchange="loadSignature(this,'empfaengerSignatur')">
 
 
         <div class="sign-text">
@@ -1654,47 +1535,23 @@ body{
 <div class="buttons">
 
 
-    <button
-        type="button"
-        class="save"
-        onclick="speichernFormular()"
-    >
-        💾 Speichern
-    </button>
+    <button type="button" class="save" id="saveNachweis" disabled>💾 In Meine Nachweise speichern</button>
 
 
-    <button
-        type="button"
-        class="list-btn"
-        onclick="zeigeLieferscheine()"
-    >
-        📋 Gespeicherte Lieferscheine
-    </button>
+    <button type="button" class="list-btn" onclick="window.location.href='nachweise.html'">▣ Meine Nachweise</button>
 
 
-    <button
-        type="button"
-        class="pdf"
-        onclick="window.print()"
-    >
+    <button type="button" class="pdf" onclick="window.print()">
         📄 PDF
     </button>
 
 
-    <button
-        type="button"
-        class="print"
-        onclick="window.print()"
-    >
+    <button type="button" class="print" onclick="window.print()">
         🖨 Drucken
     </button>
 
 
-    <button
-        type="button"
-        class="clear"
-        onclick="clearAllSignatures()"
-    >
+    <button type="button" class="clear" onclick="clearAllSignatures()">
         🗑 Signaturen löschen
     </button>
 
@@ -1702,1185 +1559,10 @@ body{
 </div>
 
 
-</div>
+<p id="nachweisStatus" role="status" style="padding:12px;background:#f8f9fb;border-radius:8px;margin:16px 0">Speicherfunktion wird geladen …</p></div>
 
 
 
-<script>
-
-/* =========================================================
-   SIGNATURE PADS
-========================================================= */
-
-const pads = {};
-
-
-function createPad(id){
-
-    const canvas =
-        document.getElementById(id);
-
-    if(!canvas) return;
-
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    let drawing = false;
-
-
-    function resizeCanvas(){
-
-        const oldImage =
-            canvas.toDataURL();
-
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        const ratio =
-            window.devicePixelRatio || 1;
-
-
-        canvas.width =
-            rect.width * ratio;
-
-
-        canvas.height =
-            rect.height * ratio;
-
-
-        ctx.setTransform(
-            ratio,
-            0,
-            0,
-            ratio,
-            0,
-            0
-        );
-
-
-        ctx.lineWidth = 2;
-
-        ctx.lineCap = "round";
-
-        ctx.lineJoin = "round";
-
-        ctx.strokeStyle = "#000";
-
-
-        if(oldImage !== "data:,"){
-
-            const img =
-                new Image();
-
-            img.onload = function(){
-
-                ctx.drawImage(
-                    img,
-                    0,
-                    0,
-                    rect.width,
-                    rect.height
-                );
-
-            };
-
-            img.src = oldImage;
-
-        }
-
-    }
-
-
-    resizeCanvas();
-
-
-    window.addEventListener(
-        "resize",
-        resizeCanvas
-    );
-
-
-    function getPosition(e){
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        return {
-
-            x:
-                e.clientX -
-                rect.left,
-
-            y:
-                e.clientY -
-                rect.top
-
-        };
-
-    }
-
-
-    canvas.addEventListener(
-        "pointerdown",
-        function(e){
-
-            e.preventDefault();
-
-            canvas.setPointerCapture(
-                e.pointerId
-            );
-
-
-            const pos =
-                getPosition(e);
-
-
-            drawing = true;
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                pos.x,
-                pos.y
-            );
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointermove",
-        function(e){
-
-            if(!drawing) return;
-
-            e.preventDefault();
-
-
-            const pos =
-                getPosition(e);
-
-
-            ctx.lineTo(
-                pos.x,
-                pos.y
-            );
-
-
-            ctx.stroke();
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointerup",
-        function(){
-
-            drawing = false;
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointercancel",
-        function(){
-
-            drawing = false;
-
-        }
-    );
-
-
-    pads[id] = {
-
-        canvas:canvas,
-
-        ctx:ctx
-
-    };
-
-}
-
-
-/* =========================================================
-   SIGNATUR LÖSCHEN
-========================================================= */
-
-function clearCanvas(id){
-
-    const pad =
-        pads[id];
-
-    if(!pad) return;
-
-
-    pad.ctx.clearRect(
-        0,
-        0,
-        pad.canvas.width,
-        pad.canvas.height
-    );
-
-}
-
-
-/* =========================================================
-   ALLE SIGNATUREN LÖSCHEN
-========================================================= */
-
-function clearAllSignatures(){
-
-    clearCanvas(
-        "ausgeber"
-    );
-
-    clearCanvas(
-        "empfaengerSignatur"
-    );
-
-}
-
-
-/* =========================================================
-   SIGNATUR HOCHLADEN
-========================================================= */
-
-function uploadSignature(id){
-
-    const input =
-        document.getElementById(
-            "upload-" + id
-        );
-
-
-    if(input){
-
-        input.click();
-
-    }
-
-}
-
-
-/* =========================================================
-   SIGNATUR AUS BILD LADEN
-========================================================= */
-
-function loadSignature(input,id){
-
-    const file =
-        input.files[0];
-
-    if(!file) return;
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        function(e){
-
-            const img =
-                new Image();
-
-
-            img.onload =
-                function(){
-
-                    const pad =
-                        pads[id];
-
-                    if(!pad) return;
-
-
-                    const canvas =
-                        pad.canvas;
-
-                    const ctx =
-                        pad.ctx;
-
-
-                    const width =
-                        canvas.clientWidth;
-
-                    const height =
-                        canvas.clientHeight;
-
-
-                    ctx.clearRect(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-
-                    const scale =
-                        Math.min(
-
-                            width /
-                            img.width,
-
-                            height /
-                            img.height
-
-                        );
-
-
-                    const w =
-                        img.width * scale;
-
-
-                    const h =
-                        img.height * scale;
-
-
-                    const x =
-                        (width - w) / 2;
-
-
-                    const y =
-                        (height - h) / 2;
-
-
-                    ctx.drawImage(
-                        img,
-                        x,
-                        y,
-                        w,
-                        h
-                    );
-
-                };
-
-
-            img.src =
-                e.target.result;
-
-        };
-
-
-    reader.readAsDataURL(file);
-
-}
-
-
-/* =========================================================
-   SIGNATUR ALS PNG
-========================================================= */
-
-function saveSignaturePNG(id){
-
-    const pad =
-        pads[id];
-
-    if(!pad) return;
-
-
-    const link =
-        document.createElement("a");
-
-
-    link.download =
-        id + "_Unterschrift.png";
-
-
-    link.href =
-        pad.canvas.toDataURL(
-            "image/png"
-        );
-
-
-    link.click();
-
-}
-
-
-/* =========================================================
-   SIGNATUR ALS DATA URL
-========================================================= */
-
-function getSignature(id){
-
-    const pad =
-        pads[id];
-
-    if(!pad) return "";
-
-    return pad.canvas.toDataURL(
-        "image/png"
-    );
-
-}
-
-
-/* =========================================================
-   NEUE LIEFERSCHEINNUMMER
-========================================================= */
-
-function generateLieferschein(){
-
-    let nr = parseInt(
-
-        localStorage.getItem(
-            "materialNr"
-        ) || "0"
-
-    );
-
-
-    nr++;
-
-
-    localStorage.setItem(
-        "materialNr",
-        nr
-    );
-
-
-    return nr
-        .toString()
-        .padStart(5,"0");
-
-}
-
-
-/* =========================================================
-   FORMULAR SPEICHERN
-   JEDER KLICK = NEUE NUMMER
-========================================================= */
-
-function speichernFormular(){
-
-    const neueNummer =
-        generateLieferschein();
-
-
-    document.getElementById(
-        "lieferscheinNr"
-    ).innerText =
-        neueNummer;
-
-
-    const daten = {
-
-        lieferscheinNr:
-            neueNummer,
-
-        empfaenger:
-            document.getElementById(
-                "empfaengerName"
-            ).value,
-
-        datum:
-            document.getElementById(
-                "datum"
-            ).value,
-
-        geraet:
-            document.getElementById(
-                "geraet"
-            ).value,
-
-        fahrer:
-            document.getElementById(
-                "fahrer"
-            ).value,
-
-        baustelle:
-            document.getElementById(
-                "baustelle"
-            ).value,
-
-        material:
-            document.getElementById(
-                "material"
-            ).value,
-
-        menge:
-            document.getElementById(
-                "menge"
-            ).value,
-
-        diesel:
-            document.getElementById(
-                "diesel"
-            ).checked,
-
-        adblue:
-            document.getElementById(
-                "adblue"
-            ).checked,
-
-        fett:
-            document.getElementById(
-                "fett"
-            ).checked,
-
-        wasser:
-            document.getElementById(
-                "wasser"
-            ).checked,
-
-        oel:
-            document.getElementById(
-                "oel"
-            ).checked,
-
-        sonstiges:
-            document.getElementById(
-                "sonstiges"
-            ).checked,
-
-        bemerkungen:
-            document.getElementById(
-                "bemerkungen"
-            ).value,
-
-        signaturAusgeber:
-            getSignature("ausgeber"),
-
-        signaturEmpfaenger:
-            getSignature(
-                "empfaengerSignatur"
-            ),
-
-        gespeichertAm:
-            new Date().toLocaleString(
-                "de-DE"
-            )
-
-    };
-
-
-    localStorage.setItem(
-
-        "materialausgabe_" +
-        neueNummer,
-
-        JSON.stringify(daten)
-
-    );
-
-
-    alert(
-
-        "✅ Formular gespeichert!\n\n" +
-
-        "Lieferschein Nr.: " +
-
-        neueNummer
-
-    );
-
-
-    zeigeLieferscheine();
-
-}
-
-
-/* =========================================================
-   ALLE GESPEICHERTEN LIEFERSCHEINE FINDEN
-========================================================= */
-
-function getGespeicherteLieferscheine(){
-
-    const liste = [];
-
-
-    for(
-        let i = 0;
-        i < localStorage.length;
-        i++
-    ){
-
-        const key =
-            localStorage.key(i);
-
-
-        if(
-            key &&
-            key.startsWith(
-                "materialausgabe_"
-            )
-        ){
-
-            try{
-
-                const daten =
-                    JSON.parse(
-                        localStorage.getItem(
-                            key
-                        )
-                    );
-
-
-                if(daten){
-
-                    liste.push(daten);
-
-                }
-
-            }
-            catch(error){
-
-                console.error(
-                    "Fehler:",
-                    error
-                );
-
-            }
-
-        }
-
-    }
-
-
-    liste.sort(
-        function(a,b){
-
-            return parseInt(
-                b.lieferscheinNr
-            )
-            -
-            parseInt(
-                a.lieferscheinNr
-            );
-
-        }
-    );
-
-
-    return liste;
-
-}
-
-
-/* =========================================================
-   LIEFERSCHEIN-LISTE ANZEIGEN
-========================================================= */
-
-function zeigeLieferscheine(){
-
-    const box =
-        document.getElementById(
-            "gespeicherteBox"
-        );
-
-
-    const liste =
-        document.getElementById(
-            "lieferscheinListe"
-        );
-
-
-    const daten =
-        getGespeicherteLieferscheine();
-
-
-    box.classList.add(
-        "aktiv"
-    );
-
-
-    liste.innerHTML = "";
-
-
-    if(daten.length === 0){
-
-        liste.innerHTML = `
-
-            <div class="keine-formulare">
-
-                📋 Noch keine Lieferscheine gespeichert.
-
-            </div>
-
-        `;
-
-        box.scrollIntoView({
-            behavior:"smooth"
-        });
-
-        return;
-
-    }
-
-
-    daten.forEach(
-        function(item){
-
-            const eintrag =
-                document.createElement(
-                    "div"
-                );
-
-
-            eintrag.className =
-                "lieferschein-eintrag";
-
-
-            const info =
-                document.createElement(
-                    "div"
-                );
-
-
-            info.className =
-                "lieferschein-info";
-
-
-            info.innerHTML = `
-
-                <strong>
-                    Lieferschein Nr. ${item.lieferscheinNr}
-                </strong>
-
-                <span>
-                    ${item.empfaenger || "Kein Empfänger"}
-                    ·
-                    ${item.baustelle || "Keine Baustelle"}
-                    <br>
-                    Gespeichert:
-                    ${item.gespeichertAm || ""}
-                </span>
-
-            `;
-
-
-            const buttons =
-                document.createElement(
-                    "div"
-                );
-
-
-            buttons.className =
-                "eintrag-buttons";
-
-
-            const oeffnen =
-                document.createElement(
-                    "button"
-                );
-
-
-            oeffnen.className =
-                "oeffnen-btn";
-
-
-            oeffnen.innerText =
-                "📂 Öffnen";
-
-
-            oeffnen.onclick =
-                function(){
-
-                    ladeLieferschein(
-                        item.lieferscheinNr
-                    );
-
-                };
-
-
-            const loeschen =
-                document.createElement(
-                    "button"
-                );
-
-
-            loeschen.className =
-                "loeschen-btn";
-
-
-            loeschen.innerText =
-                "🗑 Löschen";
-
-
-            loeschen.onclick =
-                function(){
-
-                    loescheLieferschein(
-                        item.lieferscheinNr
-                    );
-
-                };
-
-
-            buttons.appendChild(
-                oeffnen
-            );
-
-
-            buttons.appendChild(
-                loeschen
-            );
-
-
-            eintrag.appendChild(
-                info
-            );
-
-
-            eintrag.appendChild(
-                buttons
-            );
-
-
-            liste.appendChild(
-                eintrag
-            );
-
-        }
-    );
-
-
-    box.scrollIntoView({
-        behavior:"smooth"
-    });
-
-}
-
-
-/* =========================================================
-   LIEFERSCHEIN LADEN
-========================================================= */
-
-function ladeLieferschein(nummer){
-
-    const daten =
-        JSON.parse(
-
-            localStorage.getItem(
-
-                "materialausgabe_" +
-                nummer
-
-            )
-
-        );
-
-
-    if(!daten){
-
-        alert(
-            "❌ Lieferschein wurde nicht gefunden."
-        );
-
-        return;
-
-    }
-
-
-    document.getElementById(
-        "lieferscheinNr"
-    ).innerText =
-        daten.lieferscheinNr;
-
-
-    document.getElementById(
-        "empfaengerName"
-    ).value =
-        daten.empfaenger || "";
-
-
-    document.getElementById(
-        "datum"
-    ).value =
-        daten.datum || "";
-
-
-    document.getElementById(
-        "geraet"
-    ).value =
-        daten.geraet || "";
-
-
-    document.getElementById(
-        "fahrer"
-    ).value =
-        daten.fahrer || "";
-
-
-    document.getElementById(
-        "baustelle"
-    ).value =
-        daten.baustelle || "";
-
-
-    document.getElementById(
-        "material"
-    ).value =
-        daten.material || "";
-
-
-    document.getElementById(
-        "menge"
-    ).value =
-        daten.menge || "";
-
-
-    document.getElementById(
-        "diesel"
-    ).checked =
-        daten.diesel || false;
-
-
-    document.getElementById(
-        "adblue"
-    ).checked =
-        daten.adblue || false;
-
-
-    document.getElementById(
-        "fett"
-    ).checked =
-        daten.fett || false;
-
-
-    document.getElementById(
-        "wasser"
-    ).checked =
-        daten.wasser || false;
-
-
-    document.getElementById(
-        "oel"
-    ).checked =
-        daten.oel || false;
-
-
-    document.getElementById(
-        "sonstiges"
-    ).checked =
-        daten.sonstiges || false;
-
-
-    document.getElementById(
-        "bemerkungen"
-    ).value =
-        daten.bemerkungen || "";
-
-
-    clearCanvas(
-        "ausgeber"
-    );
-
-
-    clearCanvas(
-        "empfaengerSignatur"
-    );
-
-
-    if(
-        daten.signaturAusgeber &&
-        daten.signaturAusgeber !== "data:,"
-    ){
-
-        drawSavedSignature(
-            "ausgeber",
-            daten.signaturAusgeber
-        );
-
-    }
-
-
-    if(
-        daten.signaturEmpfaenger &&
-        daten.signaturEmpfaenger !== "data:,"
-    ){
-
-        drawSavedSignature(
-            "empfaengerSignatur",
-            daten.signaturEmpfaenger
-        );
-
-    }
-
-
-    window.scrollTo({
-
-        top:0,
-
-        behavior:"smooth"
-
-    });
-
-
-    alert(
-        "✅ Lieferschein Nr. " +
-        nummer +
-        " wurde geöffnet."
-    );
-
-}
-
-
-/* =========================================================
-   GESPEICHERTE SIGNATUR LADEN
-========================================================= */
-
-function drawSavedSignature(
-    id,
-    dataUrl
-){
-
-    const pad =
-        pads[id];
-
-    if(!pad) return;
-
-
-    const img =
-        new Image();
-
-
-    img.onload =
-        function(){
-
-            const canvas =
-                pad.canvas;
-
-
-            const ctx =
-                pad.ctx;
-
-
-            const width =
-                canvas.clientWidth;
-
-
-            const height =
-                canvas.clientHeight;
-
-
-            ctx.clearRect(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-
-
-            const scale =
-                Math.min(
-
-                    width /
-                    img.width,
-
-                    height /
-                    img.height
-
-                );
-
-
-            const w =
-                img.width * scale;
-
-
-            const h =
-                img.height * scale;
-
-
-            const x =
-                (width - w) / 2;
-
-
-            const y =
-                (height - h) / 2;
-
-
-            ctx.drawImage(
-                img,
-                x,
-                y,
-                w,
-                h
-            );
-
-        };
-
-
-    img.src =
-        dataUrl;
-
-}
-
-
-/* =========================================================
-   LIEFERSCHEIN LÖSCHEN
-========================================================= */
-
-function loescheLieferschein(nummer){
-
-    const bestaetigt =
-        confirm(
-
-            "Möchtest du den Lieferschein Nr. " +
-            nummer +
-            " wirklich löschen?"
-
-        );
-
-
-    if(!bestaetigt){
-
-        return;
-
-    }
-
-
-    localStorage.removeItem(
-
-        "materialausgabe_" +
-        nummer
-
-    );
-
-
-    zeigeLieferscheine();
-
-
-    alert(
-        "🗑 Lieferschein Nr. " +
-        nummer +
-        " wurde gelöscht."
-    );
-
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-window.addEventListener(
-    "load",
-    function(){
-
-        createPad(
-            "ausgeber"
-        );
-
-
-        createPad(
-            "empfaengerSignatur"
-        );
-
-
-    }
-);
-
-</script>
-
-
-</body>
+<script src="nachweise-signaturen.js"></script><script src="nachweise-formular.js" type="module"></script></body>
 
 </html>
