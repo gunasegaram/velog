@@ -4,10 +4,7 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Absender - Materialversandanzeige</title>
 
@@ -858,10 +855,10 @@ td{
 
 </style>
 
-</head>
+<style>@media print{.nachweis-links,#nachweisStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style></head>
 
 
-<body>
+<body data-nachweis-typ="material_absender" data-nachweis-titel="Material – Absender" data-nachweis-datum="tagAbsender">
 
 
 <header>
@@ -876,7 +873,7 @@ td{
 <div class="form-card">
 
 
-<!-- =====================================================
+<div class="nachweis-links" style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0"><a href="nachweise.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">▣ Meine Nachweise</a><a href="m.absender.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">+ Neuer Nachweis</a><a href="formular.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">← Formulare</a></div><!-- =====================================================
      GRUNDINFORMATIONEN
 ===================================================== -->
 
@@ -889,10 +886,7 @@ td{
             Name Abholer
         </label>
 
-        <input
-            type="text"
-            id="nameAbholer"
-        >
+        <input type="text" id="nameAbholer">
 
     </div>
 
@@ -903,10 +897,7 @@ td{
             Baustelle / Lager
         </label>
 
-        <input
-            type="text"
-            id="baustelle"
-        >
+        <input type="text" id="baustelle">
 
     </div>
 
@@ -924,10 +915,7 @@ td{
             Name Anforderer
         </label>
 
-        <input
-            type="text"
-            id="nameAnforderer"
-        >
+        <input type="text" id="nameAnforderer">
 
     </div>
 
@@ -938,10 +926,7 @@ td{
             Baustelle / Lager
         </label>
 
-        <input
-            type="text"
-            id="empfaenger"
-        >
+        <input type="text" id="empfaenger">
 
     </div>
 
@@ -959,10 +944,7 @@ td{
             Versand mit LKW Nr.
         </label>
 
-        <input
-            type="text"
-            id="lkw"
-        >
+        <input type="text" id="lkw">
 
     </div>
 
@@ -973,10 +955,7 @@ td{
             Fremdfahrzeug
         </label>
 
-        <input
-            type="text"
-            id="fremdfahrzeug"
-        >
+        <input type="text" id="fremdfahrzeug">
 
     </div>
 
@@ -1219,38 +1198,23 @@ td{
         </div>
 
 
-        <canvas
-            id="signatureAbsender"
-            class="signature-pad"
-        ></canvas>
+        <canvas id="signatureAbsender" class="signature-pad"></canvas>
 
 
         <div class="signature-buttons">
 
 
-            <button
-                type="button"
-                class="signature-btn signature-clear"
-                onclick="clearSignature('signatureAbsender')"
-            >
+            <button type="button" class="signature-btn signature-clear" onclick="clearSignature('signatureAbsender')">
                 🗑️ Löschen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-btn signature-upload"
-                onclick="uploadSignature('signatureAbsender')"
-            >
+            <button type="button" class="signature-btn signature-upload" onclick="uploadSignature('signatureAbsender')">
                 📁 Signatur hochladen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-btn signature-save"
-                onclick="saveSignaturePNG('signatureAbsender')"
-            >
+            <button type="button" class="signature-btn signature-save" onclick="saveSignaturePNG('signatureAbsender')">
                 💾 Als PNG speichern
             </button>
 
@@ -1258,13 +1222,7 @@ td{
         </div>
 
 
-        <input
-            type="file"
-            id="file-signatureAbsender"
-            class="signature-file"
-            accept="image/png,image/jpeg,image/jpg"
-            onchange="loadSignatureImage(this,'signatureAbsender')"
-        >
+        <input type="file" id="file-signatureAbsender" class="signature-file" accept="image/png,image/jpeg,image/jpg" onchange="loadSignatureImage(this,'signatureAbsender')">
 
     </div>
 
@@ -1276,22 +1234,14 @@ td{
         Tag
     </label>
 
-    <input
-        type="date"
-        id="tagAbsender"
-        class="sig-input"
-    >
+    <input type="date" id="tagAbsender" class="sig-input" required="required">
 
 
     <label>
         Uhrzeit
     </label>
 
-    <input
-        type="time"
-        id="zeitAbsender"
-        class="sig-input"
-    >
+    <input type="time" id="zeitAbsender" class="sig-input">
 
 </div>
 
@@ -1319,38 +1269,23 @@ td{
         </div>
 
 
-        <canvas
-            id="signatureFuhrunternehmer"
-            class="signature-pad"
-        ></canvas>
+        <canvas id="signatureFuhrunternehmer" class="signature-pad"></canvas>
 
 
         <div class="signature-buttons">
 
 
-            <button
-                type="button"
-                class="signature-btn signature-clear"
-                onclick="clearSignature('signatureFuhrunternehmer')"
-            >
+            <button type="button" class="signature-btn signature-clear" onclick="clearSignature('signatureFuhrunternehmer')">
                 🗑️ Löschen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-btn signature-upload"
-                onclick="uploadSignature('signatureFuhrunternehmer')"
-            >
+            <button type="button" class="signature-btn signature-upload" onclick="uploadSignature('signatureFuhrunternehmer')">
                 📁 Signatur hochladen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-btn signature-save"
-                onclick="saveSignaturePNG('signatureFuhrunternehmer')"
-            >
+            <button type="button" class="signature-btn signature-save" onclick="saveSignaturePNG('signatureFuhrunternehmer')">
                 💾 Als PNG speichern
             </button>
 
@@ -1358,13 +1293,7 @@ td{
         </div>
 
 
-        <input
-            type="file"
-            id="file-signatureFuhrunternehmer"
-            class="signature-file"
-            accept="image/png,image/jpeg,image/jpg"
-            onchange="loadSignatureImage(this,'signatureFuhrunternehmer')"
-        >
+        <input type="file" id="file-signatureFuhrunternehmer" class="signature-file" accept="image/png,image/jpeg,image/jpg" onchange="loadSignatureImage(this,'signatureFuhrunternehmer')">
 
     </div>
 
@@ -1390,38 +1319,23 @@ td{
         </div>
 
 
-        <canvas
-            id="signatureEmpfaenger"
-            class="signature-pad"
-        ></canvas>
+        <canvas id="signatureEmpfaenger" class="signature-pad"></canvas>
 
 
         <div class="signature-buttons">
 
 
-            <button
-                type="button"
-                class="signature-btn signature-clear"
-                onclick="clearSignature('signatureEmpfaenger')"
-            >
+            <button type="button" class="signature-btn signature-clear" onclick="clearSignature('signatureEmpfaenger')">
                 🗑️ Löschen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-btn signature-upload"
-                onclick="uploadSignature('signatureEmpfaenger')"
-            >
+            <button type="button" class="signature-btn signature-upload" onclick="uploadSignature('signatureEmpfaenger')">
                 📁 Signatur hochladen
             </button>
 
 
-            <button
-                type="button"
-                class="signature-btn signature-save"
-                onclick="saveSignaturePNG('signatureEmpfaenger')"
-            >
+            <button type="button" class="signature-btn signature-save" onclick="saveSignaturePNG('signatureEmpfaenger')">
                 💾 Als PNG speichern
             </button>
 
@@ -1429,13 +1343,7 @@ td{
         </div>
 
 
-        <input
-            type="file"
-            id="file-signatureEmpfaenger"
-            class="signature-file"
-            accept="image/png,image/jpeg,image/jpg"
-            onchange="loadSignatureImage(this,'signatureEmpfaenger')"
-        >
+        <input type="file" id="file-signatureEmpfaenger" class="signature-file" accept="image/png,image/jpeg,image/jpg" onchange="loadSignatureImage(this,'signatureEmpfaenger')">
 
     </div>
 
@@ -1447,11 +1355,7 @@ td{
         Tag
     </label>
 
-    <input
-        type="date"
-        id="tagEmpfaenger"
-        class="sig-input"
-    >
+    <input type="date" id="tagEmpfaenger" class="sig-input">
 
 </div>
 
@@ -1474,33 +1378,21 @@ td{
         Rz
     </label>
 
-    <input
-        type="text"
-        id="rz"
-        class="sig-input"
-    >
+    <input type="text" id="rz" class="sig-input">
 
 
     <label>
         Betr
     </label>
 
-    <input
-        type="text"
-        id="betr"
-        class="sig-input"
-    >
+    <input type="text" id="betr" class="sig-input">
 
 
     <label>
         Tarif
     </label>
 
-    <input
-        type="text"
-        id="tarif"
-        class="sig-input"
-    >
+    <input type="text" id="tarif" class="sig-input">
 
 </div>
 
@@ -1516,34 +1408,20 @@ td{
 <div class="button-group">
 
 
-    <button
-        class="btn speichern-btn"
-        onclick="speichernFormular()"
-    >
-        💾 Speichern
-    </button>
+    <button class="btn speichern-btn" id="saveNachweis" type="button" disabled>💾 In Meine Nachweise speichern</button>
 
 
-    <button
-        class="btn druck-btn"
-        onclick="window.print()"
-    >
+    <button class="btn druck-btn" onclick="window.print()" type="button">
         🖨️ Drucken
     </button>
 
 
-    <button
-        class="btn pdf-btn"
-        onclick="window.print()"
-    >
+    <button class="btn pdf-btn" onclick="window.print()" type="button">
         📄 Als PDF speichern
     </button>
 
 
-    <button
-        class="btn back-btn"
-        onclick="window.location.href='materialversand.html'"
-    >
+    <button class="btn back-btn" onclick="window.location.href='materialversand.html'" type="button">
         ← Zurück
     </button>
 
@@ -1551,767 +1429,11 @@ td{
 </div>
 
 
-</div>
+<p id="nachweisStatus" role="status" style="padding:12px;background:#f8f9fb;border-radius:8px;margin:16px 0">Speicherfunktion wird geladen …</p></div>
 
 </div>
 
 
 
-<script>
-
-/* =========================================================
-   SIGNATUR-PADS
-========================================================= */
-
-const signaturePads = {};
-
-
-
-function initSignaturePad(canvasId){
-
-    const canvas =
-        document.getElementById(canvasId);
-
-    if(!canvas) return;
-
-
-    const ctx =
-        canvas.getContext("2d");
-
-
-    let drawing = false;
-
-
-    function resizeCanvas(){
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        const ratio =
-            window.devicePixelRatio || 1;
-
-
-        canvas.width =
-            rect.width * ratio;
-
-
-        canvas.height =
-            rect.height * ratio;
-
-
-        ctx.setTransform(
-            ratio,
-            0,
-            0,
-            ratio,
-            0,
-            0
-        );
-
-
-        ctx.lineWidth = 2;
-
-        ctx.lineCap = "round";
-
-        ctx.lineJoin = "round";
-
-        ctx.strokeStyle = "#000";
-
-    }
-
-
-    resizeCanvas();
-
-
-    window.addEventListener(
-        "resize",
-        resizeCanvas
-    );
-
-
-    function getPosition(event){
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        return {
-
-            x:
-                event.clientX -
-                rect.left,
-
-            y:
-                event.clientY -
-                rect.top
-
-        };
-
-    }
-
-
-    canvas.addEventListener(
-        "pointerdown",
-        function(event){
-
-            drawing = true;
-
-            canvas.setPointerCapture(
-                event.pointerId
-            );
-
-
-            const position =
-                getPosition(event);
-
-
-            ctx.beginPath();
-
-
-            ctx.moveTo(
-                position.x,
-                position.y
-            );
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointermove",
-        function(event){
-
-            if(!drawing) return;
-
-
-            const position =
-                getPosition(event);
-
-
-            ctx.lineTo(
-                position.x,
-                position.y
-            );
-
-
-            ctx.stroke();
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointerup",
-        function(){
-
-            drawing = false;
-
-        }
-    );
-
-
-    canvas.addEventListener(
-        "pointercancel",
-        function(){
-
-            drawing = false;
-
-        }
-    );
-
-
-    signaturePads[canvasId] = {
-
-        canvas:canvas,
-
-        ctx:ctx
-
-    };
-
-}
-
-
-
-/* =========================================================
-   SIGNATUR LÖSCHEN
-========================================================= */
-
-function clearSignature(canvasId){
-
-    const pad =
-        signaturePads[canvasId];
-
-
-    if(!pad) return;
-
-
-    pad.ctx.clearRect(
-
-        0,
-        0,
-        pad.canvas.width,
-        pad.canvas.height
-
-    );
-
-
-    localStorage.removeItem(
-        canvasId
-    );
-
-}
-
-
-
-/* =========================================================
-   SIGNATUR HOCHLADEN
-========================================================= */
-
-function uploadSignature(canvasId){
-
-    const fileInput =
-        document.getElementById(
-            "file-" + canvasId
-        );
-
-
-    if(fileInput){
-
-        fileInput.click();
-
-    }
-
-}
-
-
-
-/* =========================================================
-   BILD LADEN
-========================================================= */
-
-function loadSignatureImage(
-    input,
-    canvasId
-){
-
-    const file =
-        input.files[0];
-
-
-    if(!file) return;
-
-
-    if(!file.type.startsWith("image/")){
-
-        alert(
-            "Bitte eine Bilddatei auswählen."
-        );
-
-        return;
-
-    }
-
-
-    const reader =
-        new FileReader();
-
-
-    reader.onload =
-        function(event){
-
-            const image =
-                new Image();
-
-
-            image.onload =
-                function(){
-
-                    const pad =
-                        signaturePads[canvasId];
-
-
-                    if(!pad) return;
-
-
-                    const canvas =
-                        pad.canvas;
-
-                    const ctx =
-                        pad.ctx;
-
-
-                    const width =
-                        canvas.clientWidth;
-
-                    const height =
-                        canvas.clientHeight;
-
-
-                    ctx.clearRect(
-                        0,
-                        0,
-                        canvas.width,
-                        canvas.height
-                    );
-
-
-                    const scale =
-                        Math.min(
-
-                            width / image.width,
-
-                            height / image.height
-
-                        );
-
-
-                    const imageWidth =
-                        image.width * scale;
-
-
-                    const imageHeight =
-                        image.height * scale;
-
-
-                    const x =
-                        (width - imageWidth) / 2;
-
-
-                    const y =
-                        (height - imageHeight) / 2;
-
-
-                    ctx.drawImage(
-
-                        image,
-
-                        x,
-                        y,
-
-                        imageWidth,
-                        imageHeight
-
-                    );
-
-                };
-
-
-            image.src =
-                event.target.result;
-
-        };
-
-
-    reader.readAsDataURL(file);
-
-}
-
-
-
-/* =========================================================
-   PNG SPEICHERN
-========================================================= */
-
-function saveSignaturePNG(canvasId){
-
-    const pad =
-        signaturePads[canvasId];
-
-
-    if(!pad) return;
-
-
-    const link =
-        document.createElement("a");
-
-
-    link.download =
-        canvasId + ".png";
-
-
-    link.href =
-        pad.canvas.toDataURL(
-            "image/png"
-        );
-
-
-    link.click();
-
-}
-
-
-
-/* =========================================================
-   SIGNATUR SPEICHERN
-========================================================= */
-
-function saveSignatureToStorage(canvasId){
-
-    const pad =
-        signaturePads[canvasId];
-
-
-    if(!pad) return;
-
-
-    const imageData =
-        pad.canvas.toDataURL(
-            "image/png"
-        );
-
-
-    localStorage.setItem(
-        canvasId,
-        imageData
-    );
-
-}
-
-
-
-/* =========================================================
-   SIGNATUR LADEN
-========================================================= */
-
-function loadSignatureFromStorage(canvasId){
-
-    const imageData =
-        localStorage.getItem(canvasId);
-
-
-    if(!imageData) return;
-
-
-    const image =
-        new Image();
-
-
-    image.onload =
-        function(){
-
-            const pad =
-                signaturePads[canvasId];
-
-
-            if(!pad) return;
-
-
-            const canvas =
-                pad.canvas;
-
-            const ctx =
-                pad.ctx;
-
-
-            const width =
-                canvas.clientWidth;
-
-            const height =
-                canvas.clientHeight;
-
-
-            ctx.clearRect(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-
-
-            const scale =
-                Math.min(
-
-                    width / image.width,
-
-                    height / image.height
-
-                );
-
-
-            const imageWidth =
-                image.width * scale;
-
-
-            const imageHeight =
-                image.height * scale;
-
-
-            const x =
-                (width - imageWidth) / 2;
-
-
-            const y =
-                (height - imageHeight) / 2;
-
-
-            ctx.drawImage(
-
-                image,
-
-                x,
-                y,
-
-                imageWidth,
-                imageHeight
-
-            );
-
-        };
-
-
-    image.src =
-        imageData;
-
-}
-
-
-
-/* =========================================================
-   FORMULAR SPEICHERN
-========================================================= */
-
-function speichernFormular(){
-
-
-    saveSignatureToStorage(
-        "signatureAbsender"
-    );
-
-
-    saveSignatureToStorage(
-        "signatureFuhrunternehmer"
-    );
-
-
-    saveSignatureToStorage(
-        "signatureEmpfaenger"
-    );
-
-
-    const daten = {
-
-        nameAbholer:
-            document.getElementById(
-                "nameAbholer"
-            ).value,
-
-        baustelle:
-            document.getElementById(
-                "baustelle"
-            ).value,
-
-        nameAnforderer:
-            document.getElementById(
-                "nameAnforderer"
-            ).value,
-
-        empfaenger:
-            document.getElementById(
-                "empfaenger"
-            ).value,
-
-        lkw:
-            document.getElementById(
-                "lkw"
-            ).value,
-
-        fremdfahrzeug:
-            document.getElementById(
-                "fremdfahrzeug"
-            ).value,
-
-        tagAbsender:
-            document.getElementById(
-                "tagAbsender"
-            ).value,
-
-        zeitAbsender:
-            document.getElementById(
-                "zeitAbsender"
-            ).value,
-
-        tagEmpfaenger:
-            document.getElementById(
-                "tagEmpfaenger"
-            ).value,
-
-        rz:
-            document.getElementById(
-                "rz"
-            ).value,
-
-        betr:
-            document.getElementById(
-                "betr"
-            ).value,
-
-        tarif:
-            document.getElementById(
-                "tarif"
-            ).value
-
-    };
-
-
-    localStorage.setItem(
-
-        "materialEmpfaenger",
-
-        JSON.stringify(daten)
-
-    );
-
-
-    alert(
-        "✅ Formular und Unterschriften wurden gespeichert."
-    );
-
-}
-
-
-
-/* =========================================================
-   FORMULAR LADEN
-========================================================= */
-
-function ladeFormular(){
-
-
-    const daten =
-        JSON.parse(
-
-            localStorage.getItem(
-                "materialEmpfaenger"
-            )
-
-        );
-
-
-    if(daten){
-
-        document.getElementById(
-            "nameAbholer"
-        ).value =
-            daten.nameAbholer || "";
-
-
-        document.getElementById(
-            "baustelle"
-        ).value =
-            daten.baustelle || "";
-
-
-        document.getElementById(
-            "nameAnforderer"
-        ).value =
-            daten.nameAnforderer || "";
-
-
-        document.getElementById(
-            "empfaenger"
-        ).value =
-            daten.empfaenger || "";
-
-
-        document.getElementById(
-            "lkw"
-        ).value =
-            daten.lkw || "";
-
-
-        document.getElementById(
-            "fremdfahrzeug"
-        ).value =
-            daten.fremdfahrzeug || "";
-
-
-        document.getElementById(
-            "tagAbsender"
-        ).value =
-            daten.tagAbsender || "";
-
-
-        document.getElementById(
-            "zeitAbsender"
-        ).value =
-            daten.zeitAbsender || "";
-
-
-        document.getElementById(
-            "tagEmpfaenger"
-        ).value =
-            daten.tagEmpfaenger || "";
-
-
-        document.getElementById(
-            "rz"
-        ).value =
-            daten.rz || "";
-
-
-        document.getElementById(
-            "betr"
-        ).value =
-            daten.betr || "";
-
-
-        document.getElementById(
-            "tarif"
-        ).value =
-            daten.tarif || "";
-
-    }
-
-
-    loadSignatureFromStorage(
-        "signatureAbsender"
-    );
-
-
-    loadSignatureFromStorage(
-        "signatureFuhrunternehmer"
-    );
-
-
-    loadSignatureFromStorage(
-        "signatureEmpfaenger"
-    );
-
-}
-
-
-
-/* =========================================================
-   START
-========================================================= */
-
-window.addEventListener(
-    "load",
-    function(){
-
-        initSignaturePad(
-            "signatureAbsender"
-        );
-
-
-        initSignaturePad(
-            "signatureFuhrunternehmer"
-        );
-
-
-        initSignaturePad(
-            "signatureEmpfaenger"
-        );
-
-
-        ladeFormular();
-
-    }
-);
-
-</script>
-
-
-</body>
+<script src="nachweise-signaturen.js"></script><script src="nachweise-formular.js" type="module"></script></body>
 </html>
