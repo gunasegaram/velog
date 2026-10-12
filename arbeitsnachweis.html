@@ -1,820 +1,555 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Arbeitsnachweis · VE-Log</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #f4f4f4;
-      color: #233247;
-      font: 15px/1.5 Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 25px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 3px 10px #0001;
-    }
-
-    .nav-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .nav-btn,
-    .save-btn,
-    .send-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      border: 0;
-      border-radius: 8px;
-      background: #8e2f2b;
-      color: white;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: bold;
-      line-height: 1.2;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .send-btn {
-      background: #245c46;
-    }
-
-    button:disabled {
-      opacity: .5;
-      cursor: default;
-    }
-
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: 3px solid #bd7774;
-      outline-offset: 3px;
-    }
-
-    h1 {
-      margin: 0 0 20px;
-      font-size: 26px;
-    }
-
-    h3 {
-      margin: 18px 0 12px;
-    }
-
-    .row {
-      display: grid;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .row-3 {
-      grid-template-columns: 2fr 2fr 1fr;
-    }
-
-    .row-4 {
-      grid-template-columns: 2fr 2fr 2fr 1fr;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #444;
-      font-weight: bold;
-    }
-
-    input:not([type=checkbox]):not([type=radio]),
-    textarea,
-    select {
-      width: 100%;
-      min-width: 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font: inherit;
-    }
-
-    input[type=checkbox],
-    input[type=radio] {
-      width: 17px;
-      height: 17px;
-      accent-color: #8e2f2b;
-    }
-
-    .weekdays {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin: 20px 0;
-    }
-
-    .weekdays label {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: normal;
-    }
-
-    .table-wrap {
-      overflow: auto;
-      margin-top: 20px;
-    }
-
-    table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: collapse;
-    }
-
-    th {
-      padding: 10px;
-      background: #8e2f2b;
-      color: white;
-      text-align: left;
-    }
-
-    td {
-      padding: 5px;
-      border: 1px solid #ddd;
-    }
-
-    td input {
-      border: 0 !important;
-    }
-
-    .remarks-label {
-      margin-top: 20px;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .actions .save-btn,
-    .actions .send-btn,
-    .actions .nav-btn {
-      min-height: 44px;
-      margin: 0;
-      padding: 12px 18px;
-      font-size: 14px;
-      line-height: 1.2;
-    }
-
-    .new-record {
-      display: inline-flex;
-      align-items: center;
-      min-height: 44px;
-      color: #8e2f2b;
-    }
-
-    .status {
-      margin: 16px 0;
-      padding: 12px;
-      border-radius: 9px;
-      background: #f8f9fb;
-      font-size: 13px;
-    }
-
-    .status:empty {
-      display: none;
-    }
-
-    .fine {
-      color: #727785;
-      font-size: 12px;
-    }
-
-    @media (max-width: 700px) {
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>
+      Arbeitsnachweis · VE-Log
+    </title>
+    <style>
+      * {
+        box-sizing:border-box;
+      }
       body {
-        padding: 12px;
+        margin:0;
+        padding:20px;
+        background:#f4f4f4;
+        color:#233247;
+        font:15px/1.5 Arial,sans-serif;
       }
-
       .container {
-        padding: 18px;
+        max-width:1100px;
+        margin:auto;
+        padding:25px;
+        background:white;
+        border-radius:15px;
+        box-shadow:0 3px 10px #0001;
       }
-
-      .row-3,
+      .nav-buttons {
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-bottom:20px;
+      }
+      .nav-btn,.save-btn {
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:12px 18px;
+        border:0;
+        border-radius:8px;
+        background:#8e2f2b;
+        color:white;
+        font-family:inherit;
+        font-size:13px;
+        font-weight:bold;
+        line-height:1.2;
+        text-decoration:none;
+        cursor:pointer;
+      }
+      button:disabled {
+        opacity:.5;
+        cursor:default;
+      }
+      a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible {
+        outline:3px solid #bd7774;
+        outline-offset:3px;
+      }
+      h1 {
+        margin:0 0 20px;
+        font-size:26px;
+      }
+      h3 {
+        margin:18px 0 12px;
+      }
+      .row {
+        display:grid;
+        gap:15px;
+        margin-bottom:15px;
+      }
+      .row-3 {
+        grid-template-columns:2fr 2fr 1fr;
+      }
       .row-4 {
-        grid-template-columns: 1fr;
+        grid-template-columns:2fr 2fr 2fr 1fr;
       }
-    }
-
-    @media print {
-      .nav-buttons,
-      .actions,
-      .status,
-      .fine {
-        display: none !important;
+      label {
+        display:block;
+        margin-bottom:5px;
+        color:#444;
+        font-weight:bold;
       }
-
-      body {
-        padding: 0;
-        background: white;
+      input:not([type=checkbox]):not([type=radio]),textarea,select {
+        width:100%;
+        min-width:0;
+        padding:10px;
+        border:1px solid #ccc;
+        border-radius:6px;
+        font:inherit;
       }
-
-      .container {
-        padding: 0;
-        border-radius: 0;
-        box-shadow: none;
+      input[type=checkbox],input[type=radio] {
+        width:17px;
+        height:17px;
+        accent-color:#8e2f2b;
       }
-
-      input,
-      textarea {
-        color: black !important;
-        opacity: 1 !important;
+      .weekdays {
+        display:flex;
+        flex-wrap:wrap;
+        gap:15px;
+        margin:20px 0;
       }
-
+      .weekdays label {
+        display:flex;
+        align-items:center;
+        gap:5px;
+        font-weight:normal;
+      }
       .table-wrap {
-        overflow: visible;
+        overflow:auto;
+        margin-top:20px;
       }
-    }
-  </style>
-</head>
-
-<body
-  data-nachweis-typ="arbeitsnachweis"
-  data-nachweis-titel="Arbeitsnachweis"
->
-  <div class="container">
-    <nav class="nav-buttons" aria-label="Hauptnavigation">
-      <a class="nav-btn" href="formular.html">
-        📋 Formulare
-      </a>
-
-      <a class="nav-btn" href="dashboard.html">
-        🏠 Dashboard
-      </a>
-
-      <a class="nav-btn" href="nachweise.html">
-        ▣ Meine Nachweise
-      </a>
-    </nav>
-
-    <h1>Arbeitsnachweis</h1>
-
-    <form id="nachweisForm">
-      <div class="row row-3">
-        <div>
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" required>
-        </div>
-
-        <div>
-          <label for="datum">Datum</label>
-          <input id="datum" name="datum" type="date" required>
-        </div>
-
-        <div>
-          <label for="stunden">Std.</label>
-          <input
-            id="stunden"
-            name="stunden"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-      </div>
-
-      <div class="weekdays">
-        <label for="tag0">
-          <input id="tag0" name="tag0" type="checkbox">Mo
-        </label>
-        <label for="tag1">
-          <input id="tag1" name="tag1" type="checkbox">Di
-        </label>
-        <label for="tag2">
-          <input id="tag2" name="tag2" type="checkbox">Mi
-        </label>
-        <label for="tag3">
-          <input id="tag3" name="tag3" type="checkbox">Do
-        </label>
-        <label for="tag4">
-          <input id="tag4" name="tag4" type="checkbox">Fr
-        </label>
-        <label for="tag5">
-          <input id="tag5" name="tag5" type="checkbox">Sa
-        </label>
-        <label for="tag6">
-          <input id="tag6" name="tag6" type="checkbox">So
-        </label>
-        <label for="tag7">
-          <input id="tag7" name="tag7" type="checkbox">Sonn-/Feiertag
-        </label>
-      </div>
-
-      <div class="row row-3">
-        <div>
-          <label for="abwesenheitVon">Abwesenheit von</label>
-          <input
-            id="abwesenheitVon"
-            name="abwesenheitVon"
-            type="time"
-          >
-        </div>
-
-        <div>
-          <label for="abwesenheitBis">bis</label>
-          <input
-            id="abwesenheitBis"
-            name="abwesenheitBis"
-            type="time"
-          >
-        </div>
-
-        <div>
-          <label for="abwesenheitStunden">Std.</label>
-          <input
-            id="abwesenheitStunden"
-            name="abwesenheitStunden"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-      </div>
-
-      <div class="row row-4">
-        <div>
-          <label for="arbeitsbeginn">Arbeitsbeginn</label>
-          <input
-            id="arbeitsbeginn"
-            name="arbeitsbeginn"
-            type="time"
-          >
-        </div>
-
-        <div>
-          <label for="pause">Pause (Minuten)</label>
-          <input
-            id="pause"
-            name="pause"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-
-        <div>
-          <label for="arbeitsende">Arbeitsende</label>
-          <input
-            id="arbeitsende"
-            name="arbeitsende"
-            type="time"
-          >
-        </div>
-
-        <div>
-          <label for="arbeitsstunden">Arb.-Std.</label>
-          <input
-            id="arbeitsstunden"
-            name="arbeitsstunden"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-      </div>
-
-      <div class="row row-3">
-        <div>
-          <label for="firma">Firma</label>
-          <input id="firma" name="firma" type="text">
-        </div>
-
-        <div>
-          <label for="kilometer">Kilometer</label>
-          <input
-            id="kilometer"
-            name="kilometer"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-
-        <div>
-          <label for="fahrstunden">Fahr.-Std.</label>
-          <input
-            id="fahrstunden"
-            name="fahrstunden"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-      </div>
-
-      <div class="row row-3">
-        <div>
-          <label for="bv">BV</label>
-          <input id="bv" name="bv" type="text">
-        </div>
-
-        <div>
-          <label for="kostenstelle">K.-Stelle</label>
-          <input
-            id="kostenstelle"
-            name="kostenstelle"
-            type="text"
-          >
-        </div>
-
-        <div>
-          <label for="gesamtstunden">ges.-Std.</label>
-          <input
-            id="gesamtstunden"
-            name="gesamtstunden"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-      </div>
-
-      <h3>Ausgeführte Arbeiten</h3>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Uhrzeit von–bis</th>
-              <th scope="col">
-                Ausgeführte Arbeiten
-                (Platz, Gerät, Material, Tätigkeit)
-              </th>
-              <th scope="col">Arbeitsstunden</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td>
-                <input id="zeit_1" name="zeit_1" type="text"
-                  aria-label="Uhrzeit von–bis – Zeile 1">
-              </td>
-              <td>
-                <input id="taetigkeit_1" name="taetigkeit_1" type="text"
-                  aria-label="Ausgeführte Arbeiten – Zeile 1">
-              </td>
-              <td>
-                <input id="stundenZeile_1" name="stundenZeile_1"
-                  type="number" min="0" step="0.25"
-                  aria-label="Arbeitsstunden – Zeile 1">
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input id="zeit_2" name="zeit_2" type="text"
-                  aria-label="Uhrzeit von–bis – Zeile 2">
-              </td>
-              <td>
-                <input id="taetigkeit_2" name="taetigkeit_2" type="text"
-                  aria-label="Ausgeführte Arbeiten – Zeile 2">
-              </td>
-              <td>
-                <input id="stundenZeile_2" name="stundenZeile_2"
-                  type="number" min="0" step="0.25"
-                  aria-label="Arbeitsstunden – Zeile 2">
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input id="zeit_3" name="zeit_3" type="text"
-                  aria-label="Uhrzeit von–bis – Zeile 3">
-              </td>
-              <td>
-                <input id="taetigkeit_3" name="taetigkeit_3" type="text"
-                  aria-label="Ausgeführte Arbeiten – Zeile 3">
-              </td>
-              <td>
-                <input id="stundenZeile_3" name="stundenZeile_3"
-                  type="number" min="0" step="0.25"
-                  aria-label="Arbeitsstunden – Zeile 3">
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input id="zeit_4" name="zeit_4" type="text"
-                  aria-label="Uhrzeit von–bis – Zeile 4">
-              </td>
-              <td>
-                <input id="taetigkeit_4" name="taetigkeit_4" type="text"
-                  aria-label="Ausgeführte Arbeiten – Zeile 4">
-              </td>
-              <td>
-                <input id="stundenZeile_4" name="stundenZeile_4"
-                  type="number" min="0" step="0.25"
-                  aria-label="Arbeitsstunden – Zeile 4">
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input id="zeit_5" name="zeit_5" type="text"
-                  aria-label="Uhrzeit von–bis – Zeile 5">
-              </td>
-              <td>
-                <input id="taetigkeit_5" name="taetigkeit_5" type="text"
-                  aria-label="Ausgeführte Arbeiten – Zeile 5">
-              </td>
-              <td>
-                <input id="stundenZeile_5" name="stundenZeile_5"
-                  type="number" min="0" step="0.25"
-                  aria-label="Arbeitsstunden – Zeile 5">
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <input id="zeit_6" name="zeit_6" type="text"
-                  aria-label="Uhrzeit von–bis – Zeile 6">
-              </td>
-              <td>
-                <input id="taetigkeit_6" name="taetigkeit_6" type="text"
-                  aria-label="Ausgeführte Arbeiten – Zeile 6">
-              </td>
-              <td>
-                <input id="stundenZeile_6" name="stundenZeile_6"
-                  type="number" min="0" step="0.25"
-                  aria-label="Arbeitsstunden – Zeile 6">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <label for="bemerkungen" class="remarks-label">
-        Bemerkungen
-      </label>
-
-      <textarea
-        id="bemerkungen"
-        name="bemerkungen"
-        rows="5"
-      ></textarea>
-
-      <div class="actions">
-        <button
-          id="saveNachweis"
-          type="button"
-          class="save-btn"
-          disabled
-        >
-          💾 Arbeitsnachweis speichern
-        </button>
-
-        <button
-          id="sendNachweis"
-          type="button"
-          class="send-btn"
-          aria-describedby="emailHinweis"
-        >
-          ✉️ Per E-Mail senden
-        </button>
-
-        <button
-          id="printNachweis"
-          type="button"
-          class="nav-btn"
-        >
-          🖨 Drucken / PDF
-        </button>
-
-        <a class="new-record" href="arbeitsnachweis.html">
-          + Neuer Nachweis
+      table {
+        width:100%;
+        min-width:620px;
+        border-collapse:collapse;
+      }
+      th {
+        padding:10px;
+        background:#8e2f2b;
+        color:white;
+        text-align:left;
+      }
+      td {
+        padding:5px;
+        border:1px solid #ddd;
+      }
+      td input {
+        border:0!important;
+      }
+      .remarks-label {
+        margin-top:20px;
+      }
+      .actions {
+        display:flex;
+        flex-wrap:wrap;
+        align-items:center;
+        gap:10px;
+        margin-top:20px;
+      }
+      .actions .save-btn,.actions .nav-btn {
+        min-height:44px;
+        margin:0;
+        padding:12px 18px;
+        font-size:14px;
+        line-height:1.2;
+      }
+      .new-record {
+        display:inline-flex;
+        align-items:center;
+        min-height:44px;
+        color:#8e2f2b;
+      }
+      .status {
+        margin:16px 0;
+        padding:12px;
+        border-radius:9px;
+        background:#f8f9fb;
+        font-size:13px;
+      }
+      .fine {
+        color:#727785;
+        font-size:12px;
+      }
+      @media(max-width:700px) {
+        body {
+          padding:12px;
+        }
+        .container {
+          padding:18px;
+        }
+        .row-3,.row-4 {
+          grid-template-columns:1fr;
+        }
+      }
+      @media print {
+        .nav-buttons,.actions,.status,.fine {
+          display:none!important;
+        }
+        body {
+          padding:0;
+          background:white;
+        }
+        .container {
+          padding:0;
+          border-radius:0;
+          box-shadow:none;
+        }
+        input,textarea {
+          color:black!important;
+          opacity:1!important;
+        }
+        .table-wrap {
+          overflow:visible;
+        }
+      }
+    </style>
+  </head>
+  <body data-nachweis-typ="arbeitsnachweis" data-nachweis-titel="Arbeitsnachweis">
+    <div class="container">
+      <nav class="nav-buttons" aria-label="Hauptnavigation">
+        <a class="nav-btn" href="formular.html">
+          📋 Formulare
         </a>
-      </div>
-
-      <p class="status" id="nachweisStatus" role="status">
-        Speicherfunktion wird geladen …
-      </p>
-
-      <p class="status" id="emailStatus" role="status"></p>
-
-      <p class="fine">
-        Gespeicherte Daten sind unter „Meine Nachweise“ abrufbar.
-        Ein erneuter Klick aktualisiert denselben Nachweis.
-      </p>
-
-      <p class="fine" id="emailHinweis">
-        „Per E-Mail senden“ öffnet dein E-Mail-Programm
-        mit den aktuellen Formulardaten als Text
-        an technik@ve-log.de.
-        Dort musst du die E-Mail noch absenden.
-        Der Nachweis wird dadurch nicht gespeichert.
-        Eine PDF wird nicht automatisch angehängt.
-      </p>
-    </form>
-  </div>
-
-  <!-- Vorhandene Speicherfunktion -->
-  <script
-    type="module"
-    src="nachweise-formular.js?v=2"
-  ></script>
-
-  <!-- E-Mail und Drucken -->
-  <script>
-    (() => {
-      const EMAIL_EMPFAENGER = "technik@ve-log.de";
-
-      const form = document.getElementById("nachweisForm");
-      const emailStatus = document.getElementById("emailStatus");
-      const sendButton = document.getElementById("sendNachweis");
-      const printButton = document.getElementById("printNachweis");
-
-      const wochentage = [
-        "Montag",
-        "Dienstag",
-        "Mittwoch",
-        "Donnerstag",
-        "Freitag",
-        "Samstag",
-        "Sonntag",
-        "Sonn-/Feiertag"
-      ];
-
-      function feldwert(name) {
-        return form.elements.namedItem(name).value.trim();
-      }
-
-      function datumFormatieren(wert) {
-        if (!wert) return "";
-
-        const [jahr, monat, tag] = wert.split("-");
-        return `${tag}.${monat}.${jahr}`;
-      }
-
-      function zeileHinzufuegen(zeilen, titel, name, einheit = "") {
-        const wert = feldwert(name);
-
-        if (wert !== "") {
-          zeilen.push(
-            `${titel}: ${wert}${einheit ? " " + einheit : ""}`
-          );
-        }
-      }
-
-      function emailTextErstellen() {
-        const zeilen = [
-          "ARBEITSNACHWEIS",
-          "",
-          `Name: ${feldwert("name")}`,
-          `Datum: ${datumFormatieren(feldwert("datum"))}`
-        ];
-
-        zeileHinzufuegen(zeilen, "Stunden", "stunden", "Std.");
-
-        const ausgewaehlteTage = wochentage.filter((tag, index) => {
-          return form.elements.namedItem(`tag${index}`).checked;
-        });
-
-        if (ausgewaehlteTage.length > 0) {
-          zeilen.push(`Wochentage: ${ausgewaehlteTage.join(", ")}`);
-        }
-
-        zeilen.push("", "ZEITEN");
-
-        zeileHinzufuegen(
-          zeilen, "Abwesenheit von", "abwesenheitVon"
-        );
-        zeileHinzufuegen(
-          zeilen, "Abwesenheit bis", "abwesenheitBis"
-        );
-        zeileHinzufuegen(
-          zeilen, "Abwesenheitsstunden", "abwesenheitStunden", "Std."
-        );
-        zeileHinzufuegen(
-          zeilen, "Arbeitsbeginn", "arbeitsbeginn"
-        );
-        zeileHinzufuegen(
-          zeilen, "Pause", "pause", "Minuten"
-        );
-        zeileHinzufuegen(
-          zeilen, "Arbeitsende", "arbeitsende"
-        );
-        zeileHinzufuegen(
-          zeilen, "Arbeitsstunden", "arbeitsstunden", "Std."
-        );
-
-        zeilen.push("", "EINSATZ UND FAHRT");
-
-        zeileHinzufuegen(zeilen, "Firma", "firma");
-        zeileHinzufuegen(zeilen, "Kilometer", "kilometer", "km");
-        zeileHinzufuegen(
-          zeilen, "Fahrstunden", "fahrstunden", "Std."
-        );
-        zeileHinzufuegen(zeilen, "BV", "bv");
-        zeileHinzufuegen(zeilen, "Kostenstelle", "kostenstelle");
-        zeileHinzufuegen(
-          zeilen, "Gesamtstunden", "gesamtstunden", "Std."
-        );
-
-        zeilen.push("", "AUSGEFÜHRTE ARBEITEN");
-
-        let hatArbeiten = false;
-
-        for (let index = 1; index <= 6; index++) {
-          const zeit = feldwert(`zeit_${index}`);
-          const taetigkeit = feldwert(`taetigkeit_${index}`);
-          const stunden = feldwert(`stundenZeile_${index}`);
-
-          if (!zeit && !taetigkeit && !stunden) continue;
-
-          hatArbeiten = true;
-          zeilen.push("", `Zeile ${index}:`);
-
-          if (zeit) {
-            zeilen.push(`Uhrzeit von–bis: ${zeit}`);
-          }
-
-          if (taetigkeit) {
-            zeilen.push(`Tätigkeit: ${taetigkeit}`);
-          }
-
-          if (stunden) {
-            zeilen.push(`Arbeitsstunden: ${stunden} Std.`);
-          }
-        }
-
-        if (!hatArbeiten) {
-          zeilen.push("Keine Angaben.");
-        }
-
-        const bemerkungen = feldwert("bemerkungen");
-
-        if (bemerkungen) {
-          zeilen.push("", "BEMERKUNGEN", bemerkungen);
-        }
-
-        return zeilen.join("\r\n");
-      }
-
-      sendButton.addEventListener("click", () => {
-        emailStatus.textContent = "";
-
-        if (!form.reportValidity()) return;
-
-        if (!feldwert("name")) {
-          emailStatus.textContent = "Bitte einen Namen eintragen.";
-          form.elements.namedItem("name").focus();
-          return;
-        }
-
-        const betreff =
-          `Arbeitsnachweis – ${feldwert("name")} – ` +
-          datumFormatieren(feldwert("datum"));
-
-        const mailto =
-          `mailto:${EMAIL_EMPFAENGER}` +
-          `?subject=${encodeURIComponent(betreff)}` +
-          `&body=${encodeURIComponent(emailTextErstellen())}`;
-
-        try {
-          window.location.href = mailto;
-
-          emailStatus.textContent =
-            "Das Öffnen deines E-Mail-Programms wurde angefordert. " +
-            "Bitte prüfe die Nachricht an technik@ve-log.de " +
-            "und sende sie dort ab. Falls nichts passiert, " +
-            "prüfe deine Standard-E-Mail-App.";
-        } catch (error) {
-          emailStatus.textContent =
-            "Das E-Mail-Programm konnte nicht geöffnet werden. " +
-            "Bitte prüfe deine Standard-E-Mail-App.";
-        }
-      });
-
-      printButton.addEventListener("click", () => {
+        <a class="nav-btn" href="dashboard.html">
+          🏠 Dashboard
+        </a>
+        <a class="nav-btn" href="nachweise.html">
+          ▣ Meine Nachweise
+        </a>
+      </nav>
+      <h1>
+        Arbeitsnachweis
+      </h1>
+      <form id="nachweisForm">
+        <div class="row row-3">
+          <div>
+            <label for="name">
+              Name
+            </label>
+            <input id="name" name="name" type="text" required>
+          </div>
+          <div>
+            <label for="datum">
+              Datum
+            </label>
+            <input id="datum" name="datum" type="date" required>
+          </div>
+          <div>
+            <label for="stunden">
+              Std.
+            </label>
+            <input id="stunden" name="stunden" type="number" min="0" step="0.25">
+          </div>
+        </div>
+        <div class="weekdays">
+          <label for="tag0">
+            <input id="tag0" name="tag0" type="checkbox">
+            Mo
+          </label>
+          <label for="tag1">
+            <input id="tag1" name="tag1" type="checkbox">
+            Di
+          </label>
+          <label for="tag2">
+            <input id="tag2" name="tag2" type="checkbox">
+            Mi
+          </label>
+          <label for="tag3">
+            <input id="tag3" name="tag3" type="checkbox">
+            Do
+          </label>
+          <label for="tag4">
+            <input id="tag4" name="tag4" type="checkbox">
+            Fr
+          </label>
+          <label for="tag5">
+            <input id="tag5" name="tag5" type="checkbox">
+            Sa
+          </label>
+          <label for="tag6">
+            <input id="tag6" name="tag6" type="checkbox">
+            So
+          </label>
+          <label for="tag7">
+            <input id="tag7" name="tag7" type="checkbox">
+            Sonn-/Feiertag
+          </label>
+        </div>
+        <div class="row row-3">
+          <div>
+            <label for="abwesenheitVon">
+              Abwesenheit von
+            </label>
+            <input id="abwesenheitVon" name="abwesenheitVon" type="time">
+          </div>
+          <div>
+            <label for="abwesenheitBis">
+              bis
+            </label>
+            <input id="abwesenheitBis" name="abwesenheitBis" type="time">
+          </div>
+          <div>
+            <label for="abwesenheitStunden">
+              Std.
+            </label>
+            <input
+              id="abwesenheitStunden"
+              name="abwesenheitStunden"
+              type="number"
+              min="0"
+              step="0.25"
+            >
+          </div>
+        </div>
+        <div class="row row-4">
+          <div>
+            <label for="arbeitsbeginn">
+              Arbeitsbeginn
+            </label>
+            <input id="arbeitsbeginn" name="arbeitsbeginn" type="time">
+          </div>
+          <div>
+            <label for="pause">
+              Pause (Minuten)
+            </label>
+            <input id="pause" name="pause" type="number" min="0" step="0.25">
+          </div>
+          <div>
+            <label for="arbeitsende">
+              Arbeitsende
+            </label>
+            <input id="arbeitsende" name="arbeitsende" type="time">
+          </div>
+          <div>
+            <label for="arbeitsstunden">
+              Arb.-Std.
+            </label>
+            <input id="arbeitsstunden" name="arbeitsstunden" type="number" min="0" step="0.25">
+          </div>
+        </div>
+        <div class="row row-3">
+          <div>
+            <label for="firma">
+              Firma
+            </label>
+            <input id="firma" name="firma" type="text">
+          </div>
+          <div>
+            <label for="kilometer">
+              Kilometer
+            </label>
+            <input id="kilometer" name="kilometer" type="number" min="0" step="0.25">
+          </div>
+          <div>
+            <label for="fahrstunden">
+              Fahr.-Std.
+            </label>
+            <input id="fahrstunden" name="fahrstunden" type="number" min="0" step="0.25">
+          </div>
+        </div>
+        <div class="row row-3">
+          <div>
+            <label for="bv">
+              BV
+            </label>
+            <input id="bv" name="bv" type="text">
+          </div>
+          <div>
+            <label for="kostenstelle">
+              K.-Stelle
+            </label>
+            <input id="kostenstelle" name="kostenstelle" type="text">
+          </div>
+          <div>
+            <label for="gesamtstunden">
+              ges.-Std.
+            </label>
+            <input id="gesamtstunden" name="gesamtstunden" type="number" min="0" step="0.25">
+          </div>
+        </div>
+        <h3>
+          Ausgeführte Arbeiten
+        </h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">
+                  Uhrzeit von–bis
+                </th>
+                <th scope="col">
+                  Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit)
+                </th>
+                <th scope="col">
+                  Arbeitsstunden
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input id="zeit_1" name="zeit_1" type="text" aria-label="Uhrzeit von-bis - Zeile 1">
+                </td>
+                <td>
+                  <input
+                    id="taetigkeit_1"
+                    name="taetigkeit_1"
+                    type="text"
+                    aria-label="Ausgeführte Arbeiten - Zeile 1"
+                  >
+                </td>
+                <td>
+                  <input
+                    id="stundenZeile_1"
+                    name="stundenZeile_1"
+                    type="number"
+                    aria-label="Arbeitsstunden - Zeile 1"
+                    min="0"
+                    step="0.25"
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="zeit_2" name="zeit_2" type="text" aria-label="Uhrzeit von-bis - Zeile 2">
+                </td>
+                <td>
+                  <input
+                    id="taetigkeit_2"
+                    name="taetigkeit_2"
+                    type="text"
+                    aria-label="Ausgeführte Arbeiten - Zeile 2"
+                  >
+                </td>
+                <td>
+                  <input
+                    id="stundenZeile_2"
+                    name="stundenZeile_2"
+                    type="number"
+                    aria-label="Arbeitsstunden - Zeile 2"
+                    min="0"
+                    step="0.25"
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="zeit_3" name="zeit_3" type="text" aria-label="Uhrzeit von-bis - Zeile 3">
+                </td>
+                <td>
+                  <input
+                    id="taetigkeit_3"
+                    name="taetigkeit_3"
+                    type="text"
+                    aria-label="Ausgeführte Arbeiten - Zeile 3"
+                  >
+                </td>
+                <td>
+                  <input
+                    id="stundenZeile_3"
+                    name="stundenZeile_3"
+                    type="number"
+                    aria-label="Arbeitsstunden - Zeile 3"
+                    min="0"
+                    step="0.25"
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="zeit_4" name="zeit_4" type="text" aria-label="Uhrzeit von-bis - Zeile 4">
+                </td>
+                <td>
+                  <input
+                    id="taetigkeit_4"
+                    name="taetigkeit_4"
+                    type="text"
+                    aria-label="Ausgeführte Arbeiten - Zeile 4"
+                  >
+                </td>
+                <td>
+                  <input
+                    id="stundenZeile_4"
+                    name="stundenZeile_4"
+                    type="number"
+                    aria-label="Arbeitsstunden - Zeile 4"
+                    min="0"
+                    step="0.25"
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="zeit_5" name="zeit_5" type="text" aria-label="Uhrzeit von-bis - Zeile 5">
+                </td>
+                <td>
+                  <input
+                    id="taetigkeit_5"
+                    name="taetigkeit_5"
+                    type="text"
+                    aria-label="Ausgeführte Arbeiten - Zeile 5"
+                  >
+                </td>
+                <td>
+                  <input
+                    id="stundenZeile_5"
+                    name="stundenZeile_5"
+                    type="number"
+                    aria-label="Arbeitsstunden - Zeile 5"
+                    min="0"
+                    step="0.25"
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="zeit_6" name="zeit_6" type="text" aria-label="Uhrzeit von-bis - Zeile 6">
+                </td>
+                <td>
+                  <input
+                    id="taetigkeit_6"
+                    name="taetigkeit_6"
+                    type="text"
+                    aria-label="Ausgeführte Arbeiten - Zeile 6"
+                  >
+                </td>
+                <td>
+                  <input
+                    id="stundenZeile_6"
+                    name="stundenZeile_6"
+                    type="number"
+                    aria-label="Arbeitsstunden - Zeile 6"
+                    min="0"
+                    step="0.25"
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <label for="bemerkungen" class="remarks-label">
+          Bemerkungen
+        </label>
+        <textarea id="bemerkungen" name="bemerkungen" rows="5">
+        </textarea>
+        <div class="actions">
+          <button id="saveNachweis" type="button" class="save-btn" disabled>
+            💾 Nachweis &amp; PDF speichern
+          </button>
+          <a class="nav-btn" href="nachweise.html">
+            ▣ Meine Nachweise / PDF senden
+          </a>
+          <button id="printNachweis" class="nav-btn" type="button">
+            🖨 Drucken / PDF
+          </button>
+          <a class="new-record" href="arbeitsnachweis.html">
+            + Neuer Nachweis
+          </a>
+        </div>
+        <p class="status" id="nachweisStatus" role="status">
+          Speicherfunktion wird geladen …
+        </p>
+        <p class="fine">
+          Beim Speichern werden Formulardaten und eine PDF gemeinsam gespeichert. Erneutes Speichern aktualisiert denselben Nachweis samt PDF. Unter „Meine Nachweise“ kannst du die PDF öffnen, herunterladen und teilen.
+        </p>
+      </form>
+    </div>
+    <script type="module" src="nachweise-formular.js?v=3">
+    </script>
+    <script>
+      document.getElementById('printNachweis').addEventListener('click', () => {
         window.print();
       });
-    })();
-  </script>
-</body>
+    </script>
+  </body>
 </html>
