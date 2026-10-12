@@ -282,7 +282,8 @@ async function start() {
           }
 
           return {
-            ...(existing || {}),
+              ...(existing || {}),
+            ownerUid: user.uid,
             typ,
             titel,
             datum: daten.datum || '',
