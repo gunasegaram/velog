@@ -44,7 +44,7 @@ async function loadPdfTools() {
   let timer;
   try {
     const module = await Promise.race([
-      import('./nachweise-pdf.js?v=4'),
+      import('./nachweise-pdf.js?v=5'),
       new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Zeitüberschreitung beim Laden')), 15000); })
     ]);
     const required = ['createPdf','pdfFile','downloadPdf','openPdf','supportsPdfSharing','sharePdf','emailWithDownload','labelFor'];
@@ -71,6 +71,7 @@ const pageSize=20;
 const selectedIds=new Set();
 let visibleIds=[];
 let deleteBusy=false;
+const downloadJobs=new Set();
 function actionMessage(text,error=false){$('actionStatus').hidden=false;$('actionStatus').textContent=text;$('actionStatus').classList.toggle('error',error);}
 function updateSelection(){
  $('selectionCount').textContent=selectedIds.size+' ausgewählt';
@@ -144,7 +145,7 @@ function render(){
   }else{
    const edit=textNode('button','Bearbeiten','btn');edit.type='button';edit.disabled=true;edit.title=r.status!=='entwurf'?'Nur Entwürfe können bearbeitet werden.':'Für diese Formularart ist keine Bearbeitungsseite hinterlegt.';actions.append(edit);
   }
-  const pdf=textNode('button','PDF herunterladen','btn');pdf.type='button';pdf.disabled=!hasPdf(r);pdf.title=pdf.disabled?'Öffne Details / PDF, um die PDF-Funktion zu prüfen oder eine PDF nachträglich zu erstellen.':'Gespeicherte PDF herunterladen';pdf.addEventListener('click',()=>{try{downloadPdf(r.pdf);actionMessage('PDF-Download gestartet.');}catch(error){actionMessage(error.message,true);}});actions.append(pdf);
+  const pdf=textNode('button','PDF herunterladen','btn');pdf.type='button';pdf.disabled=!pdfTools||pdfBusy||downloadJobs.has(r.id);pdf.title=hasPdf(r)?'Gespeicherte PDF herunterladen':'PDF aus den gespeicherten Formulardaten erstellen und herunterladen';pdf.addEventListener('click',()=>downloadRecordPdf(r));actions.append(pdf);
   const remove=textNode('button','Löschen','btn danger');remove.type='button';remove.disabled=deleteBusy||!connected;remove.setAttribute('aria-label','Löschen: '+(r.titel||'Nachweis'));remove.addEventListener('click',()=>deleteRecords([r.id]));actions.append(remove);
   action.append(actions);tr.append(selectCell,first,day,state,action);$('records').append(tr);
  }
@@ -171,16 +172,38 @@ function drawDetail(){
  $('detailTitle').textContent=selected.titel||'Nachweis';$('detailType').textContent=typeNames[selected.typ]||'NACHWEIS';$('detailMeta').replaceChildren(textNode('span',fmtDay(selected.datum)),textNode('span',statusName(selected.status)),textNode('span','Zuletzt gespeichert: '+fmtTime(selected.updatedAt)));$('detailData').replaceChildren(renderValue(selected.daten,0,selected.feldLabels||{}));$('detailId').textContent='Nachweis-ID: '+selected.id;
  const original=formPages[selected.typ];$('openOriginal').hidden=!original;if(original){$('openOriginal').href=original+'?id='+encodeURIComponent(selected.id);$('openOriginal').textContent=selected.status==='entwurf'?'Im Formular bearbeiten':'Formular ansehen';}
  const available=hasPdf(selected),sharing=available&&supportsPdfSharing(selected.pdf);
- for(const id of ['openPdf','downloadPdf','emailPdf'])$(id).disabled=!available||pdfBusy;
+ for(const id of ['openPdf','emailPdf'])$(id).disabled=!available||pdfBusy;
+ $('downloadPdf').disabled=!pdfTools||pdfBusy||downloadJobs.has(selected.id);
  $('sharePdf').hidden=!sharing;$('sharePdf').disabled=pdfBusy;
- $('createPdf').hidden=available;$('createPdf').disabled=pdfBusy||!connected||!pdfTools;
- $('pdfHint').textContent=!pdfTools?(pdfLoadError||'PDF-Funktionen werden geladen …'):!available?'Für diesen älteren Nachweis ist noch keine PDF gespeichert. Du kannst sie nachträglich erstellen.':sharing?'„PDF teilen“: Wähle deine E-Mail-App und trage technik@ve-log.de als Empfänger ein. Das Teilen bestätigt keinen E-Mail-Versand.':'Der E-Mail-Button lädt die PDF herunter und öffnet eine Nachricht an technik@ve-log.de. Bitte hänge die PDF manuell an und sende die E-Mail ab.';
+ $('createPdf').hidden=available;$('createPdf').disabled=pdfBusy||!connected||!pdfTools||selected.status!=='entwurf';
+ $('pdfHint').textContent=!pdfTools?(pdfLoadError||'PDF-Funktionen werden geladen …'):!available?'Für diesen Nachweis ist noch keine PDF gespeichert. Klicke auf PDF herunterladen: Die Datei wird direkt aus deinen gespeicherten Daten erstellt. Bei Entwürfen kannst du sie zusätzlich beim Nachweis speichern.':sharing?'„PDF teilen“: Wähle deine E-Mail-App und trage technik@ve-log.de als Empfänger ein. Das Teilen bestätigt keinen E-Mail-Versand.':'Der E-Mail-Button lädt die PDF herunter und öffnet eine Nachricht an technik@ve-log.de. Bitte hänge die PDF manuell an und sende die E-Mail ab.';
 }
 $('closeDetail').addEventListener('click',()=>{$('detailDialog').close();});$('detailDialog').addEventListener('close',()=>{selected=null;});
 $('printDetail').addEventListener('click',()=>{if(selected)window.print();});
 $('downloadDetail').addEventListener('click',()=>{if(!selected)return;const {pdf,...data}=selected;const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='VE-Log-'+selected.id+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);});
 $('openPdf').addEventListener('click',()=>{if(!selected)return;try{openPdf(selected.pdf);}catch(error){pdfMessage(error.message,true);}});
-$('downloadPdf').addEventListener('click',()=>{if(!selected)return;try{downloadPdf(selected.pdf);pdfMessage('PDF-Download gestartet.');}catch(error){pdfMessage(error.message,true);}});
+async function downloadRecordPdf(record){
+ if(!record||!pdfTools||!auth?.currentUser||pdfBusy||downloadJobs.has(record.id))return;
+ const current=session,uid=auth.currentUser.uid;
+ downloadJobs.add(record.id);render();drawDetail();
+ const creating=!hasPdf(record);
+ actionMessage(creating?'PDF wird aus den gespeicherten Daten erstellt …':'PDF wird heruntergeladen …');
+ if(selected?.id===record.id)pdfMessage(creating?'PDF wird erstellt …':'PDF wird heruntergeladen …');
+ try{
+  if(!record.daten||typeof record.daten!=='object'||Object.keys(record.daten).length===0)throw new Error('Dieser Nachweis enthält keine gespeicherten Formularfelder.');
+  const pdf=creating?await createPdf(record):record.pdf;
+  if(current!==session||auth.currentUser?.uid!==uid)return;
+  downloadPdf(pdf);
+  const message=creating?'PDF erstellt; Download gestartet. Die Datei wurde auf dein Gerät heruntergeladen, nicht zusätzlich in Firebase gespeichert.':'PDF-Download gestartet.';
+  actionMessage(message);
+  if(selected?.id===record.id)pdfMessage(message);
+ }catch(error){
+  if(current===session){actionMessage(error.message||'PDF-Erstellung fehlgeschlagen.',true);if(selected?.id===record.id)pdfMessage(error.message||'PDF-Erstellung fehlgeschlagen.',true);}
+ }finally{
+  if(current===session){downloadJobs.delete(record.id);render();drawDetail();}
+ }
+}
+$('downloadPdf').addEventListener('click',()=>{if(selected)return downloadRecordPdf(selected);});
 $('emailPdf').addEventListener('click',()=>{if(!selected)return;try{emailWithDownload(selected.pdf,selected.titel+' – '+fmtDay(selected.datum));pdfMessage('PDF-Download und Öffnen der E-Mail-App angefordert. Hänge die PDF manuell an und sende die Nachricht an technik@ve-log.de ab.');}catch(error){pdfMessage(error.message,true);}});
 $('sharePdf').addEventListener('click',async()=>{
  if(!selected||pdfBusy)return;
@@ -190,15 +213,15 @@ $('sharePdf').addEventListener('click',async()=>{
  finally{pdfBusy=false;drawDetail();}
 });
 $('createPdf').addEventListener('click',async()=>{
- if(!selected||pdfBusy||!auth.currentUser||!connected||!pdfTools)return;
+ if(!selected||selected.status!=='entwurf'||pdfBusy||!auth.currentUser||!connected||!pdfTools)return;
  const record=selected,user=auth.currentUser,current=session;pdfBusy=true;drawDetail();pdfMessage('PDF wird erstellt und gespeichert …');
  try{
   const pdf=await createPdf(record);
   if(current!==session||auth.currentUser?.uid!==user.uid)return;
   const originalData=JSON.stringify(record.daten||{}),originalTitle=record.titel;
   const result=await DB.runTransaction(DB.ref(db,'nachweise/'+user.uid+'/'+record.id),existing=>{
-   if(!existing||existing.pdf||JSON.stringify(existing.daten||{})!==originalData||existing.titel!==originalTitle)return;
-   return {...existing,pdf:{...pdf,generatedAt:DB.serverTimestamp()}};
+   if(!existing||existing.status!=='entwurf'||existing.pdf||JSON.stringify(existing.daten||{})!==originalData||existing.titel!==originalTitle)return;
+   return {...existing,updatedAt:DB.serverTimestamp(),pdf:{...pdf,generatedAt:DB.serverTimestamp()}};
   },{applyLocally:false});
   if(current!==session)return;
   if(!result.committed)throw new Error('Der Nachweis wurde inzwischen geändert oder besitzt bereits eine PDF. Bitte öffne seine Details erneut.');
@@ -213,7 +236,7 @@ async function start(){
   const [App,Auth,Database]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')]);DB=Database;
   const app=App.getApps().length?App.getApp():App.initializeApp(firebaseConfig);auth=Auth.getAuth(app);db=DB.getDatabase(app);
   Auth.onAuthStateChanged(auth,user=>{
-   const current=++session;selectedIds.clear();visibleIds=[];$('actionStatus').hidden=true;stopRecords?.();stopConnection?.();stopTimeout?.();records=[];loaded=false;connected=false;page=0;selected=null;if($('detailDialog').open)$('detailDialog').close();render();['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=true);
+   const current=++session;downloadJobs.clear();selectedIds.clear();visibleIds=[];$('actionStatus').hidden=true;stopRecords?.();stopConnection?.();stopTimeout?.();records=[];loaded=false;connected=false;page=0;selected=null;if($('detailDialog').open)$('detailDialog').close();render();['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=true);
    if(!user){$('accountName').textContent='Dein Konto';notice('Bitte melde dich an, um deine Nachweise zu sehen.');const a=textNode('a',' Zur Anmeldung');a.href='index.html';$('loadStatus').append(a);$('emptyTitle').textContent='Anmeldung erforderlich';$('emptyText').textContent='Deine Nachweise sind deinem Benutzerkonto zugeordnet.';return;}
    $('accountName').textContent=user.displayName||user.email||'Dein Konto';notice('Deine Nachweise werden geladen …');
    const loadTimer=setTimeout(()=>{if(current===session&&!loaded)notice('Die Datenbank antwortet noch nicht. Prüfe die Verbindung und ob du die Seite über deine Website geöffnet hast. Angemeldetes Konto: '+(user.email||user.uid),true);},15000);
