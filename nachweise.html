@@ -9,6 +9,8 @@
 @media(max-width:1000px){.sidebar{width:205px}.shell{margin-left:205px}main{padding:26px 22px}.topbar{padding:0 22px}th,td{padding:14px 16px}}
 @media(max-width:760px){.sidebar{position:static;width:100%;padding:16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 6px 14px}.brand img{max-height:43px}.nav-label,.side-note{display:none}.nav{display:flex;overflow:auto;gap:6px}.nav a{padding:9px 10px;font-size:12px;white-space:nowrap}.shell{margin:0}.topbar{height:60px;padding:0 18px}main{padding:24px 16px}.intro{align-items:flex-start;flex-direction:column;gap:14px}h1{font-size:28px}.stats{gap:9px}.stat{padding:14px}.stat strong{font-size:25px}.stat small{display:none}.filters{grid-template-columns:1fr 1fr;padding:16px}.filters label:first-child{grid-column:1/-1}.panel-head{padding:18px 16px}.foot{flex-wrap:wrap}.pager{padding:16px;flex-wrap:wrap}.detail-head,.detail-body{padding:18px}}
 @media print{body>*{display:none!important}body>.shell{display:block!important}.shell>*{display:none!important}.shell>dialog[open]{display:block!important;position:static;width:100%;max-height:none;border:0;margin:0;overflow:visible}.detail-actions,.detail-head button,#pdfStatus,#pdfHint{display:none!important}.detail-head{position:static}.details-list>div{break-inside:avoid}body{background:white}.shell{margin:0}}
+
+.selection-bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:14px 24px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fafafb}.selection-bar span{font-size:12px;color:var(--muted)}.select-cell{width:48px;padding-right:8px}input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand);cursor:pointer}.row-actions{display:flex;flex-wrap:wrap;gap:7px;min-width:300px}.row-actions .btn{min-height:36px;padding:8px 11px}.btn.danger{color:#8e2f2b;border-color:#dfaaa5;background:#fff8f7}.btn[aria-disabled=true]{opacity:.5;cursor:default}.row-selected{background:#fff8f7}@media(max-width:760px){.selection-bar{padding:14px 16px}.row-actions{min-width:250px}}@media print{.selection-bar,#actionStatus{display:none!important}}
 </style>
 </head>
 <body>
@@ -21,7 +23,9 @@
 <details class="panel" style="margin-bottom:22px;padding:18px 24px"><summary style="cursor:pointer;font-weight:650">Formular ausfüllen – alle neun Formulare</summary><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"><a class="btn" href="arbeitsnachweis.html">Arbeitsnachweis</a><a class="btn" href="arbeitsnachweis-lkw.html">Arbeitsnachweis LKW</a><a class="btn" href="leistungsnachweis.html">Leistungsnachweis</a><a class="btn" href="materialausgabe.html">Materialausgabe</a><a class="btn" href="lieferschein.html">Liefer-/Empfangsschein</a><a class="btn" href="m.empfaenger.html">Material – Empfänger</a><a class="btn" href="m.baustelle.html">Material – Baustelle</a><a class="btn" href="m.absender.html">Material – Absender</a><a class="btn" href="fuhrunternehmer.html">Fuhrunternehmer</a></div></details>
 <section class="panel"><div class="panel-head"><h2>Gespeicherte Nachweise</h2><span class="muted" id="accountName" style="font-size:12px">Dein Konto</span></div>
 <div class="filters"><label for="search">Nachweis suchen<input id="search" type="search" placeholder="Titel, Datum oder Formularart …" disabled></label><label for="typeFilter">Formularart<select id="typeFilter" disabled><option value="">Alle Formulararten</option><option value="arbeitsnachweis">Arbeitsnachweis</option><option value="arbeitsnachweis_lkw">Arbeitsnachweis LKW</option><option value="lieferschein">Liefer-/Empfangsschein</option><option value="leistungsnachweis">Leistungsnachweis</option><option value="materialausgabe">Materialausgabe</option><option value="material_empfaenger">Material – Empfänger</option><option value="material_baustelle">Material – Baustelle</option><option value="material_absender">Material – Absender</option><option value="fuhrunternehmer">Fuhrunternehmer</option></select></label><label for="statusFilter">Status<select id="statusFilter" disabled><option value="">Alle Status</option><option value="entwurf">Entwurf</option><option value="eingereicht">Eingereicht</option></select></label></div>
-<div class="table-wrap" id="tableWrap" hidden><table><thead><tr><th scope="col">Nachweis</th><th scope="col">Datum</th><th scope="col">Status</th><th scope="col">Aktion</th></tr></thead><tbody id="records"></tbody></table></div>
+<div class="selection-bar"><span id="selectionCount" aria-live="polite">0 ausgewählt</span><button class="btn danger" id="deleteSelected" type="button" disabled>Ausgewählte löschen</button><button class="btn" id="clearSelection" type="button" disabled>Auswahl aufheben</button><span>Die Auswahl gilt über Seiten hinweg; ein Filterwechsel hebt sie auf.</span></div>
+<p class="notice" id="actionStatus" style="margin:16px 24px" role="status" hidden></p>
+<div class="table-wrap" id="tableWrap" hidden><table><thead><tr><th scope="col" class="select-cell"><input id="selectPage" type="checkbox" aria-label="Alle Nachweise auf dieser Seite auswählen" disabled></th><th scope="col">Nachweis</th><th scope="col">Datum</th><th scope="col">Status</th><th scope="col">Aktion</th></tr></thead><tbody id="records"></tbody></table></div>
 <div class="empty" id="emptyState"><div class="type-icon">▤</div><h3 id="emptyTitle">Nachweise werden geladen</h3><p id="emptyText">Bitte warte, bis deine Anmeldung geprüft wurde.</p><a class="btn" id="emptyLink" href="formular.html" hidden>Zu den Formularen</a></div>
 <div class="pager"><span id="resultCount" aria-live="polite">—</span><div><button class="btn" id="prev" disabled>← Zurück</button><button class="btn" id="next" disabled>Weiter →</button></div></div></section>
 <footer class="foot"><span>VE-Log · Mitarbeiterportal</span><span>Nur Nachweise deines angemeldeten Kontos</span></footer></main>
@@ -55,6 +59,7 @@ async function loadPdfTools() {
     clearTimeout(timer);
     updateConnectionNotice();
     drawDetail();
+    render();
   }
 }
 const firebaseConfig={apiKey:'AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM',authDomain:'ve-log.firebaseapp.com',databaseURL:'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',projectId:'ve-log',storageBucket:'ve-log.firebasestorage.app',messagingSenderId:'749978080433',appId:'1:749978080433:web:8f64ef99a557fe2346be90'};
@@ -63,6 +68,47 @@ const typeNames={arbeitsnachweis:'Arbeitsnachweis',arbeitsnachweis_lkw:'Arbeitsn
 const formPages={arbeitsnachweis:'arbeitsnachweis.html',arbeitsnachweis_lkw:'arbeitsnachweis-lkw.html',leistungsnachweis:'leistungsnachweis.html',materialausgabe:'materialausgabe.html',lieferschein:'lieferschein.html',material_empfaenger:'m.empfaenger.html',material_baustelle:'m.baustelle.html',material_absender:'m.absender.html',fuhrunternehmer:'fuhrunternehmer.html'};
 let records=[],loaded=false,page=0,selected=null,stopRecords=null,stopConnection=null,stopTimeout=null,session=0,connected=false,pdfBusy=false,auth=null,db=null,DB=null;
 const pageSize=20;
+const selectedIds=new Set();
+let visibleIds=[];
+let deleteBusy=false;
+function actionMessage(text,error=false){$('actionStatus').hidden=false;$('actionStatus').textContent=text;$('actionStatus').classList.toggle('error',error);}
+function updateSelection(){
+ $('selectionCount').textContent=selectedIds.size+' ausgewählt';
+ $('deleteSelected').disabled=!loaded||!connected||deleteBusy||selectedIds.size===0;
+ $('clearSelection').disabled=deleteBusy||selectedIds.size===0;
+ const count=visibleIds.filter(id=>selectedIds.has(id)).length;
+ $('selectPage').checked=visibleIds.length>0&&count===visibleIds.length;
+ $('selectPage').indeterminate=count>0&&count<visibleIds.length;
+ $('selectPage').disabled=!loaded||!connected||deleteBusy||visibleIds.length===0;
+}
+async function deleteRecords(ids){
+ if(deleteBusy||!loaded||!connected||!auth?.currentUser)return;
+ const account=auth.currentUser,current=session;
+ const targets=records.filter(r=>ids.includes(r.id));
+ if(!targets.length)return;
+ if(targets.some(r=>!/^[A-Za-z0-9_-]{1,128}$/.test(r.id))){actionMessage('Ein Nachweis hat eine ungültige ID und kann nicht gelöscht werden.',true);return;}
+ const titles=targets.slice(0,3).map(r=>'• '+(r.titel||'Nachweis')+' ('+fmtDay(r.datum)+')').join('\n');
+ const prompt=targets.length===1?'Diesen Nachweis samt gespeicherter PDF endgültig löschen?':'Diese '+targets.length+' Nachweise samt gespeicherten PDFs endgültig löschen?';
+ if(!window.confirm(prompt+'\n\n'+titles+(targets.length>3?'\n… und '+(targets.length-3)+' weitere':'')+'\n\nDas kann nicht rückgängig gemacht werden.'))return;
+ if(current!==session||auth.currentUser?.uid!==account.uid)return;
+ deleteBusy=true;render();actionMessage('Nachweise werden gelöscht …');
+ try{
+  // Ein gemeinsamer Schreibvorgang: nur ausdrücklich gewählte IDs im eigenen Konto.
+  const changes=Object.fromEntries(targets.map(r=>[r.id,null]));
+  await DB.update(DB.ref(db,'nachweise/'+account.uid),changes);
+  if(current!==session)return;
+  const removed=new Set(targets.map(r=>r.id));
+  records=records.filter(r=>!removed.has(r.id));
+  for(const id of removed)selectedIds.delete(id);
+  if(selected&&removed.has(selected.id))$('detailDialog').close();
+  actionMessage(targets.length===1?'Nachweis und PDF wurden gelöscht.':targets.length+' Nachweise mit ihren PDFs wurden gelöscht.');
+ }catch(error){
+  if(current===session)actionMessage(/permission.denied/i.test(error?.code||error?.message||'')?'Firebase erlaubt das Löschen dieser Nachweise nicht. Prüfe die Löschrechte für dein Konto. Es wurde nichts gelöscht.':error?.message||'Löschen fehlgeschlagen. Bitte prüfe deine Verbindung.',true);
+ }finally{
+  deleteBusy=false;
+  if(current===session)render();
+ }
+}
 function textNode(tag,text,className){const el=document.createElement(tag);el.textContent=String(text??'');if(className)el.className=className;return el;}
 function statusName(status){return status==='entwurf'?'Entwurf':status==='eingereicht'?'Eingereicht':'Unbekannter Status';}
 function fmtDay(day){return typeof day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(day)?day.split('-').reverse().join('.'):'—';}
@@ -83,14 +129,29 @@ function render(){
  page=Math.min(page,Math.max(0,Math.ceil(filtered.length/pageSize)-1));
  $('countAll').textContent=loaded?records.length:'—';$('countDraft').textContent=loaded?records.filter(r=>r.status==='entwurf').length:'—';$('countSent').textContent=loaded?records.filter(r=>r.status==='eingereicht').length:'—';
  $('records').replaceChildren();
- for(const r of filtered.slice(page*pageSize,(page+1)*pageSize)){
+ const currentPage=filtered.slice(page*pageSize,(page+1)*pageSize);
+ visibleIds=currentPage.map(r=>r.id);
+ for(const r of currentPage){
   const tr=document.createElement('tr'),first=document.createElement('td'),block=document.createElement('div');block.className='type';block.append(textNode('span','▤','type-icon'));const copy=document.createElement('div');copy.append(textNode('strong',r.titel||typeNames[r.typ]||'Nachweis'),textNode('small',(typeNames[r.typ]||r.typ||'Formular')+(r.pdf?' · PDF gespeichert':'')));block.append(copy);first.append(block);
   const day=textNode('td',fmtDay(r.datum));day.append(textNode('small','Gespeichert: '+fmtTime(r.updatedAt)));const state=document.createElement('td');state.append(textNode('span',statusName(r.status),'pill'+(r.status==='eingereicht'?' sent':'')));
-  const action=document.createElement('td'),button=textNode('button','Details / PDF','btn');button.type='button';button.setAttribute('aria-label','Details und PDF zu '+(r.titel||'Nachweis'));button.addEventListener('click',()=>openDetail(r));action.append(button);tr.append(first,day,state,action);$('records').append(tr);
+  const selectCell=document.createElement('td');selectCell.className='select-cell';
+  const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=selectedIds.has(r.id);checkbox.disabled=deleteBusy||!connected;checkbox.setAttribute('aria-label','Nachweis auswählen: '+(r.titel||'Nachweis')+' '+fmtDay(r.datum));
+  checkbox.addEventListener('change',()=>{if(checkbox.checked)selectedIds.add(r.id);else selectedIds.delete(r.id);tr.classList.toggle('row-selected',checkbox.checked);updateSelection();});selectCell.append(checkbox);tr.classList.toggle('row-selected',checkbox.checked);
+  const action=document.createElement('td'),actions=document.createElement('div');actions.className='row-actions';
+  const detail=textNode('button','Details / PDF','btn');detail.type='button';detail.setAttribute('aria-label','Details und PDF zu '+(r.titel||'Nachweis'));detail.addEventListener('click',()=>openDetail(r));actions.append(detail);
+  if(r.status==='entwurf'&&formPages[r.typ]){
+   const edit=textNode('a','Bearbeiten','btn');edit.href=formPages[r.typ]+'?id='+encodeURIComponent(r.id);edit.setAttribute('aria-label','Bearbeiten: '+(r.titel||'Nachweis'));actions.append(edit);
+  }else{
+   const edit=textNode('button','Bearbeiten','btn');edit.type='button';edit.disabled=true;edit.title=r.status!=='entwurf'?'Nur Entwürfe können bearbeitet werden.':'Für diese Formularart ist keine Bearbeitungsseite hinterlegt.';actions.append(edit);
+  }
+  const pdf=textNode('button','PDF herunterladen','btn');pdf.type='button';pdf.disabled=!hasPdf(r);pdf.title=pdf.disabled?'Öffne Details / PDF, um die PDF-Funktion zu prüfen oder eine PDF nachträglich zu erstellen.':'Gespeicherte PDF herunterladen';pdf.addEventListener('click',()=>{try{downloadPdf(r.pdf);actionMessage('PDF-Download gestartet.');}catch(error){actionMessage(error.message,true);}});actions.append(pdf);
+  const remove=textNode('button','Löschen','btn danger');remove.type='button';remove.disabled=deleteBusy||!connected;remove.setAttribute('aria-label','Löschen: '+(r.titel||'Nachweis'));remove.addEventListener('click',()=>deleteRecords([r.id]));actions.append(remove);
+  action.append(actions);tr.append(selectCell,first,day,state,action);$('records').append(tr);
  }
  $('tableWrap').hidden=!loaded||!filtered.length;$('emptyState').hidden=loaded&&filtered.length>0;
  if(loaded){$('emptyTitle').textContent=records.length?'Keine passenden Nachweise':'Noch keine Nachweise gespeichert';$('emptyText').textContent=records.length?'Ändere deine Suche oder die Filter.':'Speichere ein Formular. Der Nachweis und seine PDF erscheinen anschließend hier.';}
  $('emptyLink').hidden=!loaded||records.length>0;$('resultCount').textContent=!loaded?'Noch nicht geladen':filtered.length?'Einträge '+(page*pageSize+1)+'–'+Math.min((page+1)*pageSize,filtered.length)+' von '+filtered.length:'0 Nachweise';$('prev').disabled=!loaded||page===0;$('next').disabled=!loaded||(page+1)*pageSize>=filtered.length;
+ updateSelection();
 }
 function renderValue(value,depth=0,labels={}){
  if(value===null||value===undefined)return textNode('span','—');
@@ -145,27 +206,34 @@ $('createPdf').addEventListener('click',async()=>{
  }catch(error){if(current===session&&selected?.id===record.id)pdfMessage(errorText(error),true);}
  finally{pdfBusy=false;drawDetail();}
 });
-for(const id of ['search','typeFilter','statusFilter'])$(id).addEventListener(id==='search'?'input':'change',()=>{page=0;render();});$('prev').addEventListener('click',()=>{page--;render();});$('next').addEventListener('click',()=>{page++;render();});
+for(const id of ['search','typeFilter','statusFilter'])$(id).addEventListener(id==='search'?'input':'change',()=>{selectedIds.clear();page=0;render();});$('prev').addEventListener('click',()=>{page--;render();});$('next').addEventListener('click',()=>{page++;render();});
 const logo=$('brandLogo');function fallback(){logo.hidden=true;$('brandFallback').hidden=false;}logo.addEventListener('error',fallback);if(logo.complete&&!logo.naturalWidth)fallback();
 async function start(){
  try{
   const [App,Auth,Database]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')]);DB=Database;
   const app=App.getApps().length?App.getApp():App.initializeApp(firebaseConfig);auth=Auth.getAuth(app);db=DB.getDatabase(app);
   Auth.onAuthStateChanged(auth,user=>{
-   const current=++session;stopRecords?.();stopConnection?.();stopTimeout?.();records=[];loaded=false;connected=false;page=0;selected=null;if($('detailDialog').open)$('detailDialog').close();render();['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=true);
+   const current=++session;selectedIds.clear();visibleIds=[];$('actionStatus').hidden=true;stopRecords?.();stopConnection?.();stopTimeout?.();records=[];loaded=false;connected=false;page=0;selected=null;if($('detailDialog').open)$('detailDialog').close();render();['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=true);
    if(!user){$('accountName').textContent='Dein Konto';notice('Bitte melde dich an, um deine Nachweise zu sehen.');const a=textNode('a',' Zur Anmeldung');a.href='index.html';$('loadStatus').append(a);$('emptyTitle').textContent='Anmeldung erforderlich';$('emptyText').textContent='Deine Nachweise sind deinem Benutzerkonto zugeordnet.';return;}
    $('accountName').textContent=user.displayName||user.email||'Dein Konto';notice('Deine Nachweise werden geladen …');
    const loadTimer=setTimeout(()=>{if(current===session&&!loaded)notice('Die Datenbank antwortet noch nicht. Prüfe die Verbindung und ob du die Seite über deine Website geöffnet hast. Angemeldetes Konto: '+(user.email||user.uid),true);},15000);
    stopTimeout=()=>clearTimeout(loadTimer);
-   stopConnection=DB.onValue(DB.ref(db,'.info/connected'),snapshot=>{if(current!==session)return;connected=snapshot.val()===true;updateConnectionNotice();drawDetail();});
+   stopConnection=DB.onValue(DB.ref(db,'.info/connected'),snapshot=>{if(current!==session)return;connected=snapshot.val()===true;updateConnectionNotice();drawDetail();render();});
    stopRecords=DB.onValue(DB.ref(db,'nachweise/'+user.uid),snapshot=>{
-    if(current!==session)return;records=[];snapshot.forEach(child=>{const value=child.val();if(value&&typeof value==='object')records.push({...value,id:child.key});});records.sort((a,b)=>(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0));loaded=true;['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=false);
+    if(current!==session)return;records=[];snapshot.forEach(child=>{const value=child.val();if(value&&typeof value==='object')records.push({...value,id:child.key});});records.sort((a,b)=>(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0));const liveIds=new Set(records.map(r=>r.id));for(const id of selectedIds)if(!liveIds.has(id))selectedIds.delete(id);loaded=true;['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=false);
     stopTimeout?.();updateConnectionNotice();
     if(selected){const updated=records.find(r=>r.id===selected.id);if(updated){selected=updated;drawDetail();}else $('detailDialog').close();}render();
    },error=>{if(current!==session)return;stopTimeout?.();loaded=false;records=[];selected=null;if($('detailDialog').open)$('detailDialog').close();render();notice(errorText(error),true);$('emptyTitle').textContent='Nachweise konnten nicht geladen werden';$('emptyText').textContent='Prüfe die Meldung über der Übersicht.';});
   },error=>notice(errorText(error),true));
  }catch(error){notice(errorText(error),true);$('emptyTitle').textContent='Firebase nicht erreichbar';$('emptyText').textContent='Lade die Seite über deine Website und prüfe die Verbindung.';}
 }
+$('selectPage').addEventListener('change',()=>{
+ if(deleteBusy)return;
+ for(const id of visibleIds){if($('selectPage').checked)selectedIds.add(id);else selectedIds.delete(id);}
+ render();
+});
+$('clearSelection').addEventListener('click',()=>{if(deleteBusy)return;selectedIds.clear();render();});
+$('deleteSelected').addEventListener('click',()=>deleteRecords([...selectedIds]));
 loadPdfTools();
 start();
 </script>
