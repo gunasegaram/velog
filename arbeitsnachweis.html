@@ -35,7 +35,8 @@
     }
 
     .nav-btn,
-    .save-btn {
+    .save-btn,
+    .send-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -50,6 +51,10 @@
       line-height: 1.2;
       text-decoration: none;
       cursor: pointer;
+    }
+
+    .send-btn {
+      background: #245c46;
     }
 
     button:disabled {
@@ -168,6 +173,7 @@
     }
 
     .actions .save-btn,
+    .actions .send-btn,
     .actions .nav-btn {
       min-height: 44px;
       margin: 0;
@@ -189,6 +195,10 @@
       border-radius: 9px;
       background: #f8f9fb;
       font-size: 13px;
+    }
+
+    .status:empty {
+      display: none;
     }
 
     .fine {
@@ -248,17 +258,19 @@
   data-nachweis-titel="Arbeitsnachweis"
 >
   <div class="container">
-    <div class="nav-buttons">
+    <nav class="nav-buttons" aria-label="Hauptnavigation">
       <a class="nav-btn" href="formular.html">
         📋 Formulare
       </a>
+
       <a class="nav-btn" href="dashboard.html">
         🏠 Dashboard
       </a>
+
       <a class="nav-btn" href="nachweise.html">
         ▣ Meine Nachweise
       </a>
-    </div>
+    </nav>
 
     <h1>Arbeitsnachweis</h1>
 
@@ -288,28 +300,28 @@
 
       <div class="weekdays">
         <label for="tag0">
-          <input type="checkbox" id="tag0" name="tag0">Mo
+          <input id="tag0" name="tag0" type="checkbox">Mo
         </label>
         <label for="tag1">
-          <input type="checkbox" id="tag1" name="tag1">Di
+          <input id="tag1" name="tag1" type="checkbox">Di
         </label>
         <label for="tag2">
-          <input type="checkbox" id="tag2" name="tag2">Mi
+          <input id="tag2" name="tag2" type="checkbox">Mi
         </label>
         <label for="tag3">
-          <input type="checkbox" id="tag3" name="tag3">Do
+          <input id="tag3" name="tag3" type="checkbox">Do
         </label>
         <label for="tag4">
-          <input type="checkbox" id="tag4" name="tag4">Fr
+          <input id="tag4" name="tag4" type="checkbox">Fr
         </label>
         <label for="tag5">
-          <input type="checkbox" id="tag5" name="tag5">Sa
+          <input id="tag5" name="tag5" type="checkbox">Sa
         </label>
         <label for="tag6">
-          <input type="checkbox" id="tag6" name="tag6">So
+          <input id="tag6" name="tag6" type="checkbox">So
         </label>
         <label for="tag7">
-          <input type="checkbox" id="tag7" name="tag7">Sonn-/Feiertag
+          <input id="tag7" name="tag7" type="checkbox">Sonn-/Feiertag
         </label>
       </div>
 
@@ -460,175 +472,97 @@
           <tbody>
             <tr>
               <td>
-                <input
-                  id="zeit_1"
-                  name="zeit_1"
-                  aria-label="Uhrzeit von–bis – Zeile 1"
-                  type="text"
-                >
+                <input id="zeit_1" name="zeit_1" type="text"
+                  aria-label="Uhrzeit von–bis – Zeile 1">
               </td>
               <td>
-                <input
-                  id="taetigkeit_1"
-                  name="taetigkeit_1"
-                  aria-label="Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit) – Zeile 1"
-                  type="text"
-                >
+                <input id="taetigkeit_1" name="taetigkeit_1" type="text"
+                  aria-label="Ausgeführte Arbeiten – Zeile 1">
               </td>
               <td>
-                <input
-                  id="stundenZeile_1"
-                  name="stundenZeile_1"
-                  aria-label="Arbeitsstunden – Zeile 1"
-                  type="number"
-                  min="0"
-                  step="0.25"
-                >
+                <input id="stundenZeile_1" name="stundenZeile_1"
+                  type="number" min="0" step="0.25"
+                  aria-label="Arbeitsstunden – Zeile 1">
               </td>
             </tr>
 
             <tr>
               <td>
-                <input
-                  id="zeit_2"
-                  name="zeit_2"
-                  aria-label="Uhrzeit von–bis – Zeile 2"
-                  type="text"
-                >
+                <input id="zeit_2" name="zeit_2" type="text"
+                  aria-label="Uhrzeit von–bis – Zeile 2">
               </td>
               <td>
-                <input
-                  id="taetigkeit_2"
-                  name="taetigkeit_2"
-                  aria-label="Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit) – Zeile 2"
-                  type="text"
-                >
+                <input id="taetigkeit_2" name="taetigkeit_2" type="text"
+                  aria-label="Ausgeführte Arbeiten – Zeile 2">
               </td>
               <td>
-                <input
-                  id="stundenZeile_2"
-                  name="stundenZeile_2"
-                  aria-label="Arbeitsstunden – Zeile 2"
-                  type="number"
-                  min="0"
-                  step="0.25"
-                >
+                <input id="stundenZeile_2" name="stundenZeile_2"
+                  type="number" min="0" step="0.25"
+                  aria-label="Arbeitsstunden – Zeile 2">
               </td>
             </tr>
 
             <tr>
               <td>
-                <input
-                  id="zeit_3"
-                  name="zeit_3"
-                  aria-label="Uhrzeit von–bis – Zeile 3"
-                  type="text"
-                >
+                <input id="zeit_3" name="zeit_3" type="text"
+                  aria-label="Uhrzeit von–bis – Zeile 3">
               </td>
               <td>
-                <input
-                  id="taetigkeit_3"
-                  name="taetigkeit_3"
-                  aria-label="Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit) – Zeile 3"
-                  type="text"
-                >
+                <input id="taetigkeit_3" name="taetigkeit_3" type="text"
+                  aria-label="Ausgeführte Arbeiten – Zeile 3">
               </td>
               <td>
-                <input
-                  id="stundenZeile_3"
-                  name="stundenZeile_3"
-                  aria-label="Arbeitsstunden – Zeile 3"
-                  type="number"
-                  min="0"
-                  step="0.25"
-                >
+                <input id="stundenZeile_3" name="stundenZeile_3"
+                  type="number" min="0" step="0.25"
+                  aria-label="Arbeitsstunden – Zeile 3">
               </td>
             </tr>
 
             <tr>
               <td>
-                <input
-                  id="zeit_4"
-                  name="zeit_4"
-                  aria-label="Uhrzeit von–bis – Zeile 4"
-                  type="text"
-                >
+                <input id="zeit_4" name="zeit_4" type="text"
+                  aria-label="Uhrzeit von–bis – Zeile 4">
               </td>
               <td>
-                <input
-                  id="taetigkeit_4"
-                  name="taetigkeit_4"
-                  aria-label="Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit) – Zeile 4"
-                  type="text"
-                >
+                <input id="taetigkeit_4" name="taetigkeit_4" type="text"
+                  aria-label="Ausgeführte Arbeiten – Zeile 4">
               </td>
               <td>
-                <input
-                  id="stundenZeile_4"
-                  name="stundenZeile_4"
-                  aria-label="Arbeitsstunden – Zeile 4"
-                  type="number"
-                  min="0"
-                  step="0.25"
-                >
+                <input id="stundenZeile_4" name="stundenZeile_4"
+                  type="number" min="0" step="0.25"
+                  aria-label="Arbeitsstunden – Zeile 4">
               </td>
             </tr>
 
             <tr>
               <td>
-                <input
-                  id="zeit_5"
-                  name="zeit_5"
-                  aria-label="Uhrzeit von–bis – Zeile 5"
-                  type="text"
-                >
+                <input id="zeit_5" name="zeit_5" type="text"
+                  aria-label="Uhrzeit von–bis – Zeile 5">
               </td>
               <td>
-                <input
-                  id="taetigkeit_5"
-                  name="taetigkeit_5"
-                  aria-label="Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit) – Zeile 5"
-                  type="text"
-                >
+                <input id="taetigkeit_5" name="taetigkeit_5" type="text"
+                  aria-label="Ausgeführte Arbeiten – Zeile 5">
               </td>
               <td>
-                <input
-                  id="stundenZeile_5"
-                  name="stundenZeile_5"
-                  aria-label="Arbeitsstunden – Zeile 5"
-                  type="number"
-                  min="0"
-                  step="0.25"
-                >
+                <input id="stundenZeile_5" name="stundenZeile_5"
+                  type="number" min="0" step="0.25"
+                  aria-label="Arbeitsstunden – Zeile 5">
               </td>
             </tr>
 
             <tr>
               <td>
-                <input
-                  id="zeit_6"
-                  name="zeit_6"
-                  aria-label="Uhrzeit von–bis – Zeile 6"
-                  type="text"
-                >
+                <input id="zeit_6" name="zeit_6" type="text"
+                  aria-label="Uhrzeit von–bis – Zeile 6">
               </td>
               <td>
-                <input
-                  id="taetigkeit_6"
-                  name="taetigkeit_6"
-                  aria-label="Ausgeführte Arbeiten (Platz, Gerät, Material, Tätigkeit) – Zeile 6"
-                  type="text"
-                >
+                <input id="taetigkeit_6" name="taetigkeit_6" type="text"
+                  aria-label="Ausgeführte Arbeiten – Zeile 6">
               </td>
               <td>
-                <input
-                  id="stundenZeile_6"
-                  name="stundenZeile_6"
-                  aria-label="Arbeitsstunden – Zeile 6"
-                  type="number"
-                  min="0"
-                  step="0.25"
-                >
+                <input id="stundenZeile_6" name="stundenZeile_6"
+                  type="number" min="0" step="0.25"
+                  aria-label="Arbeitsstunden – Zeile 6">
               </td>
             </tr>
           </tbody>
@@ -656,9 +590,18 @@
         </button>
 
         <button
-          class="nav-btn"
+          id="sendNachweis"
           type="button"
-          onclick="window.print()"
+          class="send-btn"
+          aria-describedby="emailHinweis"
+        >
+          ✉️ Per E-Mail senden
+        </button>
+
+        <button
+          id="printNachweis"
+          type="button"
+          class="nav-btn"
         >
           🖨 Drucken / PDF
         </button>
@@ -668,24 +611,210 @@
         </a>
       </div>
 
-      <p
-        class="status"
-        id="nachweisStatus"
-        role="status"
-      >
+      <p class="status" id="nachweisStatus" role="status">
         Speicherfunktion wird geladen …
       </p>
+
+      <p class="status" id="emailStatus" role="status"></p>
 
       <p class="fine">
         Gespeicherte Daten sind unter „Meine Nachweise“ abrufbar.
         Ein erneuter Klick aktualisiert denselben Nachweis.
       </p>
+
+      <p class="fine" id="emailHinweis">
+        „Per E-Mail senden“ öffnet dein E-Mail-Programm
+        mit den aktuellen Formulardaten als Text
+        an technik@ve-log.de.
+        Dort musst du die E-Mail noch absenden.
+        Der Nachweis wird dadurch nicht gespeichert.
+        Eine PDF wird nicht automatisch angehängt.
+      </p>
     </form>
   </div>
 
+  <!-- Vorhandene Speicherfunktion -->
   <script
     type="module"
     src="nachweise-formular.js?v=2"
   ></script>
+
+  <!-- E-Mail und Drucken -->
+  <script>
+    (() => {
+      const EMAIL_EMPFAENGER = "technik@ve-log.de";
+
+      const form = document.getElementById("nachweisForm");
+      const emailStatus = document.getElementById("emailStatus");
+      const sendButton = document.getElementById("sendNachweis");
+      const printButton = document.getElementById("printNachweis");
+
+      const wochentage = [
+        "Montag",
+        "Dienstag",
+        "Mittwoch",
+        "Donnerstag",
+        "Freitag",
+        "Samstag",
+        "Sonntag",
+        "Sonn-/Feiertag"
+      ];
+
+      function feldwert(name) {
+        return form.elements.namedItem(name).value.trim();
+      }
+
+      function datumFormatieren(wert) {
+        if (!wert) return "";
+
+        const [jahr, monat, tag] = wert.split("-");
+        return `${tag}.${monat}.${jahr}`;
+      }
+
+      function zeileHinzufuegen(zeilen, titel, name, einheit = "") {
+        const wert = feldwert(name);
+
+        if (wert !== "") {
+          zeilen.push(
+            `${titel}: ${wert}${einheit ? " " + einheit : ""}`
+          );
+        }
+      }
+
+      function emailTextErstellen() {
+        const zeilen = [
+          "ARBEITSNACHWEIS",
+          "",
+          `Name: ${feldwert("name")}`,
+          `Datum: ${datumFormatieren(feldwert("datum"))}`
+        ];
+
+        zeileHinzufuegen(zeilen, "Stunden", "stunden", "Std.");
+
+        const ausgewaehlteTage = wochentage.filter((tag, index) => {
+          return form.elements.namedItem(`tag${index}`).checked;
+        });
+
+        if (ausgewaehlteTage.length > 0) {
+          zeilen.push(`Wochentage: ${ausgewaehlteTage.join(", ")}`);
+        }
+
+        zeilen.push("", "ZEITEN");
+
+        zeileHinzufuegen(
+          zeilen, "Abwesenheit von", "abwesenheitVon"
+        );
+        zeileHinzufuegen(
+          zeilen, "Abwesenheit bis", "abwesenheitBis"
+        );
+        zeileHinzufuegen(
+          zeilen, "Abwesenheitsstunden", "abwesenheitStunden", "Std."
+        );
+        zeileHinzufuegen(
+          zeilen, "Arbeitsbeginn", "arbeitsbeginn"
+        );
+        zeileHinzufuegen(
+          zeilen, "Pause", "pause", "Minuten"
+        );
+        zeileHinzufuegen(
+          zeilen, "Arbeitsende", "arbeitsende"
+        );
+        zeileHinzufuegen(
+          zeilen, "Arbeitsstunden", "arbeitsstunden", "Std."
+        );
+
+        zeilen.push("", "EINSATZ UND FAHRT");
+
+        zeileHinzufuegen(zeilen, "Firma", "firma");
+        zeileHinzufuegen(zeilen, "Kilometer", "kilometer", "km");
+        zeileHinzufuegen(
+          zeilen, "Fahrstunden", "fahrstunden", "Std."
+        );
+        zeileHinzufuegen(zeilen, "BV", "bv");
+        zeileHinzufuegen(zeilen, "Kostenstelle", "kostenstelle");
+        zeileHinzufuegen(
+          zeilen, "Gesamtstunden", "gesamtstunden", "Std."
+        );
+
+        zeilen.push("", "AUSGEFÜHRTE ARBEITEN");
+
+        let hatArbeiten = false;
+
+        for (let index = 1; index <= 6; index++) {
+          const zeit = feldwert(`zeit_${index}`);
+          const taetigkeit = feldwert(`taetigkeit_${index}`);
+          const stunden = feldwert(`stundenZeile_${index}`);
+
+          if (!zeit && !taetigkeit && !stunden) continue;
+
+          hatArbeiten = true;
+          zeilen.push("", `Zeile ${index}:`);
+
+          if (zeit) {
+            zeilen.push(`Uhrzeit von–bis: ${zeit}`);
+          }
+
+          if (taetigkeit) {
+            zeilen.push(`Tätigkeit: ${taetigkeit}`);
+          }
+
+          if (stunden) {
+            zeilen.push(`Arbeitsstunden: ${stunden} Std.`);
+          }
+        }
+
+        if (!hatArbeiten) {
+          zeilen.push("Keine Angaben.");
+        }
+
+        const bemerkungen = feldwert("bemerkungen");
+
+        if (bemerkungen) {
+          zeilen.push("", "BEMERKUNGEN", bemerkungen);
+        }
+
+        return zeilen.join("\r\n");
+      }
+
+      sendButton.addEventListener("click", () => {
+        emailStatus.textContent = "";
+
+        if (!form.reportValidity()) return;
+
+        if (!feldwert("name")) {
+          emailStatus.textContent = "Bitte einen Namen eintragen.";
+          form.elements.namedItem("name").focus();
+          return;
+        }
+
+        const betreff =
+          `Arbeitsnachweis – ${feldwert("name")} – ` +
+          datumFormatieren(feldwert("datum"));
+
+        const mailto =
+          `mailto:${EMAIL_EMPFAENGER}` +
+          `?subject=${encodeURIComponent(betreff)}` +
+          `&body=${encodeURIComponent(emailTextErstellen())}`;
+
+        try {
+          window.location.href = mailto;
+
+          emailStatus.textContent =
+            "Das Öffnen deines E-Mail-Programms wurde angefordert. " +
+            "Bitte prüfe die Nachricht an technik@ve-log.de " +
+            "und sende sie dort ab. Falls nichts passiert, " +
+            "prüfe deine Standard-E-Mail-App.";
+        } catch (error) {
+          emailStatus.textContent =
+            "Das E-Mail-Programm konnte nicht geöffnet werden. " +
+            "Bitte prüfe deine Standard-E-Mail-App.";
+        }
+      });
+
+      printButton.addEventListener("click", () => {
+        window.print();
+      });
+    })();
+  </script>
 </body>
 </html>
