@@ -29,20 +29,53 @@
 </div>
 <script type="module">
 'use strict';
-import {createPdf,pdfFile,downloadPdf,openPdf,supportsPdfSharing,sharePdf,emailWithDownload,labelFor} from './nachweise-pdf.js?v=3';
+// Die Nachweisliste funktioniert auch dann, wenn die PDF-Datei fehlt.
+let pdfTools = null;
+let pdfLoadError = '';
+let createPdf, downloadPdf, openPdf, sharePdf, emailWithDownload;
+let pdfFile = () => { throw new Error('PDF-Funktion nicht geladen.'); };
+let supportsPdfSharing = () => false;
+let labelFor = (key, labels = {}) => Object.hasOwn(labels, key) ? labels[key] : key.replace(/_/g, ' ');
+async function loadPdfTools() {
+  let timer;
+  try {
+    const module = await Promise.race([
+      import('./nachweise-pdf.js?v=4'),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('Zeitüberschreitung beim Laden')), 15000); })
+    ]);
+    const required = ['createPdf','pdfFile','downloadPdf','openPdf','supportsPdfSharing','sharePdf','emailWithDownload','labelFor'];
+    if (!required.every(name => typeof module[name] === 'function')) throw new Error('PDF-Datei unvollständig');
+    ({createPdf,pdfFile,downloadPdf,openPdf,supportsPdfSharing,sharePdf,emailWithDownload,labelFor} = module);
+    pdfTools = module;
+    pdfLoadError = '';
+  } catch (error) {
+    pdfLoadError = 'Die Nachweise können angezeigt werden, aber die PDF-Funktionen fehlen. Lade nachweise-pdf.js in denselben Website-Ordner wie nachweise.html und lade diese Seite neu.';
+    console.error('VE-Log PDF-Funktionen:', error);
+  } finally {
+    clearTimeout(timer);
+    updateConnectionNotice();
+    drawDetail();
+  }
+}
 const firebaseConfig={apiKey:'AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM',authDomain:'ve-log.firebaseapp.com',databaseURL:'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',projectId:'ve-log',storageBucket:'ve-log.firebasestorage.app',messagingSenderId:'749978080433',appId:'1:749978080433:web:8f64ef99a557fe2346be90'};
 const $=id=>document.getElementById(id);
 const typeNames={arbeitsnachweis:'Arbeitsnachweis',arbeitsnachweis_lkw:'Arbeitsnachweis LKW',lieferschein:'Liefer-/Empfangsschein',leistungsnachweis:'Leistungsnachweis',materialausgabe:'Materialausgabe',material_empfaenger:'Material – Empfänger',material_baustelle:'Material – Baustelle',material_absender:'Material – Absender',fuhrunternehmer:'Fuhrunternehmer'};
 const formPages={arbeitsnachweis:'arbeitsnachweis.html',arbeitsnachweis_lkw:'arbeitsnachweis-lkw.html',leistungsnachweis:'leistungsnachweis.html',materialausgabe:'materialausgabe.html',lieferschein:'lieferschein.html',material_empfaenger:'m.empfaenger.html',material_baustelle:'m.baustelle.html',material_absender:'m.absender.html',fuhrunternehmer:'fuhrunternehmer.html'};
-let records=[],loaded=false,page=0,selected=null,stopRecords=null,stopConnection=null,session=0,connected=false,pdfBusy=false,auth=null,db=null,DB=null;
+let records=[],loaded=false,page=0,selected=null,stopRecords=null,stopConnection=null,stopTimeout=null,session=0,connected=false,pdfBusy=false,auth=null,db=null,DB=null;
 const pageSize=20;
 function textNode(tag,text,className){const el=document.createElement(tag);el.textContent=String(text??'');if(className)el.className=className;return el;}
 function statusName(status){return status==='entwurf'?'Entwurf':status==='eingereicht'?'Eingereicht':'Unbekannter Status';}
 function fmtDay(day){return typeof day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(day)?day.split('-').reverse().join('.'):'—';}
 function fmtTime(time){return typeof time==='number'&&Number.isFinite(time)?new Intl.DateTimeFormat('de-DE',{dateStyle:'medium',timeStyle:'short'}).format(new Date(time)):'—';}
 function notice(text,error=false){$('loadStatus').hidden=false;$('loadStatus').textContent=text;$('loadStatus').classList.toggle('error',error);}
+function updateConnectionNotice() {
+ if (!loaded) return;
+ if (!connected) { notice('Keine Verbindung zu Firebase. Die Liste kann noch zwischengespeicherte Daten anzeigen.'); return; }
+ if (pdfLoadError) { notice(pdfLoadError,true); return; }
+ $('loadStatus').hidden=true;
+}
 function pdfMessage(text,error=false){$('pdfStatus').hidden=false;$('pdfStatus').textContent=text;$('pdfStatus').classList.toggle('error',error);}
-function errorText(error){return /permission.denied/i.test(error?.code||error?.message||'')?'Firebase verweigert den Zugriff. Prüfe die Regeln für deine Nachweise und das zusätzliche Feld pdf.':error?.message||'Die Verbindung zu Firebase ist fehlgeschlagen. Prüfe deine Internetverbindung.';}
+function errorText(error){return /permission.denied/i.test(error?.code||error?.message||'')?'Firebase verweigert das Lesen deiner Nachweise. Die Realtime-Database-Regeln müssen deinem angemeldeten Konto den Lesezugriff auf nachweise/'+(auth?.currentUser?.uid||'DEINE_UID')+' erlauben. Bitte die Datenbank nicht öffentlich freigeben.':error?.message||'Die Verbindung zu Firebase ist fehlgeschlagen. Prüfe deine Internetverbindung.';}
 function hasPdf(record){try{pdfFile(record?.pdf);return true;}catch{return false;}}
 function render(){
  const needle=$('search').value.trim().toLocaleLowerCase('de'),typ=$('typeFilter').value,status=$('statusFilter').value;
@@ -79,8 +112,8 @@ function drawDetail(){
  const available=hasPdf(selected),sharing=available&&supportsPdfSharing(selected.pdf);
  for(const id of ['openPdf','downloadPdf','emailPdf'])$(id).disabled=!available||pdfBusy;
  $('sharePdf').hidden=!sharing;$('sharePdf').disabled=pdfBusy;
- $('createPdf').hidden=available;$('createPdf').disabled=pdfBusy||!connected;
- $('pdfHint').textContent=!available?'Für diesen älteren Nachweis ist noch keine PDF gespeichert. Du kannst sie nachträglich erstellen.':sharing?'„PDF teilen“: Wähle deine E-Mail-App und trage technik@ve-log.de als Empfänger ein. Das Teilen bestätigt keinen E-Mail-Versand.':'Der E-Mail-Button lädt die PDF herunter und öffnet eine Nachricht an technik@ve-log.de. Bitte hänge die PDF manuell an und sende die E-Mail ab.';
+ $('createPdf').hidden=available;$('createPdf').disabled=pdfBusy||!connected||!pdfTools;
+ $('pdfHint').textContent=!pdfTools?(pdfLoadError||'PDF-Funktionen werden geladen …'):!available?'Für diesen älteren Nachweis ist noch keine PDF gespeichert. Du kannst sie nachträglich erstellen.':sharing?'„PDF teilen“: Wähle deine E-Mail-App und trage technik@ve-log.de als Empfänger ein. Das Teilen bestätigt keinen E-Mail-Versand.':'Der E-Mail-Button lädt die PDF herunter und öffnet eine Nachricht an technik@ve-log.de. Bitte hänge die PDF manuell an und sende die E-Mail ab.';
 }
 $('closeDetail').addEventListener('click',()=>{$('detailDialog').close();});$('detailDialog').addEventListener('close',()=>{selected=null;});
 $('printDetail').addEventListener('click',()=>{if(selected)window.print();});
@@ -96,7 +129,7 @@ $('sharePdf').addEventListener('click',async()=>{
  finally{pdfBusy=false;drawDetail();}
 });
 $('createPdf').addEventListener('click',async()=>{
- if(!selected||pdfBusy||!auth.currentUser||!connected)return;
+ if(!selected||pdfBusy||!auth.currentUser||!connected||!pdfTools)return;
  const record=selected,user=auth.currentUser,current=session;pdfBusy=true;drawDetail();pdfMessage('PDF wird erstellt und gespeichert …');
  try{
   const pdf=await createPdf(record);
@@ -119,18 +152,21 @@ async function start(){
   const [App,Auth,Database]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')]);DB=Database;
   const app=App.getApps().length?App.getApp():App.initializeApp(firebaseConfig);auth=Auth.getAuth(app);db=DB.getDatabase(app);
   Auth.onAuthStateChanged(auth,user=>{
-   const current=++session;stopRecords?.();stopConnection?.();records=[];loaded=false;connected=false;page=0;selected=null;if($('detailDialog').open)$('detailDialog').close();render();['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=true);
+   const current=++session;stopRecords?.();stopConnection?.();stopTimeout?.();records=[];loaded=false;connected=false;page=0;selected=null;if($('detailDialog').open)$('detailDialog').close();render();['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=true);
    if(!user){$('accountName').textContent='Dein Konto';notice('Bitte melde dich an, um deine Nachweise zu sehen.');const a=textNode('a',' Zur Anmeldung');a.href='index.html';$('loadStatus').append(a);$('emptyTitle').textContent='Anmeldung erforderlich';$('emptyText').textContent='Deine Nachweise sind deinem Benutzerkonto zugeordnet.';return;}
    $('accountName').textContent=user.displayName||user.email||'Dein Konto';notice('Deine Nachweise werden geladen …');
-   stopConnection=DB.onValue(DB.ref(db,'.info/connected'),snapshot=>{if(current!==session)return;connected=snapshot.val()===true;if(loaded){if(connected)$('loadStatus').hidden=true;else notice('Keine Verbindung zu Firebase. Die Daten werden nach Wiederherstellung aktualisiert.');}drawDetail();});
+   const loadTimer=setTimeout(()=>{if(current===session&&!loaded)notice('Die Datenbank antwortet noch nicht. Prüfe die Verbindung und ob du die Seite über deine Website geöffnet hast. Angemeldetes Konto: '+(user.email||user.uid),true);},15000);
+   stopTimeout=()=>clearTimeout(loadTimer);
+   stopConnection=DB.onValue(DB.ref(db,'.info/connected'),snapshot=>{if(current!==session)return;connected=snapshot.val()===true;updateConnectionNotice();drawDetail();});
    stopRecords=DB.onValue(DB.ref(db,'nachweise/'+user.uid),snapshot=>{
     if(current!==session)return;records=[];snapshot.forEach(child=>{const value=child.val();if(value&&typeof value==='object')records.push({...value,id:child.key});});records.sort((a,b)=>(Number(b.updatedAt)||0)-(Number(a.updatedAt)||0));loaded=true;['search','typeFilter','statusFilter'].forEach(id=>$(id).disabled=false);
-    if(connected)$('loadStatus').hidden=true;else notice('Verbindung wird geprüft. Die Liste kann Daten aus dem Zwischenspeicher zeigen.');
+    stopTimeout?.();updateConnectionNotice();
     if(selected){const updated=records.find(r=>r.id===selected.id);if(updated){selected=updated;drawDetail();}else $('detailDialog').close();}render();
-   },error=>{if(current!==session)return;loaded=false;records=[];selected=null;if($('detailDialog').open)$('detailDialog').close();render();notice(errorText(error),true);$('emptyTitle').textContent='Nachweise konnten nicht geladen werden';$('emptyText').textContent='Prüfe die Meldung über der Übersicht.';});
+   },error=>{if(current!==session)return;stopTimeout?.();loaded=false;records=[];selected=null;if($('detailDialog').open)$('detailDialog').close();render();notice(errorText(error),true);$('emptyTitle').textContent='Nachweise konnten nicht geladen werden';$('emptyText').textContent='Prüfe die Meldung über der Übersicht.';});
   },error=>notice(errorText(error),true));
  }catch(error){notice(errorText(error),true);$('emptyTitle').textContent='Firebase nicht erreichbar';$('emptyText').textContent='Lade die Seite über deine Website und prüfe die Verbindung.';}
 }
+loadPdfTools();
 start();
 </script>
 </body>
