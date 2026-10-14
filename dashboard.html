@@ -21,6 +21,8 @@
 @media(max-width:760px){.brand{align-items:center;align-self:flex-start;gap:5px;padding:0 4px 16px}.brand-image{max-width:110px;max-height:50px}.brand small{font-size:8px;letter-spacing:1px}.admin-layout{grid-template-columns:1fr}.admin-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-actions .action{min-height:100px;font-size:12px}.demo-banner{align-items:flex-start;flex-direction:column;gap:10px}.admin-heading{align-items:flex-start}.activity-item{gap:10px}.profile-card{padding-bottom:22px}}
 @media(max-width:380px){.stats{grid-template-columns:1fr}.admin-heading{flex-direction:column}}
 
+
+.communication-nav-badge{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:20px;background:var(--brand);color:white;font-size:10px;font-weight:750}.communication-popup{position:fixed;right:24px;bottom:24px;width:360px;max-width:calc(100vw - 32px);max-height:75vh;overflow-y:auto;background:white;border:1px solid #dfcfcd;border-radius:18px;box-shadow:0 14px 55px #23273526;padding:20px;z-index:8}.communication-popup-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.communication-popup-header h2{font-size:15px}.communication-popup-header p{font-size:11px;color:var(--muted);margin-top:4px}.communication-popup-close{border:0;border-radius:8px;background:#f5f5f7;padding:5px 10px;font:inherit;font-size:18px;color:var(--muted)}.communication-notification{display:grid;gap:6px;padding:14px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.communication-notification:hover strong{color:var(--brand)}.communication-notification-meta{font-size:10px;color:var(--muted)}.communication-notification strong{font-size:13px}.communication-notification-preview{font-size:12px;color:#5e6574;line-height:1.6}.communication-popup-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center}.communication-popup-actions a{font-size:11px;color:var(--brand);font-weight:650}.communication-popup-actions button{font-size:11px;padding:7px 9px;margin-left:0}.communication-live{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%)}@media(max-width:760px){.communication-popup{right:16px;bottom:16px;padding:16px;max-height:65vh}.nav .communication-nav-badge{margin-left:2px}}
 </style>
 </head>
 <body>
@@ -54,7 +56,7 @@
 <a href="urlaub.html"><svg class="icon" aria-hidden="true"><use href="#calendar"/></svg>Urlaub</a>
 <a href="#vehicleDialog" data-dialog="vehicleDialog" data-admin-only><svg class="icon" aria-hidden="true"><use href="#truck"/></svg>Fahrzeuge</a>
 <a href="#reportDialog" data-dialog="reportDialog" data-admin-only><svg class="icon" aria-hidden="true"><use href="#chart"/></svg>Berichte</a>
-<a href="kommunikation.html"><svg class="icon" aria-hidden="true"><use href="#chat"/></svg>Kommunikation</a>
+<a href="kommunikation.html"><svg class="icon" aria-hidden="true"><use href="#chat"/></svg>Kommunikation <span id="communicationBadge" class="communication-nav-badge" hidden></span></a>
 </nav>
 <div class="side-bottom"><div class="side-note">Alles für deinen Arbeitsalltag.<br>Einfach an einem Ort.</div></div>
 </aside>
@@ -92,6 +94,10 @@
 <dialog class="dialog" id="uploadDialog" aria-labelledby="uploadTitle"><div class="dialog-head"><h2 id="uploadTitle">Dokument hochladen</h2><button class="dialog-close" type="button" data-close aria-label="Schließen">×</button></div><div class="dialog-content"><p>Wähle Dokumente für eine lokale Vorschau. Die Dateien werden noch nicht an einen Server übertragen oder dauerhaft gespeichert.</p><label for="documentFiles">Dokumente auswählen</label><input type="file" id="documentFiles" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.png,.jpg,.jpeg"><ul class="upload-list" id="uploadFiles"></ul><p id="uploadStatus" role="status">Noch keine Dateien ausgewählt.</p></div></dialog>
 <dialog class="dialog" id="vehicleDialog" aria-labelledby="vehicleTitle"><div class="dialog-head"><h2 id="vehicleTitle">Fahrzeugübersicht</h2><button class="dialog-close" type="button" data-close aria-label="Schließen">×</button></div><div class="dialog-content"><p id="vehicleSummary"></p><div class="empty">Noch keine Fahrzeugliste angebunden.</div><p class="private-note">Für die Verwaltung: Kennzeichen, Fahrerzuordnung, Einsatzstatus und Wartungstermine aus deinem System laden.</p></div></dialog>
 <dialog class="dialog" id="reportDialog" aria-labelledby="reportTitle"><div class="dialog-head"><h2 id="reportTitle">Berichte · Kennzahlen</h2><button class="dialog-close" type="button" data-close aria-label="Schließen">×</button></div><div class="dialog-content"><table class="report-table"><caption id="reportCaption">Beispieldaten</caption><tbody id="reportRows"></tbody></table><p class="private-note">Zeitraumfilter und Exporte können mit der Datenanbindung ergänzt werden.</p></div></dialog>
+<aside id="communicationPopup" class="communication-popup" aria-labelledby="communicationPopupTitle" hidden>
+<div class="communication-popup-header"><div><h2 id="communicationPopupTitle">Neu aus Kommunikation</h2><p id="communicationPopupCount"></p></div><button id="closeCommunicationPopup" class="communication-popup-close" type="button" aria-label="Benachrichtigungen schließen">×</button></div>
+<div id="communicationItems"></div><div class="communication-popup-actions"><a id="communicationPopupMore" href="kommunikation.html">Kommunikation öffnen →</a><button id="markCommunicationRead" class="quiet-button" type="button">Alle als gesehen</button></div></aside>
+<p id="communicationLive" class="communication-live" role="status" aria-live="polite"></p>
 <script type="module">
 'use strict';
 // Firebase Auth ist die Quelle für den angemeldeten Benutzer.
@@ -279,6 +285,7 @@ async function startFirebase() {
   authSDK.onAuthStateChanged(firebaseAuth, user => {
    if(stopProfileListener){stopProfileListener();stopProfileListener=null;}
    if(stopRoleListener){stopRoleListener();stopRoleListener=null;}
+   stopDashboardNotifications();
    currentProfileRecord={};currentRole=null;
    signedInUser=user;email=user?.email || '';
    $('profileError').hidden=true;$('sessionButton').disabled=false;
@@ -308,12 +315,16 @@ async function startFirebase() {
     if(signedInUser?.uid !== user.uid) return;
     currentRole=typeof snapshot.val() === 'string' ? snapshot.val() : null;
     showProfile(user,currentProfileRecord);
+    if (['mitarbeiter','manager','admin','superadmin'].includes(currentRole)) startDashboardNotifications(database,databaseSDK,user);
+    else stopDashboardNotifications();
    },()=>{
     if(signedInUser?.uid !== user.uid) return;
+    stopDashboardNotifications();
     currentRole=null;showProfile(user,currentProfileRecord);
     $('profileError').textContent='Die zentrale Benutzerrolle konnte nicht geladen werden. Prüfe die Regeln für roles/'+user.uid+'.';$('profileError').hidden=false;
    });
   },()=>{
+   stopDashboardNotifications();
    $('profileError').textContent='Die Firebase-Anmeldung konnte nicht geprüft werden. Bitte melde dich erneut an.';$('profileError').hidden=false;$('guestNotice').hidden=false;
   });
  } catch {
@@ -323,6 +334,106 @@ async function startFirebase() {
   $('guestNotice').hidden=false;renderAdmin();
  }
 }
+// Gelesene Beiträge werden pro Konto in diesem Browser gespeichert.
+const temporaryCommunicationSeen = new Map();
+function communicationSeenKey(uid) {return 'velog:kommunikation:seen:' + uid;}
+function readCommunicationSeen(uid) {
+  let stored = [];
+  try {
+    const value = JSON.parse(localStorage.getItem(communicationSeenKey(uid)) || '[]');
+    if (Array.isArray(value)) stored = value.filter(id => typeof id === 'string');
+  } catch {}
+  return new Set([...stored, ...(temporaryCommunicationSeen.get(uid) || [])]);
+}
+function markCommunicationSeen(uid, ids) {
+  const seen = readCommunicationSeen(uid);
+  ids.forEach(id => seen.add(id));
+  const values = [...seen].slice(-1000);
+  temporaryCommunicationSeen.set(uid, new Set(values));
+  try {localStorage.setItem(communicationSeenKey(uid), JSON.stringify(values)); return true;}
+  catch {return false;}
+}
+
+let stopCommunicationNotifications = null;
+let communicationNotificationGeneration = 0;
+let dashboardCommunicationPosts = [];
+let dismissedCommunicationIds = new Set();
+let lastNotificationSignature = '';
+function stopDashboardNotifications() {
+  communicationNotificationGeneration++;
+  if (stopCommunicationNotifications) stopCommunicationNotifications();
+  stopCommunicationNotifications = null;
+  dashboardCommunicationPosts = []; dismissedCommunicationIds.clear(); lastNotificationSignature = '';
+  $('communicationPopup').hidden = true; $('communicationBadge').hidden = true;
+  $('communicationBadge').title = '';
+  $('communicationItems').replaceChildren(); $('communicationLive').textContent = '';
+}
+function unreadCommunication() {
+  if (!signedInUser || !['mitarbeiter','manager','admin','superadmin'].includes(currentRole)) return [];
+  const seen = readCommunicationSeen(signedInUser.uid);
+  return dashboardCommunicationPosts.filter(p => p.authorUid !== signedInUser.uid && !seen.has(p.id));
+}
+function renderDashboardNotifications(force = false) {
+  const unread = unreadCommunication();
+  const visible = unread.filter(p => !dismissedCommunicationIds.has(p.id));
+  const signature = unread.map(p => p.id).join('|') + ':' + visible.map(p => p.id).join('|');
+  if (!force && signature === lastNotificationSignature) return;
+  lastNotificationSignature = signature;
+  $('communicationBadge').textContent = unread.length > 99 ? '99+' : String(unread.length);
+  $('communicationBadge').hidden = unread.length === 0;
+  $('communicationPopup').hidden = visible.length === 0;
+  $('communicationPopupCount').textContent = unread.length + (unread.length === 1 ? ' neuer Beitrag' : ' neue Beiträge');
+  $('communicationLive').textContent = visible.length ? 'Neue Kommunikation: ' + unread.length + (unread.length === 1 ? ' neuer Beitrag.' : ' neue Beiträge.') : '';
+  $('communicationItems').replaceChildren();
+  for (const p of visible.slice(0, 3)) {
+    const link = document.createElement('a'); link.className = 'communication-notification';
+    link.href = 'kommunikation.html?beitrag=' + encodeURIComponent(p.id);
+    const top = document.createElement('span'); top.className = 'communication-notification-meta';
+    const type = {info:'Information',frage:'Frage',nachricht:'Nachricht'}[p.typ] || 'Beitrag';
+    top.textContent = type + ' · ' + (p.authorName || 'Mitarbeiter');
+    const title = document.createElement('strong'); title.textContent = p.titel || 'Neuer Beitrag';
+    const text = document.createElement('span'); text.className = 'communication-notification-preview';
+    const preview = typeof p.text === 'string' ? p.text : '';
+    text.textContent = preview.slice(0, 120) + (preview.length > 120 ? ' …' : '');
+    link.append(top, title, text); $('communicationItems').append(link);
+  }
+  $('communicationPopupMore').textContent = visible.length > 3 ? 'Weitere Beiträge in Kommunikation ansehen →' : 'Kommunikation öffnen →';
+}
+function startDashboardNotifications(database, sdk, account) {
+  if (stopCommunicationNotifications || !['mitarbeiter','manager','admin','superadmin'].includes(currentRole)) return;
+  const generation = communicationNotificationGeneration;
+  const source = sdk.query(sdk.ref(database, 'kommunikation/posts'), sdk.orderByChild('createdAt'), sdk.limitToLast(100));
+  stopCommunicationNotifications = sdk.onValue(source, snapshot => {
+    if (generation !== communicationNotificationGeneration || signedInUser?.uid !== account.uid) return;
+    const next = [];
+    snapshot.forEach(child => {
+      const value = child.val();
+      if (value && typeof value === 'object') next.push({...value, id:child.key});
+    });
+    dashboardCommunicationPosts = next.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0) || b.id.localeCompare(a.id));
+    $('communicationBadge').title = '';
+    renderDashboardNotifications();
+  }, () => {
+    if (generation !== communicationNotificationGeneration || signedInUser?.uid !== account.uid) return;
+    dashboardCommunicationPosts = []; renderDashboardNotifications(true);
+    $('communicationBadge').textContent = '!'; $('communicationBadge').hidden = false;
+    $('communicationBadge').title = 'Kommunikationsbeiträge konnten nicht geladen werden. Prüfe die Firebase-Regeln.';
+  });
+}
+$('closeCommunicationPopup').addEventListener('click', () => {
+  unreadCommunication().forEach(p => dismissedCommunicationIds.add(p.id));
+  renderDashboardNotifications(true);
+});
+$('markCommunicationRead').addEventListener('click', () => {
+  if (!signedInUser) return;
+  const saved = markCommunicationSeen(signedInUser.uid, unreadCommunication().map(p => p.id));
+  renderDashboardNotifications(true);
+  if (!saved) $('communicationLive').textContent = 'Die Markierung als gesehen gilt nur bis zum Schließen dieser Seite; der Browserspeicher ist nicht verfügbar.';
+});
+window.addEventListener('storage', event => {
+  if (signedInUser && event.key === communicationSeenKey(signedInUser.uid)) renderDashboardNotifications(true);
+});
+
 startFirebase();
 
 </script>
