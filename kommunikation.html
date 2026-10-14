@@ -112,6 +112,8 @@ p { margin: 0; }
 
 .community-layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;align-items:start}.composer{background:white;border:1px solid var(--line);border-radius:18px;padding:24px;position:sticky;top:24px}.composer h2{margin-bottom:8px}.composer p{font-size:12px;color:var(--muted)}fieldset{border:0;padding:0;margin:0}label{display:block;font-size:12px;font-weight:650;margin:16px 0 6px}input,select,textarea{font:inherit;color:var(--ink)}.composer input,.composer select,.composer textarea,.reply-form textarea{width:100%;border:1px solid #dce0e6;border-radius:9px;padding:10px;background:white;font-size:13px;min-width:0}textarea{resize:vertical;min-height:130px}.submit{padding:12px 18px;background:var(--brand);color:white;border:0;border-radius:9px;margin-top:16px;font:inherit;font-size:13px;font-weight:650}.submit:hover{background:var(--brand-dark)}fieldset:disabled{opacity:.65}button:disabled{cursor:default;opacity:.6}.post-list{display:grid;gap:16px}.post{background:white;border:1px solid var(--line);border-radius:18px;padding:24px}.post-top,.post-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.post-top{margin-bottom:14px}.post-type{border-radius:7px;padding:5px 9px;font-size:10px;font-weight:750;background:#edf2fd;color:#5470a5}.post-type.frage{background:#fbf3e7;color:#956f2e}.post-type.nachricht{background:#edf5ee;color:#547c60}.post-date,.post-author,.reply-meta{font-size:11px;color:var(--muted)}.post-title{font-size:18px;margin-bottom:10px;overflow-wrap:anywhere}.post-content{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.75}.post-bottom{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}.post-author{overflow-wrap:anywhere}.dialog{border:1px solid var(--line);border-radius:20px;padding:26px;width:min(720px,calc(100% - 32px));max-height:90vh;overflow:auto;color:var(--ink)}.dialog::backdrop{background:#25273670}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}.dialog-head h2{overflow-wrap:anywhere}.dialog-head button{flex-shrink:0}.reply-list{margin-top:20px;display:grid;gap:12px}.reply{padding:16px;border:1px solid var(--line);background:#fafafb;border-radius:12px}.reply-meta{margin-bottom:6px}.reply-form{margin-top:20px;border-top:1px solid var(--line);padding-top:8px}.help{font-size:11px;color:var(--muted);margin-top:12px}.composer .status-panel{margin-top:16px;margin-bottom:0}.feed-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.feed-head .search input{width:180px}@media(max-width:1100px){.community-layout{grid-template-columns:1fr}.composer{position:static}}@media(max-width:600px){.feed-head{flex-direction:column;align-items:flex-start}.post{padding:18px}.composer{padding:20px}.dialog{padding:20px}}
 
+
+.delete-own{color:#8e2f2b;border-color:#ecc9c4;font-size:12px}.delete-own:hover{background:#fff2f0}.reply .delete-own{margin-top:12px}
 </style>
 </head>
 <body>
@@ -262,6 +264,7 @@ const typeNames = {info:'Information',frage:'Frage',nachricht:'Nachricht'};
 let D, db, user = null, role = null, authorName = '', connected = false, loaded = false;
 let posts = [], selectedType = 'alle', session = 0, unsubscribers = [], stopFeed = null;
 let selectedPost = null, postBusy = false, replyBusy = false;
+let deleteBusy = false;
 const drafts = new Map();
 const allowed = () => user && typeof role === 'string' && Object.hasOwn(roleNames,role);
 function message(id, value, error = false) {
@@ -269,8 +272,10 @@ function message(id, value, error = false) {
 }
 function controls() {
   $('composer').hidden = !allowed();
-  $('postFields').disabled = !allowed() || !loaded || !connected || postBusy;
-  $('replyFields').disabled = !allowed() || !loaded || !connected || !selectedPost || replyBusy;
+  $('postFields').disabled = !allowed() || !loaded || !connected || postBusy || deleteBusy;
+  $('replyFields').disabled = !allowed() || !loaded || !connected || !selectedPost || replyBusy || deleteBusy;
+  $('closeThread').disabled = replyBusy || deleteBusy;
+  document.querySelectorAll('[data-delete-own]').forEach(button => {button.disabled = !connected || !loaded || postBusy || replyBusy || deleteBusy;});
   $('connectionState').textContent = connected ? 'Verbunden' : 'Verbindung wird hergestellt …';
 }
 function date(timestamp) {
@@ -294,7 +299,14 @@ function render() {
     bottom.append(node('span','post-author',p.authorName));
     const button = node('button','quiet-button',`${Object.keys(p.antworten || {}).length} Antworten · Öffnen`);
     button.type = 'button'; button.addEventListener('click',() => openThread(p.id));
-    bottom.append(button); article.append(bottom); $('postList').append(article);
+    bottom.append(button);
+    if (p.authorUid === user?.uid) {
+      const remove = node('button','quiet-button delete-own','Beitrag löschen');
+      remove.type = 'button'; remove.setAttribute('data-delete-own','');
+      remove.setAttribute('aria-label','Eigenen Beitrag löschen: ' + p.titel);
+      remove.addEventListener('click',() => deleteOwn(p.id)); bottom.append(remove);
+    }
+    article.append(bottom); $('postList').append(article);
   }
   $('postCount').textContent = visible.length + ' Beiträge';
   $('emptyPosts').hidden = !loaded || !allowed() || visible.length > 0;
@@ -302,12 +314,12 @@ function render() {
   renderThread(); controls();
 }
 function openThread(id) {
-  if (!allowed()) return;
+  if (!allowed() || deleteBusy) return;
   selectedPost = id; $('replyText').value = drafts.get(id) || '';
   message('replyStatus',''); renderThread(); controls(); $('threadDialog').showModal();
 }
 function closeThread() {
-  if (replyBusy) return;
+  if (replyBusy || deleteBusy) return;
   if (selectedPost) drafts.set(selectedPost,$('replyText').value);
   $('threadDialog').close(); selectedPost = null; controls();
 }
@@ -326,6 +338,11 @@ function renderThread() {
   for (const r of replies) {
     const item = node('article','reply');
     item.append(node('p','reply-meta',r.authorName + ' · ' + date(r.createdAt)),node('p','post-content',r.text));
+    if (r.authorUid === user?.uid) {
+      const remove = node('button','quiet-button delete-own','Antwort löschen');
+      remove.type = 'button'; remove.setAttribute('data-delete-own','');
+      remove.addEventListener('click',() => deleteOwn(p.id,r.id)); item.append(remove);
+    }
     $('replyList').append(item);
   }
   $('noReplies').hidden = replies.length > 0;
@@ -350,7 +367,7 @@ function startFeed(currentSession) {
 }
 async function publishPost(event) {
   event.preventDefault();
-  if (!allowed() || !connected || !loaded || postBusy) return;
+  if (!allowed() || !connected || !loaded || postBusy || deleteBusy) return;
   const titel = $('postTitle').value.trim(), text = $('postText').value.trim(), typ = $('postType').value;
   if (!titel || titel.length > 160 || !text || text.length > 5000 || !Object.hasOwn(typeNames,typ)) {
     message('publishStatus','Bitte gib einen Titel (maximal 160 Zeichen) und einen Text (maximal 5.000 Zeichen) ein.',true); return;
@@ -365,7 +382,7 @@ async function publishPost(event) {
 }
 async function publishReply(event) {
   event.preventDefault();
-  if (!allowed() || !connected || !loaded || !selectedPost || replyBusy) return;
+  if (!allowed() || !connected || !loaded || !selectedPost || replyBusy || deleteBusy) return;
   const text = $('replyText').value.trim();
   if (!text || text.length > 3000) {message('replyStatus','Bitte schreibe eine Antwort mit maximal 3.000 Zeichen.',true); return;}
   const currentSession = session, postId = selectedPost;
@@ -376,6 +393,40 @@ async function publishReply(event) {
   } catch (error) {
     if (currentSession === session) message('replyStatus',String(error.code || '').toLowerCase().includes('permission') ? 'Antwort verweigert. Prüfe die Kommunikationsregeln und ob der Beitrag noch existiert.' : 'Die Antwort konnte nicht gespeichert werden. Dein Text bleibt erhalten.',true);
   } finally {if (currentSession === session) {replyBusy = false; $('closeThread').disabled = false; controls();}}
+}
+async function deleteOwn(postId, replyId = null) {
+  if (!allowed() || !connected || !loaded || deleteBusy || postBusy || replyBusy) return;
+  const post = posts.find(p => p.id === postId);
+  const entry = replyId ? post?.antworten?.[replyId] : post;
+  if (!entry || entry.authorUid !== user.uid) return;
+  const question = replyId
+    ? 'Deine Antwort wirklich dauerhaft löschen?'
+    : `Deinen Beitrag „${post.titel}“ wirklich dauerhaft löschen? Dabei werden auch alle Antworten zu diesem Beitrag gelöscht.`;
+  if (!window.confirm(question)) return;
+  const currentSession = session;
+  const threadWasOpen = selectedPost === postId && $('threadDialog').open;
+  const path = `kommunikation/posts/${postId}` + (replyId ? `/antworten/${replyId}` : '');
+  deleteBusy = true; render();
+  const statusId = replyId ? 'replyStatus' : 'pageStatus';
+  message(statusId,replyId ? 'Antwort wird gelöscht …' : 'Beitrag wird gelöscht …');
+  try {
+    await D.remove(D.ref(db,path));
+    if (currentSession !== session) return;
+    if (replyId) {
+      const remaining = posts.find(p => p.id === postId);
+      if (remaining?.antworten) delete remaining.antworten[replyId];
+    } else {
+      posts = posts.filter(p => p.id !== postId); drafts.delete(postId);
+      if (threadWasOpen) {$('threadDialog').close(); selectedPost = null;}
+    }
+    message(statusId,replyId ? 'Deine Antwort wurde gelöscht.' : 'Dein Beitrag und die zugehörigen Antworten wurden gelöscht.');
+  } catch (error) {
+    if (currentSession === session) message(statusId,String(error.code || '').toLowerCase().includes('permission')
+      ? 'Löschen verweigert. Veröffentliche die aktualisierten Firebase-Regeln. Du darfst nur eigene Inhalte löschen.'
+      : 'Der Inhalt konnte nicht gelöscht werden. Prüfe die Verbindung und versuche es erneut.',true);
+  } finally {
+    if (currentSession === session) {deleteBusy = false; render();}
+  }
 }
 async function start() {
   try {
@@ -390,7 +441,7 @@ async function start() {
       unsubscribers.forEach(stop => stop()); unsubscribers = [];
       if (stopFeed) stopFeed(); stopFeed = null;
       user = account; role = null; authorName = ''; connected = false; loaded = false; posts = [];
-      selectedPost = null; drafts.clear(); postBusy = false; replyBusy = false;
+      selectedPost = null; drafts.clear(); postBusy = false; replyBusy = false; deleteBusy = false;
       $('postForm').reset(); $('replyForm').reset(); $('closeThread').disabled = false;
       if ($('threadDialog').open) $('threadDialog').close();
       message('publishStatus',''); message('replyStatus','');
@@ -420,7 +471,7 @@ document.querySelectorAll('[data-type]').forEach(button => button.addEventListen
   selectedType = button.dataset.type; document.querySelectorAll('[data-type]').forEach(other => other.setAttribute('aria-pressed',String(other === button))); render();
 }));
 $('closeThread').addEventListener('click',closeThread);
-$('threadDialog').addEventListener('cancel',event => {if (replyBusy) event.preventDefault(); else {if (selectedPost) drafts.set(selectedPost,$('replyText').value); selectedPost = null;}});
+$('threadDialog').addEventListener('cancel',event => {if (replyBusy || deleteBusy) event.preventDefault(); else {if (selectedPost) drafts.set(selectedPost,$('replyText').value); selectedPost = null;}});
 const logo = $('brandLogo'); function fallback() {logo.hidden = true; $('brandFallback').hidden = false;}
 logo.addEventListener('error',fallback); if (logo.complete && !logo.naturalWidth) fallback();
 controls(); start();
