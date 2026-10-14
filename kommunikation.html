@@ -266,6 +266,28 @@ let posts = [], selectedType = 'alle', session = 0, unsubscribers = [], stopFeed
 let selectedPost = null, postBusy = false, replyBusy = false;
 let deleteBusy = false;
 const drafts = new Map();
+const requestedPostId = new URLSearchParams(window.location.search).get('beitrag');
+let requestedPostHandled = false;
+// Gelesene Beiträge werden pro Konto in diesem Browser gespeichert.
+const temporaryCommunicationSeen = new Map();
+function communicationSeenKey(uid) {return 'velog:kommunikation:seen:' + uid;}
+function readCommunicationSeen(uid) {
+  let stored = [];
+  try {
+    const value = JSON.parse(localStorage.getItem(communicationSeenKey(uid)) || '[]');
+    if (Array.isArray(value)) stored = value.filter(id => typeof id === 'string');
+  } catch {}
+  return new Set([...stored, ...(temporaryCommunicationSeen.get(uid) || [])]);
+}
+function markCommunicationSeen(uid, ids) {
+  const seen = readCommunicationSeen(uid);
+  ids.forEach(id => seen.add(id));
+  const values = [...seen].slice(-1000);
+  temporaryCommunicationSeen.set(uid, new Set(values));
+  try {localStorage.setItem(communicationSeenKey(uid), JSON.stringify(values)); return true;}
+  catch {return false;}
+}
+
 const allowed = () => user && typeof role === 'string' && Object.hasOwn(roleNames,role);
 function message(id, value, error = false) {
   $(id).textContent = value; $(id).hidden = !value; $(id).classList.toggle('error',error);
@@ -317,6 +339,7 @@ function openThread(id) {
   if (!allowed() || deleteBusy) return;
   selectedPost = id; $('replyText').value = drafts.get(id) || '';
   message('replyStatus',''); renderThread(); controls(); $('threadDialog').showModal();
+  if (user && posts.some(p => p.id === id)) markCommunicationSeen(user.uid,[id]);
 }
 function closeThread() {
   if (replyBusy || deleteBusy) return;
@@ -357,6 +380,11 @@ function startFeed(currentSession) {
     snapshot.forEach(child => {const p = child.val(); if (p && typeof p === 'object') next.push({id:child.key,...p});});
     posts = next.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0) || b.id.localeCompare(a.id));
     loaded = true; message('pageStatus',''); render();
+    if (requestedPostId && !requestedPostHandled) {
+      requestedPostHandled = true;
+      if (posts.some(p => p.id === requestedPostId)) openThread(requestedPostId);
+      else message('pageStatus','Der gewählte Beitrag wurde gelöscht oder ist nicht mehr unter den letzten 100 Beiträgen enthalten.');
+    }
   },error => {
     if (currentSession !== session) return;
     loaded = false; posts = []; render();
