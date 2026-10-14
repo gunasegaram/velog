@@ -1,1 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kommunikation · VE-Log</title>
+<style>
+:root {
+  --brand: #8e2f2b; --brand-dark: #68201f; --ink: #232735;
+  --muted: #727785; --line: #e9e9ed; --bg: #f5f6f8;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #bd7774; outline-offset: 4px; }
+[hidden] { display: none !important; }
+.icon { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.skip { position: absolute; left: 20px; top: -100px; background: white; padding: 12px; z-index: 10; }
+.skip:focus { top: 12px; }
+.sidebar { position: fixed; inset: 0 auto 0 0; width: 248px; background: white; border-right: 1px solid var(--line); padding: 30px 20px; display: flex; flex-direction: column; overflow-y: auto; z-index: 3; }
+.brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 0 10px 28px; }
+.brand-image { max-width: 145px; max-height: 65px; object-fit: contain; }
+.wordmark { font-size: 29px; font-weight: 800; color: var(--brand); letter-spacing: -1px; }
+.brand small { display: block; font-size: 9px; letter-spacing: 1.4px; color: var(--muted); font-weight: 650; }
+.nav-label { font-size: 10px; letter-spacing: 1.5px; padding: 12px 14px; color: var(--muted); font-weight: 700; }
+.nav { display: grid; gap: 6px; }
+.nav a { display: flex; gap: 12px; align-items: center; padding: 13px 14px; border-radius: 10px; color: #626675; font-weight: 550; }
+.nav a:hover { background: #f7f7f9; }
+.nav a.active { background: #f7eae9; color: var(--brand); font-weight: 700; }
+.side-bottom { margin-top: auto; padding-top: 30px; }
+.side-note { border-top: 1px solid var(--line); padding: 18px 14px 0; color: var(--muted); font-size: 12px; }
+.shell { margin-left: 248px; }
+.topbar { min-height: 86px; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; gap: 16px; background: white; border-bottom: 1px solid var(--line); }
+.breadcrumb { font-size: 13px; color: var(--muted); }
+.breadcrumb strong { color: var(--ink); }
+.quiet-button { border: 1px solid var(--line); background: white; border-radius: 9px; padding: 9px 12px; font-size: 13px; }
+.quiet-button:hover { background: var(--bg); }
+main { max-width: 1500px; margin: auto; padding: 34px 40px 25px; }
+.settings-intro { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 26px; }
+.eyebrow { font-size: 10px; font-weight: 750; letter-spacing: 1.7px; color: var(--brand); text-transform: uppercase; }
+h1 { font-size: clamp(25px, 3vw, 34px); line-height: 1.25; letter-spacing: -1px; margin: 7px 0 8px; }
+h2 { font-size: 17px; margin: 0; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.identity-panel { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: white; border: 1px solid var(--line); border-radius: 16px; max-width: 340px; }
+.avatar { display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 50%; background: #f7eae9; color: var(--brand); font-weight: 750; }
+.identity-copy { min-width: 0; font-size: 12px; }
+.identity-copy strong { display: block; overflow-wrap: anywhere; }
+.identity-copy span { display: block; color: var(--muted); margin-top: 3px; }
+.management-shortcut { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 22px 24px; margin-bottom: 24px; background: white; border: 1px solid var(--line); border-radius: 16px; }
+.management-shortcut-copy { display: flex; align-items: center; gap: 15px; }
+.management-shortcut h2 { font-size: 16px; margin-bottom: 5px; }
+.management-shortcut p { font-size: 12px; color: var(--muted); }
+.management-shortcut-link { display: inline-flex; align-items: center; gap: 8px; color: white; background: var(--brand); padding: 11px 15px; border-radius: 9px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.management-shortcut-link:hover { background: var(--brand-dark); }
+.icon-box { display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border-radius: 11px; background: #f8eceb; color: var(--brand); }
+.icon-box.blue { background: #edf2fd; color: #5470a5; }
+.icon-box.green { background: #edf5ee; color: #547c60; }
+.icon-box.gold { background: #fbf3e7; color: #ac8542; }
+.status-panel { padding: 16px 20px; border: 1px solid #dce5f1; border-radius: 12px; background: #f0f5fc; font-size: 13px; margin-bottom: 24px; overflow-wrap: anywhere; }
+.status-panel.error { background: #fff4f0; border-color: #ecc9c4; color: #8e2f2b; }
+.section-head { margin-bottom: 16px; }
+.section-count { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 8px; }
+.people-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+.filter-list { display: flex; flex-wrap: wrap; gap: 7px; }
+.filter-button { border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; background: white; color: var(--muted); font-size: 12px; }
+.filter-button:hover { color: var(--brand); border-color: #d8b7b4; }
+.filter-button[aria-pressed="true"] { background: #f7eae9; border-color: #e8cdca; color: var(--brand); }
+.search { display: flex; align-items: center; gap: 9px; padding: 8px 12px; background: white; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); }
+.search input { border: 0; background: transparent; width: 185px; font-size: 12px; min-width: 0; }
+.settings-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.module { display: flex; flex-direction: column; min-height: 220px; background: white; border: 1px solid var(--line); border-radius: 18px; padding: 25px; transition: transform .2s, box-shadow .2s; }
+.module:hover { transform: translateY(-3px); box-shadow: 0 10px 25px #252b3810; }
+.module-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 20px; }
+.access-label { font-size: 9px; letter-spacing: .7px; color: var(--muted); }
+.module h3 { font-size: 16px; margin: 0 0 7px; }
+.module p { font-size: 12px; line-height: 1.7; color: var(--muted); }
+.catalog-link { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 650; color: var(--brand); margin-top: auto; padding-top: 22px; }
+.empty { border: 1px dashed #dce0e6; border-radius: 12px; padding: 24px; text-align: center; color: var(--muted); font-size: 13px; }
+.settings-footnote { margin-top: 24px; color: var(--muted); font-size: 11px; }
+.bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 24px; font-size: 11px; color: var(--muted); }
+.bottom a:hover { text-decoration: underline; }
+@media (min-width: 1600px) { main { padding-top: 45px; } }
+@media (max-width: 1200px) {
+  .sidebar { width: 215px; } .shell { margin-left: 215px; }
+  .topbar { padding-inline: 26px; } main { padding: 28px 26px; }
+  .settings-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .settings-intro { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 760px) {
+  .sidebar { position: static; width: 100%; padding: 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .brand { padding: 0 4px 16px; gap: 5px; } .brand-image { max-width: 110px; max-height: 50px; }
+  .brand small { font-size: 8px; } .nav-label, .side-bottom { display: none; }
+  .nav { display: flex; overflow-x: auto; } .nav a { padding: 10px; font-size: 12px; gap: 7px; white-space: nowrap; }
+  .nav .icon { width: 17px; height: 17px; } .shell { margin: 0; }
+  .topbar { min-height: 64px; padding: 12px 18px; } .breadcrumb { display: none; }
+  .quiet-button { margin-left: auto; } main { padding: 24px 18px; }
+  .settings-intro .muted { font-size: 13px; }
+  .management-shortcut { align-items: flex-start; flex-direction: column; padding: 20px; }
+  .management-shortcut-link { width: 100%; justify-content: center; }
+  .search { width: 100%; } .search input { width: 100%; }
+  .settings-grid { gap: 12px; } .module { padding: 18px; }
+}
+@media (max-width: 520px) {
+  .settings-grid { grid-template-columns: 1fr; } .identity-panel { width: 100%; max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
+.community-layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;align-items:start}.composer{background:white;border:1px solid var(--line);border-radius:18px;padding:24px;position:sticky;top:24px}.composer h2{margin-bottom:8px}.composer p{font-size:12px;color:var(--muted)}fieldset{border:0;padding:0;margin:0}label{display:block;font-size:12px;font-weight:650;margin:16px 0 6px}input,select,textarea{font:inherit;color:var(--ink)}.composer input,.composer select,.composer textarea,.reply-form textarea{width:100%;border:1px solid #dce0e6;border-radius:9px;padding:10px;background:white;font-size:13px;min-width:0}textarea{resize:vertical;min-height:130px}.submit{padding:12px 18px;background:var(--brand);color:white;border:0;border-radius:9px;margin-top:16px;font:inherit;font-size:13px;font-weight:650}.submit:hover{background:var(--brand-dark)}fieldset:disabled{opacity:.65}button:disabled{cursor:default;opacity:.6}.post-list{display:grid;gap:16px}.post{background:white;border:1px solid var(--line);border-radius:18px;padding:24px}.post-top,.post-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.post-top{margin-bottom:14px}.post-type{border-radius:7px;padding:5px 9px;font-size:10px;font-weight:750;background:#edf2fd;color:#5470a5}.post-type.frage{background:#fbf3e7;color:#956f2e}.post-type.nachricht{background:#edf5ee;color:#547c60}.post-date,.post-author,.reply-meta{font-size:11px;color:var(--muted)}.post-title{font-size:18px;margin-bottom:10px;overflow-wrap:anywhere}.post-content{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.75}.post-bottom{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}.post-author{overflow-wrap:anywhere}.dialog{border:1px solid var(--line);border-radius:20px;padding:26px;width:min(720px,calc(100% - 32px));max-height:90vh;overflow:auto;color:var(--ink)}.dialog::backdrop{background:#25273670}.dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}.dialog-head h2{overflow-wrap:anywhere}.dialog-head button{flex-shrink:0}.reply-list{margin-top:20px;display:grid;gap:12px}.reply{padding:16px;border:1px solid var(--line);background:#fafafb;border-radius:12px}.reply-meta{margin-bottom:6px}.reply-form{margin-top:20px;border-top:1px solid var(--line);padding-top:8px}.help{font-size:11px;color:var(--muted);margin-top:12px}.composer .status-panel{margin-top:16px;margin-bottom:0}.feed-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.feed-head .search input{width:180px}@media(max-width:1100px){.community-layout{grid-template-columns:1fr}.composer{position:static}}@media(max-width:600px){.feed-head{flex-direction:column;align-items:flex-start}.post{padding:18px}.composer{padding:20px}.dialog{padding:20px}}
+
+</style>
+</head>
+<body>
+<svg class="defs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<symbol id="grid" viewBox="0 0 24 24">
+<rect x="3" y="3" width="7" height="7" rx="1.5"/>
+<rect x="14" y="3" width="7" height="7" rx="1.5"/>
+<rect x="3" y="14" width="7" height="7" rx="1.5"/>
+<rect x="14" y="14" width="7" height="7" rx="1.5"/>
+</symbol>
+<symbol id="file" viewBox="0 0 24 24">
+<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h6"/>
+</symbol>
+<symbol id="users" viewBox="0 0 24 24">
+<circle cx="9" cy="8" r="3"/>
+<path d="M3 21v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M21 21v-2a6 6 0 0 0-4-5"/>
+</symbol>
+<symbol id="calendar" viewBox="0 0 24 24">
+<rect x="3" y="5" width="18" height="16" rx="2"/>
+<path d="M16 3v4M8 3v4M3 11h18M8 15h2M14 15h2M8 18h2"/>
+</symbol>
+<symbol id="settings" viewBox="0 0 24 24">
+<path d="m9 3-.6 3-2 .9-2.7-1.1-2 3.4 2.2 2v2l-2.2 2 2 3.4 2.7-1.1 2 .9.6 2.6h6l.6-2.6 2-.9 2.7 1.1 2-3.4-2.2-2v-2l2.2-2-2-3.4-2.7 1.1-2-.9L15 3z"/>
+<circle cx="12" cy="12" r="3"/>
+</symbol>
+<symbol id="arrow" viewBox="0 0 24 24">
+<path d="M5 12h14M14 7l5 5-5 5"/>
+</symbol>
+<symbol id="clock" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="9"/>
+<path d="M12 7v5l3 2"/>
+</symbol>
+<symbol id="check" viewBox="0 0 24 24">
+<rect x="3" y="3" width="18" height="18" rx="3"/>
+<path d="m7 12 3 3 7-7"/>
+</symbol>
+<symbol id="search" viewBox="0 0 24 24">
+<circle cx="10.5" cy="10.5" r="6.5"/>
+<path d="m16 16 5 5"/>
+</symbol>
+<symbol id="logout" viewBox="0 0 24 24">
+<path d="M9 4H4v16h5M9 12h12M17 8l4 4-4 4"/>
+</symbol>
+<symbol id="trash" viewBox="0 0 24 24">
+<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/>
+</symbol>
+<symbol id="truck" viewBox="0 0 24 24">
+<path d="M3 5h11v12H3zM14 9h4l3 4v4h-7"/>
+<circle cx="7" cy="18" r="2"/>
+<circle cx="18" cy="18" r="2"/>
+</symbol>
+<symbol id="chart" viewBox="0 0 24 24">
+<path d="M4 3v18h17M9 16v-5M14 16V7M19 16V4"/>
+</symbol>
+<symbol id="upload" viewBox="0 0 24 24">
+<path d="M12 16V3M7 8l5-5 5 5M4 15v6h16v-6"/>
+</symbol>
+<symbol id="plus" viewBox="0 0 24 24">
+<path d="M12 5v14M5 12h14"/>
+</symbol>
+<symbol id="building" viewBox="0 0 24 24">
+<path d="M3 21h18M6 21V4h12v17M9 8h1M14 8h1M9 12h1M14 12h1M10 21v-5h4v5"/>
+</symbol>
+<symbol id="book" viewBox="0 0 24 24">
+<path d="M12 5v16M12 5C9 3 6 3 3 4v15c3-1 6-1 9 2 3-3 6-3 9-2V4c-3-1-6-1-9 1z"/>
+</symbol>
+<symbol id="shield" viewBox="0 0 24 24">
+<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/>
+</symbol>
+<symbol id="health" viewBox="0 0 24 24">
+<rect x="3" y="3" width="18" height="18" rx="5"/>
+<path d="M12 7v10M7 12h10"/>
+</symbol>
+<symbol id="mail" viewBox="0 0 24 24">
+<rect x="3" y="5" width="18" height="14" rx="2"/>
+<path d="m3 6 9 7 9-7"/>
+</symbol>
+<symbol id="cloud" viewBox="0 0 24 24">
+<path d="M7 19h11a4 4 0 0 0 1-8 7 7 0 0 0-13-2 5 5 0 0 0 1 10z"/>
+</symbol>
+<symbol id="palette" viewBox="0 0 24 24">
+<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-4 2 2 0 0 1 1-4h3a3 3 0 0 0 3-3c0-4-4-7-9-7z"/>
+<circle cx="7" cy="10" r=".8"/>
+<circle cx="10" cy="7" r=".8"/>
+<circle cx="15" cy="7" r=".8"/>
+</symbol>
+</defs>
+</svg>
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<aside class="sidebar" aria-label="Hauptnavigation">
+<a class="brand" href="dashboard.html" aria-label="VE-Log Dashboard">
+<img class="brand-image" id="brandLogo" src="logo.png" alt="VE-Log">
+<div>
+<span class="wordmark" id="brandFallback" hidden>VE-Log</span>
+<small>MITARBEITERPORTAL</small>
+</div>
+</a>
+<div class="nav-label">ARBEITSPLATZ</div>
+<nav class="nav">
+<a href="dashboard.html">
+<svg class="icon" aria-hidden="true">
+<use href="#grid"/>
+</svg>Dashboard</a>
+<a href="personalmanagement.html">
+<svg class="icon" aria-hidden="true">
+<use href="#users"/>
+</svg>Mitarbeiter</a>
+<a href="formular.html">
+<svg class="icon" aria-hidden="true">
+<use href="#file"/>
+</svg>Formulare</a>
+<a href="urlaub.html">
+<svg class="icon" aria-hidden="true">
+<use href="#calendar"/>
+</svg>Urlaub</a>
+<a href="einstellungen.html">
+<svg class="icon" aria-hidden="true">
+<use href="#settings"/>
+</svg>Einstellungen</a>
+<a class="active" href="kommunikation.html" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#mail"/></svg>Kommunikation</a>
+</nav>
+<div class="side-bottom">
+<div class="side-note">Alles für deinen Arbeitsalltag.<br>Einfach an einem Ort.</div>
+</div>
+</aside>
+
+<div class="shell"><header class="topbar"><div class="breadcrumb"><a href="dashboard.html">Arbeitsplatz</a> / <strong>Kommunikation</strong></div><a href="dashboard.html" class="quiet-button">← Dashboard</a></header>
+<main id="main"><section class="settings-intro"><div><div class="eyebrow">Gemeinsam · Informiert · Im Austausch</div><h1>Kommunikation</h1><p class="muted">Informationen teilen, Fragen stellen und gemeinsam Antworten finden.</p></div><div class="identity-panel"><div class="avatar">VE</div><div class="identity-copy"><strong id="accountName">Anmeldung wird geprüft …</strong><span id="accountRole">Rolle wird geladen</span><span id="connectionState">Verbindung wird hergestellt …</span></div></div></section>
+<div class="status-panel" id="pageStatus" role="status">Deine Anmeldung wird geprüft …</div><p id="loginAction" hidden style="margin-bottom:24px"><a href="index.html" class="quiet-button">Zur Anmeldung →</a></p>
+<div class="community-layout"><section class="composer" id="composer" hidden aria-labelledby="composerTitle"><h2 id="composerTitle">Beitrag teilen</h2><p>Alle Mitarbeiter mit gültiger Rolle können deinen Beitrag und die Antworten lesen.</p><form id="postForm"><fieldset id="postFields" disabled><legend hidden>Neuen Beitrag schreiben</legend><label for="postType">Beitragsart</label><select id="postType"><option value="info">Information teilen</option><option value="frage">Frage stellen</option><option value="nachricht">Nachricht an alle</option></select><label for="postTitle">Titel</label><input id="postTitle" maxlength="160" required placeholder="Worum geht es?"><label for="postText">Dein Text</label><textarea id="postText" maxlength="5000" required placeholder="Schreibe eine Information oder Frage …"></textarea><button class="submit" type="submit">Mit Mitarbeitern teilen</button></fieldset></form><p class="help">Gemeinsamer Austausch für alle Mitarbeiter. Keine privaten Direktnachrichten.</p><div id="publishStatus" class="status-panel" role="status" hidden></div></section>
+<section aria-labelledby="feedTitle"><div class="feed-head"><h2 id="feedTitle">Mitarbeiter-Austausch <span id="postCount" class="section-count">0 Beiträge</span></h2><div class="search"><label for="postSearch" hidden>Beiträge durchsuchen</label><input id="postSearch" type="search" placeholder="Beiträge suchen …"></div></div><div class="filter-list" role="group" aria-label="Beitragsart filtern" style="margin-bottom:18px"><button class="filter-button" type="button" data-type="alle" aria-pressed="true">Alle</button><button class="filter-button" type="button" data-type="info" aria-pressed="false">Informationen</button><button class="filter-button" type="button" data-type="frage" aria-pressed="false">Fragen</button><button class="filter-button" type="button" data-type="nachricht" aria-pressed="false">Nachrichten</button></div><div class="post-list" id="postList"></div><p class="empty" id="emptyPosts" hidden></p><p class="help">Die letzten 100 Beiträge werden angezeigt. Suche und Filter beziehen sich auf diese Beiträge.</p></section></div>
+<footer class="bottom"><span>VE-Log · Mitarbeiterportal</span><a href="personalmanagement.html">← Personalmanagement</a></footer></main></div>
+<dialog id="threadDialog" class="dialog" aria-labelledby="threadTitle"><div class="dialog-head"><h2 id="threadTitle">Beitrag</h2><button id="closeThread" class="quiet-button" type="button" aria-label="Beitrag schließen">×</button></div><p id="threadMeta" class="reply-meta"></p><p id="threadBody" class="post-content"></p><div id="replyList" class="reply-list"></div><p id="noReplies" class="help">Noch keine Antworten. Schreibe die erste Antwort.</p><form id="replyForm" class="reply-form"><fieldset id="replyFields" disabled><legend hidden>Antwort schreiben</legend><label for="replyText">Deine Antwort</label><textarea id="replyText" maxlength="3000" required placeholder="Antworte deinem Kollegen …"></textarea><button class="submit" type="submit">Antwort teilen</button></fieldset></form><div id="replyStatus" class="status-panel" role="status" hidden></div></dialog>
+<noscript><p class="status-panel error">Bitte aktiviere JavaScript für den Mitarbeiteraustausch.</p></noscript>
+<script type="module">
+'use strict';
+const firebaseConfig = {
+  apiKey:'AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM',
+  authDomain:'ve-log.firebaseapp.com',
+  databaseURL:'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId:'ve-log', storageBucket:'ve-log.firebasestorage.app',
+  messagingSenderId:'749978080433', appId:'1:749978080433:web:8f64ef99a557fe2346be90'
+};
+const $ = id => document.getElementById(id);
+const roleNames = {mitarbeiter:'Mitarbeiter',manager:'Manager',admin:'Administrator',superadmin:'Superadministrator'};
+const typeNames = {info:'Information',frage:'Frage',nachricht:'Nachricht'};
+let D, db, user = null, role = null, authorName = '', connected = false, loaded = false;
+let posts = [], selectedType = 'alle', session = 0, unsubscribers = [], stopFeed = null;
+let selectedPost = null, postBusy = false, replyBusy = false;
+const drafts = new Map();
+const allowed = () => user && typeof role === 'string' && Object.hasOwn(roleNames,role);
+function message(id, value, error = false) {
+  $(id).textContent = value; $(id).hidden = !value; $(id).classList.toggle('error',error);
+}
+function controls() {
+  $('composer').hidden = !allowed();
+  $('postFields').disabled = !allowed() || !loaded || !connected || postBusy;
+  $('replyFields').disabled = !allowed() || !loaded || !connected || !selectedPost || replyBusy;
+  $('connectionState').textContent = connected ? 'Verbunden' : 'Verbindung wird hergestellt …';
+}
+function date(timestamp) {
+  return typeof timestamp === 'number' ? new Intl.DateTimeFormat('de-DE',{dateStyle:'medium',timeStyle:'short'}).format(timestamp) : 'Wird gespeichert …';
+}
+function node(tag, className, text) {
+  const el = document.createElement(tag); if (className) el.className = className;
+  if (text !== undefined) el.textContent = text; return el;
+}
+function render() {
+  const query = $('postSearch').value.trim().toLocaleLowerCase('de-DE');
+  const visible = allowed() ? posts.filter(p => (selectedType === 'alle' || p.typ === selectedType) &&
+    [p.titel,p.text,p.authorName].join(' ').toLocaleLowerCase('de-DE').includes(query)) : [];
+  $('postList').replaceChildren();
+  for (const p of visible) {
+    const article = node('article','post');
+    const top = node('div','post-top');
+    top.append(node('span','post-type ' + p.typ,typeNames[p.typ] || 'Beitrag'),node('span','post-date',date(p.createdAt)));
+    article.append(top,node('h2','post-title',p.titel),node('p','post-content',p.text));
+    const bottom = node('div','post-bottom');
+    bottom.append(node('span','post-author',p.authorName));
+    const button = node('button','quiet-button',`${Object.keys(p.antworten || {}).length} Antworten · Öffnen`);
+    button.type = 'button'; button.addEventListener('click',() => openThread(p.id));
+    bottom.append(button); article.append(bottom); $('postList').append(article);
+  }
+  $('postCount').textContent = visible.length + ' Beiträge';
+  $('emptyPosts').hidden = !loaded || !allowed() || visible.length > 0;
+  $('emptyPosts').textContent = posts.length ? 'Keine Beiträge für diese Suche gefunden.' : 'Noch keine Beiträge. Teile die erste Information oder stelle eine Frage.';
+  renderThread(); controls();
+}
+function openThread(id) {
+  if (!allowed()) return;
+  selectedPost = id; $('replyText').value = drafts.get(id) || '';
+  message('replyStatus',''); renderThread(); controls(); $('threadDialog').showModal();
+}
+function closeThread() {
+  if (replyBusy) return;
+  if (selectedPost) drafts.set(selectedPost,$('replyText').value);
+  $('threadDialog').close(); selectedPost = null; controls();
+}
+function renderThread() {
+  if (!selectedPost) return;
+  const p = posts.find(p => p.id === selectedPost);
+  if (!p || !allowed()) {
+    $('threadTitle').textContent = 'Beitrag nicht verfügbar';
+    $('threadBody').textContent = 'Dieser Beitrag ist nicht mehr in den letzten 100 Beiträgen enthalten oder dein Zugriff wurde beendet.';
+    $('replyList').replaceChildren(); selectedPost = null; controls(); return;
+  }
+  $('threadTitle').textContent = p.titel; $('threadBody').textContent = p.text;
+  $('threadMeta').textContent = p.authorName + ' · ' + date(p.createdAt);
+  $('replyList').replaceChildren();
+  const replies = Object.entries(p.antworten || {}).map(([id, value]) => ({id,...value})).sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0) || a.id.localeCompare(b.id));
+  for (const r of replies) {
+    const item = node('article','reply');
+    item.append(node('p','reply-meta',r.authorName + ' · ' + date(r.createdAt)),node('p','post-content',r.text));
+    $('replyList').append(item);
+  }
+  $('noReplies').hidden = replies.length > 0;
+}
+function startFeed(currentSession) {
+  if (stopFeed) return;
+  message('pageStatus','Beiträge werden geladen …');
+  const source = D.query(D.ref(db,'kommunikation/posts'),D.orderByChild('createdAt'),D.limitToLast(100));
+  stopFeed = D.onValue(source,snapshot => {
+    if (currentSession !== session || !allowed()) return;
+    const next = [];
+    snapshot.forEach(child => {const p = child.val(); if (p && typeof p === 'object') next.push({id:child.key,...p});});
+    posts = next.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0) || b.id.localeCompare(a.id));
+    loaded = true; message('pageStatus',''); render();
+  },error => {
+    if (currentSession !== session) return;
+    loaded = false; posts = []; render();
+    message('pageStatus',String(error.code || '').toLowerCase().includes('permission')
+      ? 'Die Kommunikationsregeln sind noch nicht freigegeben. Veröffentliche die mitgelieferten Firebase-Regeln für kommunikation und lade die Seite neu.'
+      : 'Beiträge konnten nicht geladen werden. Prüfe deine Verbindung.',true);
+  });
+}
+async function publishPost(event) {
+  event.preventDefault();
+  if (!allowed() || !connected || !loaded || postBusy) return;
+  const titel = $('postTitle').value.trim(), text = $('postText').value.trim(), typ = $('postType').value;
+  if (!titel || titel.length > 160 || !text || text.length > 5000 || !Object.hasOwn(typeNames,typ)) {
+    message('publishStatus','Bitte gib einen Titel (maximal 160 Zeichen) und einen Text (maximal 5.000 Zeichen) ein.',true); return;
+  }
+  const currentSession = session; postBusy = true; controls(); message('publishStatus','Beitrag wird geteilt …');
+  try {
+    await D.set(D.push(D.ref(db,'kommunikation/posts')),{titel,text,typ,authorUid:user.uid,authorName,createdAt:D.serverTimestamp()});
+    if (currentSession === session) {$('postForm').reset(); message('publishStatus','Dein Beitrag wurde mit allen Mitarbeitern geteilt.');}
+  } catch (error) {
+    if (currentSession === session) message('publishStatus',String(error.code || '').toLowerCase().includes('permission') ? 'Teilen verweigert. Prüfe die Kommunikationsregeln und deine Benutzerrolle.' : 'Der Beitrag konnte nicht gespeichert werden. Dein Text bleibt erhalten.',true);
+  } finally {if (currentSession === session) {postBusy = false; controls();}}
+}
+async function publishReply(event) {
+  event.preventDefault();
+  if (!allowed() || !connected || !loaded || !selectedPost || replyBusy) return;
+  const text = $('replyText').value.trim();
+  if (!text || text.length > 3000) {message('replyStatus','Bitte schreibe eine Antwort mit maximal 3.000 Zeichen.',true); return;}
+  const currentSession = session, postId = selectedPost;
+  replyBusy = true; controls(); $('closeThread').disabled = true; message('replyStatus','Antwort wird gespeichert …');
+  try {
+    await D.set(D.push(D.ref(db,`kommunikation/posts/${postId}/antworten`)),{text,authorUid:user.uid,authorName,createdAt:D.serverTimestamp()});
+    if (currentSession === session && selectedPost === postId) {$('replyText').value = ''; drafts.delete(postId); message('replyStatus','Deine Antwort wurde geteilt.');}
+  } catch (error) {
+    if (currentSession === session) message('replyStatus',String(error.code || '').toLowerCase().includes('permission') ? 'Antwort verweigert. Prüfe die Kommunikationsregeln und ob der Beitrag noch existiert.' : 'Die Antwort konnte nicht gespeichert werden. Dein Text bleibt erhalten.',true);
+  } finally {if (currentSession === session) {replyBusy = false; $('closeThread').disabled = false; controls();}}
+}
+async function start() {
+  try {
+    const [appSDK,A,databaseSDK] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')
+    ]);
+    D = databaseSDK; const app = appSDK.initializeApp(firebaseConfig),auth = A.getAuth(app); db = D.getDatabase(app);
+    A.onAuthStateChanged(auth,account => {
+      session++; const currentSession = session;
+      unsubscribers.forEach(stop => stop()); unsubscribers = [];
+      if (stopFeed) stopFeed(); stopFeed = null;
+      user = account; role = null; authorName = ''; connected = false; loaded = false; posts = [];
+      selectedPost = null; drafts.clear(); postBusy = false; replyBusy = false;
+      $('postForm').reset(); $('replyForm').reset(); $('closeThread').disabled = false;
+      if ($('threadDialog').open) $('threadDialog').close();
+      message('publishStatus',''); message('replyStatus','');
+      $('loginAction').hidden = !!account; $('accountRole').textContent = 'Rolle wird geprüft'; render();
+      if (!account) {$('accountName').textContent = 'Nicht angemeldet'; $('accountRole').textContent = 'Gast'; message('pageStatus','Bitte melde dich an, um mit deinen Kollegen zu kommunizieren.'); return;}
+      authorName = (account.email || account.uid).slice(0,160); $('accountName').textContent = authorName;
+      unsubscribers.push(D.onValue(D.ref(db,'.info/connected'),snapshot => {if (currentSession === session) {connected = snapshot.val() === true; controls();}}));
+      unsubscribers.push(D.onValue(D.ref(db,`users/${account.uid}`),snapshot => {
+        if (currentSession !== session) return;
+        const p = snapshot.val() || {};
+        const name = [p.vorname,p.nachname].filter(v => typeof v === 'string' && v.trim()).map(v => v.trim()).join(' ');
+        authorName = (name || account.email || account.uid).slice(0,160); $('accountName').textContent = authorName;
+      },() => {}));
+      unsubscribers.push(D.onValue(D.ref(db,`roles/${account.uid}`),snapshot => {
+        if (currentSession !== session) return;
+        role = snapshot.val(); $('accountRole').textContent = roleNames[role] || 'Keine gültige Rolle';
+        if (allowed()) startFeed(currentSession);
+        else {if (stopFeed) stopFeed(); stopFeed = null; posts = []; loaded = false; message('pageStatus','Deinem Konto fehlt eine gültige Mitarbeiterrolle. Bitte wende dich an die Administration.',true);}
+        render();
+      },() => {if (currentSession !== session) return; role = null; if (stopFeed) stopFeed(); stopFeed = null; posts = []; loaded = false; render(); message('pageStatus','Deine Benutzerrolle konnte nicht gelesen werden.',true);}));
+    },() => {session++; unsubscribers.forEach(stop => stop()); unsubscribers = []; if (stopFeed) stopFeed(); stopFeed = null; role = null; posts = []; loaded = false; render(); message('pageStatus','Deine Anmeldung konnte nicht geprüft werden. Lade die Seite erneut.',true);});
+  } catch (error) {message('pageStatus','Firebase konnte nicht geladen werden. Öffne diese Seite über dieselbe Website wie deine Anmeldung und prüfe die Verbindung.',true); console.error('Kommunikation',error);}
+}
+$('postForm').addEventListener('submit',publishPost); $('replyForm').addEventListener('submit',publishReply);
+$('postSearch').addEventListener('input',render);
+document.querySelectorAll('[data-type]').forEach(button => button.addEventListener('click',() => {
+  selectedType = button.dataset.type; document.querySelectorAll('[data-type]').forEach(other => other.setAttribute('aria-pressed',String(other === button))); render();
+}));
+$('closeThread').addEventListener('click',closeThread);
+$('threadDialog').addEventListener('cancel',event => {if (replyBusy) event.preventDefault(); else {if (selectedPost) drafts.set(selectedPost,$('replyText').value); selectedPost = null;}});
+const logo = $('brandLogo'); function fallback() {logo.hidden = true; $('brandFallback').hidden = false;}
+logo.addEventListener('error',fallback); if (logo.complete && !logo.naturalWidth) fallback();
+controls(); start();
+</script>
+</body>
+</html>
