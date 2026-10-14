@@ -275,6 +275,7 @@ p { margin: 0; }
 </a>
 </section>
 <div class="status-panel" id="pageStatus" role="status">Deine Anmeldung und Berechtigungen werden geprüft …</div>
+<p id="loginAction" hidden style="margin: 0 0 24px;"><a class="quiet-button" href="index.html">Zur Anmeldung →</a></p>
 <div class="section-head">
 <h2 id="areasTitle">Einstellungsbereiche <span class="section-count" id="areaCount" aria-live="polite">0 Bereiche</span>
 </h2>
@@ -591,9 +592,11 @@ async function initializeSettings() {
       if (!user) {
         $('accountName').textContent = 'Nicht angemeldet';
         $('accountRole').textContent = 'Gast';
-        window.location.replace('index.html');
+        setStatus('Auf dieser Seite wurde keine aktive Firebase-Anmeldung erkannt. Bitte melde dich über die Anmeldeseite an. Deine Einstellungen bleiben bis zur Anmeldung gesperrt.');
+        $('loginAction').hidden = false;
         return;
       }
+      $('loginAction').hidden = true;
       activeUserId = user.uid;
       showProfile(user);
       $('accountRole').textContent = 'Rolle wird geladen';
