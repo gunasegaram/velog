@@ -866,23 +866,36 @@ td{
 @media screen and (max-width:600px){.ve-form-heading{flex-direction:column;gap:18px}.ve-form-brand{flex:none;width:210px;font-size:13px}.ve-form-brand>img{width:210px}}
 @media print{.ve-form-heading{display:flex;flex-direction:row;gap:20px;break-inside:avoid}.ve-form-brand{display:block!important;flex:0 0 230px;width:230px;max-width:45%;print-color-adjust:exact}.ve-form-brand>img{width:230px}.ve-form-brand-row{display:flex!important}}
 </style>
+<style>
+.ve-material-heading>.ve-material-title{flex:1;min-width:0;overflow-wrap:anywhere}
+.ve-material-title>p{margin:0 0 8px;color:#8e2f2b;font:700 13px/1.5 Arial,sans-serif;letter-spacing:.4px}
+.ve-material-title>h1{display:block;margin:0;color:#18395b;font:700 26px/1.25 Arial,sans-serif}
+@media print{.ve-material-heading,.ve-material-title,.ve-material-title>h1{visibility:visible!important}.ve-material-title>h1{display:block!important;font-size:22px}}
+</style>
+
+<style id="ve-heading-alignment">
+/* Überschrift am unteren Rand des Firmenkopfs über den Eingabefeldern. */
+.ve-form-heading>h1,
+.ve-form-heading>div:not(.ve-form-brand){align-self:flex-end}
+@media screen and (max-width:600px){
+ .ve-form-heading>.ve-form-brand{order:-1}
+ .ve-form-heading>h1,
+ .ve-form-heading>div:not(.ve-form-brand){align-self:flex-start}
+}
+</style>
 </head>
 
 
 <body data-nachweis-typ="material_absender" data-nachweis-titel="Material – Absender" data-nachweis-datum="tagAbsender">
 
 
-<header>
 
-    <h1>📤 Absender</h1>
-
-</header>
 
 
 <div class="container">
 
 <div class="form-card">
-<div class="ve-form-brand-row"><div class="ve-form-brand" aria-label="VE-LOG Firmendaten"><img src="logo.png" alt="VE-LOG Logo"><p>Flächenmanagement · Umschlag · Transport<br>Sperberweg 15 · 91056 Erlangen<br>Tel. 09131 / 7515-10</p></div></div>
+<div class="ve-form-heading ve-material-heading"><div class="ve-material-title"><p>Materialversandanzeige</p><h1>Absender</h1></div><div class="ve-form-brand" aria-label="VE-LOG Firmendaten"><img src="logo.png" alt="VE-LOG Logo"><p>Flächenmanagement · Umschlag · Transport<br>Sperberweg 15 · 91056 Erlangen<br>Tel. 09131 / 7515-10</p></div></div>
 
 
 <div class="nachweis-links" style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0"><a href="nachweise.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">▣ Meine Nachweise</a><a href="m.absender.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">+ Neuer Nachweis</a><a href="formular.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">← Formulare</a></div><!-- =====================================================
