@@ -1202,7 +1202,7 @@ body{
 
 </style>
 
-<style>@media print{.nachweis-links,#nachweisStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style><style>
+<style>@media print{.nachweis-links,#nachweisStatus,#signatureStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style><style>
 /* Einheitlicher Firmenkopf aus dem Urlaubsformular. */
 .ve-form-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:25px;break-inside:avoid}
 .ve-form-heading>div:not(.ve-form-brand){flex:1;min-width:0;overflow-wrap:anywhere}
@@ -1240,6 +1240,7 @@ body{
 ===================================================== -->
 
 <div class="formular" id="formular">
+<form id="nachweisForm">
 
 
 <div class="nachweis-links" style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0"><a href="nachweise.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">▣ Meine Nachweise</a><a href="materialausgabe.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">+ Neuer Nachweis</a><a href="formular.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">← Formulare</a></div><!-- NAVIGATION -->
@@ -1463,28 +1464,29 @@ body{
         </div>
 
         <canvas id="ausgeber" class="signature-pad"></canvas>
+<input type="hidden" id="signatureValueAusgeber" name="ausgeber" value="">
 
 
         <div class="signature-buttons">
 
-            <button type="button" class="signature-button signature-delete" onclick="clearCanvas('ausgeber')">
+            <button type="button" class="signature-button signature-delete" data-signature-pad="ausgeber" onclick="clearCanvas('ausgeber')">
                 🗑 Löschen
             </button>
 
 
-            <button type="button" class="signature-button signature-upload" onclick="uploadSignature('ausgeber')">
+            <button type="button" class="signature-button signature-upload" data-signature-pad="ausgeber" onclick="uploadSignature('ausgeber')">
                 📁 Hochladen
             </button>
 
 
-            <button type="button" class="signature-button signature-png" onclick="saveSignaturePNG('ausgeber')">
+            <button type="button" class="signature-button signature-png" data-signature-pad="ausgeber" onclick="saveSignaturePNG('ausgeber')">
                 💾 Als PNG
             </button>
 
         </div>
 
 
-        <input type="file" id="upload-ausgeber" class="file-input" accept="image/png,image/jpeg,image/jpg" onchange="loadSignature(this,'ausgeber')">
+        <input type="file" id="upload-ausgeber" class="file-input" accept="image/png,image/jpeg,image/webp" onchange="loadSignature(this,'ausgeber')">
 
 
         <div class="sign-text">
@@ -1504,28 +1506,29 @@ body{
         </div>
 
         <canvas id="empfaengerSignatur" class="signature-pad"></canvas>
+<input type="hidden" id="signatureValueEmpfaenger" name="empfaengerSignatur" value="">
 
 
         <div class="signature-buttons">
 
-            <button type="button" class="signature-button signature-delete" onclick="clearCanvas('empfaengerSignatur')">
+            <button type="button" class="signature-button signature-delete" data-signature-pad="empfaengerSignatur" onclick="clearCanvas('empfaengerSignatur')">
                 🗑 Löschen
             </button>
 
 
-            <button type="button" class="signature-button signature-upload" onclick="uploadSignature('empfaengerSignatur')">
+            <button type="button" class="signature-button signature-upload" data-signature-pad="empfaengerSignatur" onclick="uploadSignature('empfaengerSignatur')">
                 📁 Hochladen
             </button>
 
 
-            <button type="button" class="signature-button signature-png" onclick="saveSignaturePNG('empfaengerSignatur')">
+            <button type="button" class="signature-button signature-png" data-signature-pad="empfaengerSignatur" onclick="saveSignaturePNG('empfaengerSignatur')">
                 💾 Als PNG
             </button>
 
         </div>
 
 
-        <input type="file" id="upload-empfaengerSignatur" class="file-input" accept="image/png,image/jpeg,image/jpg" onchange="loadSignature(this,'empfaengerSignatur')">
+        <input type="file" id="upload-empfaengerSignatur" class="file-input" accept="image/png,image/jpeg,image/webp" onchange="loadSignature(this,'empfaengerSignatur')">
 
 
         <div class="sign-text">
@@ -1541,6 +1544,7 @@ body{
 
 <!-- BUTTONS -->
 
+<p class="status" id="signatureStatus" role="status">Unterschreibe mit Maus, Finger oder Stift oder lade ein Unterschriftsbild hoch. Danach das gesamte Dokument speichern.</p>
 <div class="buttons">
 
 
@@ -1568,10 +1572,471 @@ body{
 </div>
 
 
-<p id="nachweisStatus" role="status" style="padding:12px;background:#f8f9fb;border-radius:8px;margin:16px 0">Speicherfunktion wird geladen …</p></div>
+<p id="nachweisStatus" role="status" style="padding:12px;background:#f8f9fb;border-radius:8px;margin:16px 0">Speicherfunktion wird geladen …</p>
 
 
 
-<script src="nachweise-signaturen.js"></script><script src="nachweise-formular.js" type="module"></script></body>
+</form>
+</div>
+<script>
+'use strict';
+(() => {
+  const pads = new Map();
+  const message = (text,error=false) => {
+    const status=document.getElementById('signatureStatus');
+    status.textContent=text;status.style.color=error?'#8e2f2b':'';
+  };
+  function setup(canvasId,fieldId,fileId) {
+    const canvas=document.getElementById(canvasId),field=document.getElementById(fieldId),file=document.getElementById(fileId);
+    const state={canvas,field,file,drawing:false,lastSeen:field.value||'',revision:0,dpr:1};
+    pads.set(canvasId,state);
+    function resize() {
+      const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+      const previous=canvas.width&&canvas.height?canvas.toDataURL('image/png'):'';
+      state.dpr=Math.min(window.devicePixelRatio||1,2);
+      canvas.width=Math.round(rect.width*state.dpr);canvas.height=Math.round(rect.height*state.dpr);
+      const context=canvas.getContext('2d');context.setTransform(state.dpr,0,0,state.dpr,0,0);
+      context.lineWidth=2.25;context.lineCap='round';context.lineJoin='round';context.strokeStyle='#233247';context.fillStyle='#233247';
+      if(previous&&state.field.value)paint(state,previous,false);
+    }
+    state.resize=resize;resize();
+    canvas.setAttribute('aria-label',canvasId==='ausgeber'?'Unterschrift Ausgeber zeichnen':'Unterschrift Empfänger zeichnen');
+    function point(event){const r=canvas.getBoundingClientRect();return {x:event.clientX-r.left,y:event.clientY-r.top};}
+    canvas.addEventListener('pointerdown',event=>{
+      if(field.disabled||event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
+      event.preventDefault();state.revision++;state.drawing=true;state.pointerId=event.pointerId;
+      canvas.setPointerCapture?.(event.pointerId);
+      const p=point(event),ctx=canvas.getContext('2d');ctx.beginPath();ctx.arc(p.x,p.y,1.1,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(p.x,p.y);
+    });
+    canvas.addEventListener('pointermove',event=>{
+      if(!state.drawing||event.pointerId!==state.pointerId||field.disabled)return;
+      event.preventDefault();const p=point(event),ctx=canvas.getContext('2d');ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
+    });
+    const finish=event=>{
+      if(!state.drawing||event.pointerId!==state.pointerId)return;
+      state.drawing=false;if(canvas.hasPointerCapture?.(event.pointerId))canvas.releasePointerCapture?.(event.pointerId);
+      commit(state);message('Unterschrift übernommen. Klicke auf „In Meine Nachweise speichern“, um das Dokument zu speichern.');
+    };
+    canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',finish);canvas.addEventListener('lostpointercapture',finish);
+    if(window.ResizeObserver){state.observer=new ResizeObserver(()=>{
+      const r=canvas.getBoundingClientRect(),ratio=Math.min(window.devicePixelRatio||1,2);
+      if(canvas.width!==Math.round(r.width*ratio)||canvas.height!==Math.round(r.height*ratio))resize();
+    });state.observer.observe(canvas);}
+    return state;
+  }
+  function commit(state) {
+    state.field.value=state.canvas.toDataURL('image/png');state.lastSeen=state.field.value;
+    state.field.dispatchEvent(new Event('input',{bubbles:true}));state.field.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  async function paint(state,source,save=true) {
+    const revision=++state.revision;
+    const image=new Image();
+    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('Das Bild konnte nicht gelesen werden.'));image.src=source;});
+    if(revision!==state.revision)return;
+    const {canvas}=state,ctx=canvas.getContext('2d'),r=canvas.getBoundingClientRect();
+    ctx.clearRect(0,0,r.width,r.height);
+    const factor=Math.min(r.width/image.naturalWidth,r.height/image.naturalHeight);
+    const width=image.naturalWidth*factor,height=image.naturalHeight*factor;
+    ctx.drawImage(image,(r.width-width)/2,(r.height-height)/2,width,height);
+    if(save)commit(state);
+  }
+  function locked(state) {return !state||state.field.disabled;}
+  window.clearCanvas=canvasId=>{
+    const state=pads.get(canvasId);if(locked(state))return;
+    state.revision++;state.drawing=false;const r=state.canvas.getBoundingClientRect();state.canvas.getContext('2d').clearRect(0,0,r.width,r.height);
+    state.field.value='';state.lastSeen='';state.field.dispatchEvent(new Event('change',{bubbles:true}));message('Unterschrift entfernt. Speichere das Dokument, um die Änderung zu übernehmen.');
+  };
+  window.uploadSignature=canvasId=>{const state=pads.get(canvasId);if(!locked(state)){state.file.value='';state.file.click();}};
+  window.loadSignature=async(input,canvasId)=>{
+    const state=pads.get(canvasId);if(locked(state))return;
+    const file=input.files?.[0];if(!file)return;
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){message('Bitte wähle PNG, JPG oder WebP mit höchstens 5 MB.',true);input.value='';return;}
+    try{
+      const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Die Datei konnte nicht gelesen werden.'));reader.readAsDataURL(file);});
+      if(state.field.disabled)return;
+      await paint(state,data);message('Unterschriftsbild übernommen. Klicke jetzt auf „In Meine Nachweise speichern“.');
+    }catch(error){message(error.message||'Das Bild konnte nicht übernommen werden.',true);}
+    finally{input.value='';}
+  };
+  window.saveSignaturePNG=canvasId=>{
+    const state=pads.get(canvasId);if(!state?.field.value){message('Bitte zeichne zuerst eine Unterschrift oder lade ein Bild hoch.',true);return;}
+    const link=document.createElement('a');link.href=state.field.value;link.download='VE-Log-Unterschrift-'+canvasId+'.png';document.body.append(link);link.click();link.remove();
+  };
+  window.clearAllSignatures=()=>{for(const id of pads.keys())window.clearCanvas(id);};
+  setup('ausgeber','signatureValueAusgeber','upload-ausgeber');
+  setup('empfaengerSignatur','signatureValueEmpfaenger','upload-empfaengerSignatur');
+  function restoreAndLock() {
+    for(const state of pads.values()){
+      document.querySelectorAll(`[data-signature-pad="${state.canvas.id}"]`).forEach(button=>button.disabled=state.field.disabled);
+      state.file.disabled=state.field.disabled;state.canvas.setAttribute('aria-disabled',String(state.field.disabled));
+      const value=state.field.value||'';
+      if(value!==state.lastSeen){state.lastSeen=value;
+        if(/^data:image\/(png|jpeg|webp);base64,/.test(value))paint(state,value,false).catch(()=>message('Eine gespeicherte Unterschrift konnte nicht angezeigt werden.',true));
+        else {const r=state.canvas.getBoundingClientRect();state.canvas.getContext('2d').clearRect(0,0,r.width,r.height);}
+      }
+    }
+    const number=document.getElementById('lieferscheinNr');
+    const id=new URLSearchParams(location.search).get('id');
+    if(id)number.textContent=id;
+  }
+  const status=document.getElementById('nachweisStatus');
+  new MutationObserver(restoreAndLock).observe(status,{childList:true,subtree:true,characterData:true});
+  restoreAndLock();
+})();
+
+</script>
+<script type="module">
+'use strict';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM',
+  authDomain: 've-log.firebaseapp.com',
+  databaseURL:
+    'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 've-log',
+  storageBucket: 've-log.firebasestorage.app',
+  messagingSenderId: '749978080433',
+  appId: '1:749978080433:web:8f64ef99a557fe2346be90'
+};
+
+const form = document.getElementById('nachweisForm');
+const button = document.getElementById('saveNachweis');
+const status = document.getElementById('nachweisStatus');
+
+const typ = document.body.dataset.nachweisTyp;
+const titel = document.body.dataset.nachweisTitel || 'Nachweis';
+
+let recordId = new URLSearchParams(location.search).get('id');
+let busy = false;
+let ready = false;
+let activeUid = null;
+let session = 0;
+
+function message(text, error = false) {
+  status.textContent = text;
+  status.style.color = error ? '#8e2f2b' : '';
+}
+
+function fields() {
+  return [...form.elements].filter(el =>
+    ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName) &&
+    !['button', 'submit', 'reset', 'file', 'password'].includes(el.type) &&
+    (el.name || el.id)
+  );
+}
+
+function collect() {
+  const data = {};
+
+  for (const el of fields()) {
+    const key = el.name || el.id;
+
+    if (
+      /[.#$\[\]\/]/.test(key) ||
+      ['__proto__', 'constructor', 'prototype'].includes(key)
+    ) {
+      throw new Error(
+        'Ein Formularfeld hat einen ungültigen Namen.'
+      );
+    }
+
+    if (el.type === 'radio') {
+      if (el.checked) data[key] = el.value;
+    } else if (el.type === 'checkbox') {
+      data[key] = el.checked;
+    } else if (el.type === 'number') {
+      data[key] = el.value === '' ? '' : el.valueAsNumber;
+    } else {
+      data[key] = el.value;
+    }
+  }
+
+  return data;
+}
+
+function restore(data) {
+  for (const el of fields()) {
+    const key = el.name || el.id;
+
+    if (!Object.hasOwn(data, key)) continue;
+
+    if (el.type === 'checkbox') {
+      el.checked = data[key] === true;
+    } else if (el.type === 'radio') {
+      el.checked = String(data[key]) === el.value;
+    } else {
+      el.value = data[key] ?? '';
+    }
+  }
+}
+
+function errorMessage(error) {
+  if (
+    /permission.denied/i.test(
+      error?.code || error?.message || ''
+    )
+  ) {
+    return (
+      'Firebase verweigert den Zugriff. ' +
+      'Die Datenbankregeln müssen deinem angemeldeten Konto ' +
+      'den Zugriff auf nachweise/' + activeUid + ' erlauben.'
+    );
+  }
+
+  return (
+    error?.message ||
+    'Speichern fehlgeschlagen. Bitte prüfe deine Internetverbindung.'
+  );
+}
+
+async function start() {
+  if (!form || !button || !status || !typ) {
+    throw new Error(
+      'Formular, Speicherbutton, Statusanzeige oder Formularart fehlt.'
+    );
+  }
+
+  button.disabled = true;
+
+  if (
+    recordId &&
+    !/^[A-Za-z0-9_-]{1,128}$/.test(recordId)
+  ) {
+    message('Ungültige Nachweis-ID im Link.', true);
+    return;
+  }
+
+  const [App, Auth, DB] = await Promise.all([
+    import(
+      'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'
+    ),
+    import(
+      'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'
+    ),
+    import(
+      'https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js'
+    )
+  ]);
+
+  const app = App.getApps().length
+    ? App.getApp()
+    : App.initializeApp(firebaseConfig);
+
+  const auth = Auth.getAuth(app);
+  const db = DB.getDatabase(app);
+
+  Auth.onAuthStateChanged(
+    auth,
+    async user => {
+      const current = ++session;
+
+      ready = false;
+      button.disabled = true;
+
+      if (activeUid && activeUid !== user?.uid) {
+        activeUid = null;
+
+        fields().forEach(el => {
+          el.disabled = true;
+        });
+
+        message(
+          'Die Anmeldung wurde geändert. Bitte lade die Seite neu.',
+          true
+        );
+        return;
+      }
+
+      activeUid = user?.uid || null;
+
+      if (!user) {
+        message(
+          'Bitte melde dich zuerst über das Dashboard an. ' +
+          'Öffne danach dieses Formular erneut.'
+        );
+        return;
+      }
+
+      try {
+        if (recordId) {
+          message('Nachweis wird geladen …');
+
+          const snapshot = await DB.get(
+            DB.ref(
+              db,
+              `nachweise/${user.uid}/${recordId}`
+            )
+          );
+
+          if (current !== session) return;
+
+          if (!snapshot.exists()) {
+            throw new Error(
+              'Dieser Nachweis wurde nicht gefunden.'
+            );
+          }
+
+          const record = snapshot.val();
+
+          if (record.typ !== typ) {
+            throw new Error(
+              'Der Link gehört zu einer anderen Formularart.'
+            );
+          }
+
+          restore(record.daten || {});
+
+          if (record.status !== 'entwurf') {
+            fields().forEach(el => {
+              el.disabled = true;
+            });
+
+            message(
+              'Dieser Nachweis kann nur angesehen und gedruckt werden.'
+            );
+            return;
+          }
+        }
+
+        ready = true;
+        button.disabled = busy;
+
+        message(
+          recordId
+            ? 'Nachweis geladen. Du kannst ihn bearbeiten und erneut speichern.'
+            : 'Bereit zum Speichern.'
+        );
+      } catch (error) {
+        if (current === session) {
+          message(errorMessage(error), true);
+        }
+      }
+    },
+    error => {
+      message(errorMessage(error), true);
+    }
+  );
+
+  async function save() {
+    if (
+      busy ||
+      !ready ||
+      !auth.currentUser ||
+      !form.reportValidity()
+    ) {
+      return;
+    }
+
+    busy = true;
+    button.disabled = true;
+
+    const user = auth.currentUser;
+    const current = session;
+    const oldText = button.textContent;
+
+    button.textContent = 'Wird gespeichert …';
+
+    message(
+      'Speichern läuft. Bitte lasse die Seite geöffnet, ' +
+      'bis die Bestätigung erscheint.'
+    );
+
+    try {
+      const daten = collect();
+
+      // Erneutes Speichern verwendet dieselbe Nachweis-ID.
+      if (!recordId) {
+        recordId = DB.push(
+          DB.ref(db, `nachweise/${user.uid}`)
+        ).key;
+      }
+
+      const target = DB.ref(
+        db,
+        `nachweise/${user.uid}/${recordId}`
+      );
+
+      const result = await DB.runTransaction(
+        target,
+        existing => {
+          if (
+            existing &&
+            (
+              existing.typ !== typ ||
+              existing.status !== 'entwurf'
+            )
+          ) {
+            return;
+          }
+
+          return {
+              ...(existing || {}),
+            ownerUid: user.uid,
+            typ,
+            titel,
+            datum: daten.datum || '',
+            status: 'entwurf',
+            createdAt:
+              existing?.createdAt ?? DB.serverTimestamp(),
+            updatedAt: DB.serverTimestamp(),
+            daten
+          };
+        },
+        { applyLocally: false }
+      );
+
+      if (!result.committed) {
+        throw new Error(
+          'Der Nachweis wurde inzwischen eingereicht oder geändert ' +
+          'und kann nicht gespeichert werden.'
+        );
+      }
+
+      if (current !== session) return;
+
+      const url = new URL(location.href);
+      url.searchParams.set('id', recordId);
+
+      history.replaceState(null, '', url);
+
+      message(
+        'Nachweis erfolgreich gespeichert. ' +
+        'Du findest ihn unter „Meine Nachweise“. ' +
+        'E-Mail-Versand ist noch nicht eingerichtet.'
+      );
+    } catch (error) {
+      if (current === session) {
+        message(errorMessage(error), true);
+      }
+    } finally {
+      busy = false;
+      button.textContent = oldText;
+      button.disabled = !ready;
+    }
+  }
+
+  button.addEventListener('click', save);
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    save();
+  });
+}
+
+start().catch(error => {
+  if (button) button.disabled = true;
+
+  if (status) {
+    message(
+      'Die Speicherfunktion konnte nicht geladen werden: ' +
+      errorMessage(error),
+      true
+    );
+  }
+
+  console.error('VE-Log Speicherfunktion:', error);
+});
+
+</script></body>
 
 </html>
