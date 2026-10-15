@@ -1,0 +1,301 @@
+{
+  "version": 2,
+  "projects": [
+    {
+      "id": "proj-b470-demo",
+      "name": "B470 Ortsdurchfahrt Forchheim",
+      "customer": "Staatliches Bauamt Bamberg",
+      "costcenter": "KSt-4702",
+      "overhead": 15,
+      "variablePrices": {
+        "hourly": 50,
+        "diesel": 1.65
+      },
+      "createdAt": "2026-10-15T08:58:34.014Z",
+      "rows": [
+        {
+          "id": "row-rev-1",
+          "description": "Tiefbau & Asphalterneuerung Hauptabschnitt",
+          "qty": 1,
+          "unit": "pauschal",
+          "rate": 118500,
+          "category": "Sonstige Kosten",
+          "side": "plan",
+          "kind": "revenue",
+          "date": "2024-03-01",
+          "source": "Hauptauftrag VE-Log"
+        },
+        {
+          "id": "row-rev-2",
+          "description": "1. Abschlagsrechnung Tiefbau & Erdarbeiten eingereicht",
+          "qty": 1,
+          "unit": "pauschal",
+          "rate": 48600,
+          "category": "Sonstige Kosten",
+          "side": "actual",
+          "kind": "revenue",
+          "date": "2024-03-25",
+          "source": "Abschlagsrechnung Nr. 1"
+        },
+        {
+          "id": "plan-ger",
+          "description": "Kettenbagger CAT 326 (Kalkulation)",
+          "qty": 35,
+          "unit": "Tag",
+          "rate": 250,
+          "category": "Geräte",
+          "side": "plan",
+          "kind": "cost",
+          "source": "Urkalkulation"
+        },
+        {
+          "id": "plan-die",
+          "description": "Dieselbedarf Baustelle (Kalkulation)",
+          "qty": 8500,
+          "unit": "Liter",
+          "rate": 1.65,
+          "category": "Diesel",
+          "side": "plan",
+          "kind": "cost",
+          "source": "Urkalkulation"
+        },
+        {
+          "id": "plan-per",
+          "description": "Maschinist & Bautrupp (Kalkulation)",
+          "qty": 480,
+          "unit": "Std.",
+          "rate": 50,
+          "category": "Personal",
+          "side": "plan",
+          "kind": "cost",
+          "source": "Urkalkulation"
+        },
+        {
+          "id": "plan-sch",
+          "description": "Tiefladertransporte Gerätebereitstellung",
+          "qty": 8,
+          "unit": "Fahrt",
+          "rate": 350,
+          "category": "Schwertransport",
+          "side": "plan",
+          "kind": "cost",
+          "source": "Urkalkulation"
+        },
+        {
+          "id": "plan-mat",
+          "description": "Frostschutz & Schottertragschicht 0/45",
+          "qty": 1200,
+          "unit": "t",
+          "rate": 18.2,
+          "category": "Schüttgüter",
+          "side": "plan",
+          "kind": "cost",
+          "source": "Urkalkulation"
+        },
+        {
+          "id": "act-1",
+          "description": "Baggerarbeiten CAT 326 Woche 10-12",
+          "qty": 14,
+          "unit": "Tag",
+          "rate": 250,
+          "category": "Geräte",
+          "side": "actual",
+          "kind": "cost",
+          "date": "2024-03-15",
+          "source": "Geräterapport März"
+        },
+        {
+          "id": "act-2",
+          "description": "Tankung Baustellentank B470",
+          "qty": 3450,
+          "unit": "Liter",
+          "rate": 1.62,
+          "category": "Diesel",
+          "side": "actual",
+          "kind": "cost",
+          "date": "2024-03-18",
+          "source": "Tankbeleg Fa. BayWa"
+        },
+        {
+          "id": "act-3",
+          "description": "Arbeitszeit Maschinist M. Huber",
+          "qty": 195,
+          "unit": "Std.",
+          "rate": 50,
+          "category": "Personal",
+          "side": "actual",
+          "kind": "cost",
+          "date": "2024-03-22",
+          "source": "Stundenzettel KW 11-12"
+        },
+        {
+          "id": "act-4",
+          "description": "Lieferung Schotter 0/45 1. Tranche",
+          "qty": 485,
+          "unit": "t",
+          "rate": 18.2,
+          "category": "Schüttgüter",
+          "side": "actual",
+          "kind": "cost",
+          "date": "2024-03-12",
+          "source": "Lieferschein Schotterwerk"
+        }
+      ],
+      "documents": [
+        {
+          "id": "doc-init-1",
+          "name": "Urkalkulation_B470.pdf",
+          "hash": "init-hash-01",
+          "date": "2024-03-01T08:00:00.000Z",
+          "detectedType": "offer",
+          "positionCount": 5,
+          "netTotal": 69275
+        }
+      ]
+    }
+  ],
+  "selectedProjectId": "proj-b470-demo",
+  "rates": [
+    {
+      "id": "1",
+      "name": "Bauleiter",
+      "unit": "Std.",
+      "rate": 60,
+      "category": "Personal"
+    },
+    {
+      "id": "2",
+      "name": "Maschinist",
+      "unit": "Std.",
+      "rate": 50,
+      "category": "Personal"
+    },
+    {
+      "id": "3",
+      "name": "Handarbeiter",
+      "unit": "Std.",
+      "rate": 50,
+      "category": "Personal"
+    },
+    {
+      "id": "4",
+      "name": "Polier",
+      "unit": "Std.",
+      "rate": 55,
+      "category": "Personal"
+    },
+    {
+      "id": "5",
+      "name": "CAT 315 F / Liebherr R914",
+      "unit": "Tag",
+      "rate": 280,
+      "category": "Geräte"
+    },
+    {
+      "id": "6",
+      "name": "CAT 330 F",
+      "unit": "Tag",
+      "rate": 360,
+      "category": "Geräte"
+    },
+    {
+      "id": "7",
+      "name": "Komatsu PC 240",
+      "unit": "Tag",
+      "rate": 280,
+      "category": "Geräte"
+    },
+    {
+      "id": "8",
+      "name": "CAT 326",
+      "unit": "Tag",
+      "rate": 250,
+      "category": "Geräte"
+    },
+    {
+      "id": "9",
+      "name": "CAT 336 F",
+      "unit": "Tag",
+      "rate": 320,
+      "category": "Geräte"
+    },
+    {
+      "id": "10",
+      "name": "CAT M318F Mobilbagger",
+      "unit": "Tag",
+      "rate": 280,
+      "category": "Geräte"
+    },
+    {
+      "id": "11",
+      "name": "CAT 966 M Radlader",
+      "unit": "Tag",
+      "rate": 285,
+      "category": "Geräte"
+    },
+    {
+      "id": "12",
+      "name": "Wirtgen Kaltfräse",
+      "unit": "Tag",
+      "rate": 430,
+      "category": "Geräte"
+    },
+    {
+      "id": "13",
+      "name": "Hamm Walzenzug H13i",
+      "unit": "Tag",
+      "rate": 210,
+      "category": "Geräte"
+    },
+    {
+      "id": "14",
+      "name": "Tieflader Schwertransport",
+      "unit": "Fahrt",
+      "rate": 350,
+      "category": "Schwertransport"
+    },
+    {
+      "id": "15",
+      "name": "LKW 4-Achser ER-VE 48",
+      "unit": "Std.",
+      "rate": 120,
+      "category": "Schwertransport"
+    },
+    {
+      "id": "16",
+      "name": "LKW Sattelzug ER-VE 31",
+      "unit": "Std.",
+      "rate": 95,
+      "category": "Schwertransport"
+    },
+    {
+      "id": "17",
+      "name": "Mineralbeton 0/32",
+      "unit": "t",
+      "rate": 16.5,
+      "category": "Schüttgüter"
+    },
+    {
+      "id": "18",
+      "name": "Kabelsand 0/2",
+      "unit": "t",
+      "rate": 14.8,
+      "category": "Schüttgüter"
+    },
+    {
+      "id": "19",
+      "name": "Schottertragschicht 0/45",
+      "unit": "t",
+      "rate": 18.2,
+      "category": "Schüttgüter"
+    },
+    {
+      "id": "20",
+      "name": "Dieselkraftstoff EN 590",
+      "unit": "Liter",
+      "rate": 1.65,
+      "category": "Diesel"
+    }
+  ],
+  "autoImportImmediately": false
+}
