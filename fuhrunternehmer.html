@@ -855,7 +855,18 @@ td{
 
 </style>
 
-<style>@media print{.nachweis-links,#nachweisStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style></head>
+<style>@media print{.nachweis-links,#nachweisStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style><style>
+/* Einheitlicher Firmenkopf aus dem Urlaubsformular. */
+.ve-form-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:25px;break-inside:avoid}
+.ve-form-heading>h1{flex:1;min-width:0;margin:0;overflow-wrap:anywhere}
+.ve-form-brand{flex:0 1 260px;width:260px;max-width:100%;margin-left:auto;color:#444;font:14px/1.5 Arial,Helvetica,sans-serif;text-align:left;break-inside:avoid}
+.ve-form-brand>img{display:block;width:260px;max-width:100%;height:auto}
+.ve-form-brand>p{margin:12px 0 0;font:inherit;color:inherit}
+.ve-form-brand-row{display:flex;justify-content:flex-end;margin-bottom:25px;break-inside:avoid}
+@media screen and (max-width:600px){.ve-form-heading{flex-direction:column;gap:18px}.ve-form-brand{flex:none;width:210px;font-size:13px}.ve-form-brand>img{width:210px}}
+@media print{.ve-form-heading{display:flex;flex-direction:row;gap:20px;break-inside:avoid}.ve-form-brand{display:block!important;flex:0 0 230px;width:230px;max-width:45%;print-color-adjust:exact}.ve-form-brand>img{width:230px}.ve-form-brand-row{display:flex!important}}
+</style>
+</head>
 
 
 <body data-nachweis-typ="fuhrunternehmer" data-nachweis-titel="Fuhrunternehmer" data-nachweis-datum="tagAbsender">
@@ -871,6 +882,7 @@ td{
 <div class="container">
 
 <div class="form-card">
+<div class="ve-form-brand-row"><div class="ve-form-brand" aria-label="VE-LOG Firmendaten"><img src="logo.png" alt="VE-LOG Logo"><p>Flächenmanagement · Umschlag · Transport<br>Sperberweg 15 · 91056 Erlangen<br>Tel. 09131 / 7515-10</p></div></div>
 
 
 <div class="nachweis-links" style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0"><a href="nachweise.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">▣ Meine Nachweise</a><a href="fuhrunternehmer.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">+ Neuer Nachweis</a><a href="formular.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">← Formulare</a></div><!-- =====================================================
