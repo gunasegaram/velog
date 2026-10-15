@@ -275,6 +275,19 @@
  .ve-form-heading>div:not(.ve-form-brand){align-self:flex-start}
 }
 </style>
+<style>
+.ve-signatures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:30px;break-inside:avoid}
+.ve-signature-box{width:100%;min-width:0;text-align:left;break-inside:avoid}
+.ve-signature-label{display:block;margin:0 0 8px;font-size:14px;color:#18395b}
+.ve-signature-pad{display:block;width:100%;height:180px;border:1px solid #aaa;border-radius:7px;background:#fff;touch-action:none;cursor:crosshair}
+.ve-signature-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.ve-signature-tools>span{font-size:11px;color:#727785}
+.ve-signature-tools>.nav-btn{padding:8px 10px;min-height:36px;font-size:12px}
+.ve-signature-status{min-height:18px;margin:5px 0;font-size:11px;color:#727785}
+.ve-signature-caption{margin-top:8px;padding-top:7px;border-top:1px solid #233247;text-align:center;font-size:12px}
+@media screen and (max-width:700px){.ve-signatures{grid-template-columns:1fr}}
+@media print{.ve-signatures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;break-inside:avoid}.ve-signature-tools,.ve-signature-status{display:none!important}.ve-signature-pad{height:180px;border:0;border-radius:0}.ve-signature-label{font-size:12px}}
+</style>
 </head>
 
 <body
@@ -564,16 +577,7 @@
         <input id="weitereAngaben" name="weitereAngaben" type="text">
       </div>
 
-      <div class="signatures">
-        <div class="sign">
-          <hr>
-          VE-Log GmbH
-        </div>
-        <div class="sign">
-          <hr>
-          Empfänger
-        </div>
-      </div>
+      <div class="signatures ve-signatures"><div class="sign ve-signature-box"><label class="ve-signature-label" for="signatureVELog">Unterschrift VE-Log GmbH</label><canvas id="signatureVELog" class="ve-signature-pad" data-field="signatureVELogData" width="800" height="360" aria-label="Unterschrift VE-Log GmbH: mit Maus, Finger oder Stift zeichnen">Bitte einen Browser mit Canvas-Unterstützung verwenden.</canvas><input type="hidden" id="signatureVELogData" name="signatureVELogData" value=""><div class="ve-signature-tools"><span>Mit Maus, Finger oder Stift unterschreiben</span><button type="button" class="nav-btn" data-clear-signature="signatureVELog">Unterschrift löschen</button></div><p id="signatureVELogStatus" class="ve-signature-status" role="status"></p><div class="ve-signature-caption">VE-Log GmbH</div></div><div class="sign ve-signature-box"><label class="ve-signature-label" for="signatureEmpfaenger">Unterschrift Empfänger</label><canvas id="signatureEmpfaenger" class="ve-signature-pad" data-field="signatureEmpfaengerData" width="800" height="360" aria-label="Unterschrift Empfänger: mit Maus, Finger oder Stift zeichnen">Bitte einen Browser mit Canvas-Unterstützung verwenden.</canvas><input type="hidden" id="signatureEmpfaengerData" name="signatureEmpfaengerData" value=""><div class="ve-signature-tools"><span>Mit Maus, Finger oder Stift unterschreiben</span><button type="button" class="nav-btn" data-clear-signature="signatureEmpfaenger">Unterschrift löschen</button></div><p id="signatureEmpfaengerStatus" class="ve-signature-status" role="status"></p><div class="ve-signature-caption">Empfänger</div></div></div>
 
       <div class="actions">
         <button
@@ -609,6 +613,109 @@
     </form>
   </div>
 
+<script>
+(() => {
+  'use strict';
+  const form = document.getElementById('nachweisForm');
+  const pads = [];
+  for (const canvas of document.querySelectorAll('.ve-signature-pad')) {
+    const field = document.getElementById(canvas.dataset.field);
+    const ctx = canvas.getContext('2d');
+    const status = document.getElementById(canvas.id + 'Status');
+    let pointer = null, previous = null, image = null, generation = 0;
+    const nativeValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    let internal = false;
+    function dimensions() { return canvas.getBoundingClientRect(); }
+    function refresh() {
+      const rect = dimensions();
+      if (!rect.width || !rect.height) return;
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * ratio);
+      canvas.height = Math.round(rect.height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111'; ctx.fillStyle = '#111';
+      if (image) ctx.drawImage(image, 0, 0, rect.width, rect.height);
+    }
+    function restore(value) {
+      const version = ++generation;
+      if (!value) { image = null; refresh(); status.textContent = ''; return; }
+      if (!/^data:image\/png;base64,/.test(value)) return;
+      const next = new Image();
+      next.onload = () => { if (generation !== version) return; image = next; refresh(); status.textContent = 'Unterschrift vorhanden.'; };
+      next.src = value;
+    }
+    // Auch später durch die Nachweisverwaltung geladene Feldwerte wieder anzeigen.
+    Object.defineProperty(field, 'value', {
+      configurable: true,
+      get() { return nativeValue.get.call(field); },
+      set(value) { nativeValue.set.call(field, value); if (!internal) restore(String(value || '')); }
+    });
+    function snapshot() {
+      const data = canvas.toDataURL('image/png');
+      internal = true; field.value = data; internal = false;
+      const saved = document.createElement('canvas'); saved.width = canvas.width; saved.height = canvas.height; saved.getContext('2d').drawImage(canvas, 0, 0); image = saved;
+      field.dispatchEvent(new Event('input', {bubbles: true}));
+      field.dispatchEvent(new Event('change', {bubbles: true}));
+      status.textContent = 'Unterschrift erfasst.';
+    }
+    function point(event) {
+      const rect = dimensions();
+      return {x: Math.max(0, Math.min(rect.width, event.clientX - rect.left)), y: Math.max(0, Math.min(rect.height, event.clientY - rect.top))};
+    }
+    canvas.addEventListener('pointerdown', event => {
+      if (field.disabled || pointer !== null || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      event.preventDefault(); generation++; pointer = event.pointerId; previous = point(event);
+      canvas.setPointerCapture(pointer);
+      ctx.beginPath(); ctx.arc(previous.x, previous.y, 1, 0, Math.PI * 2); ctx.fill();
+    });
+    canvas.addEventListener('pointermove', event => {
+      if (field.disabled || event.pointerId !== pointer) return;
+      event.preventDefault();
+      const samples = event.getCoalescedEvents?.();
+      for (const sample of (samples?.length ? samples : [event])) {
+        const next = point(sample); ctx.beginPath(); ctx.moveTo(previous.x, previous.y); ctx.lineTo(next.x, next.y); ctx.stroke(); previous = next;
+      }
+    });
+    function finish(event) {
+      if (event.pointerId !== pointer) return;
+      const id = pointer; pointer = null; previous = null;
+      if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
+      if (!field.disabled) snapshot();
+      else restore(field.value);
+    }
+    canvas.addEventListener('pointerup', finish);
+    canvas.addEventListener('pointercancel', finish);
+    canvas.addEventListener('lostpointercapture', finish);
+    const clearButton = document.querySelector('[data-clear-signature="' + canvas.id + '"]');
+    clearButton.addEventListener('click', () => {
+      if (field.disabled) return;
+      pointer = null; previous = null; field.value = '';
+      field.dispatchEvent(new Event('input', {bubbles: true}));
+      field.dispatchEvent(new Event('change', {bubbles: true}));
+      status.textContent = 'Unterschrift gelöscht.';
+    });
+    function syncReadonly() {
+      clearButton.disabled = field.disabled;
+      canvas.setAttribute('aria-disabled', String(field.disabled));
+      canvas.style.cursor = field.disabled ? 'default' : 'crosshair';
+      if (field.disabled && pointer !== null) finish({pointerId: pointer});
+    }
+    if (window.MutationObserver) new MutationObserver(syncReadonly).observe(field, {attributes: true, attributeFilter: ['disabled']});
+    syncReadonly();
+    field.addEventListener('change', () => { if (field.value && !internal) restore(field.value); });
+    if (window.ResizeObserver) new ResizeObserver(() => { if (pointer === null) refresh(); }).observe(canvas);
+    else window.addEventListener('resize', refresh);
+    refresh(); restore(field.value);
+    pads.push({canvas, field, refresh, commit: () => { if (pointer !== null) finish({pointerId: pointer}); }});
+  }
+  form.addEventListener('reset', () => { setTimeout(() => { for (const pad of pads) { if (!pad.field.disabled) pad.field.value = ''; } }, 0); });
+  // Vor einem vorhandenen Speicherklick sind die Bilddaten auch als Formularwerte verfügbar.
+  document.getElementById('saveNachweis').addEventListener('click', () => {
+    for (const pad of pads) pad.commit();
+  }, true);
+})();
+
+</script>
   <script type="module" src="nachweise-formular.js?v=2"></script>
 </body>
 </html>
