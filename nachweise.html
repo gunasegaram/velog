@@ -187,22 +187,6 @@ window.VELogFormPDF = (() => {
       return {iframe,doc,win,root:doc.body,spec,cssWidth};
     }catch(error){iframe.remove();throw error;}
   }
-  function cutsFor(root,scale,maxHeight,totalHeight) {
-    const top=root.getBoundingClientRect().top;
-    const boxes=[...root.querySelectorAll('tr,.row,.field,.feld,.sig-box,.signature-box,.kopf,.header,h1,h2,h3,.pdf-value')]
-      .map(el=>{const r=el.getBoundingClientRect();return {start:Math.floor((r.top-top)*scale),end:Math.ceil((r.bottom-top)*scale)};})
-      .filter(r=>r.end>r.start&&r.end-r.start<=maxHeight);
-    // Auch sehr lange Bemerkungen an Textzeilen statt mitten im Text umbrechen.
-    for(const element of root.querySelectorAll('.pdf-value')) {
-      const range=root.ownerDocument.createRange();range.selectNodeContents(element);
-      for(const rect of range.getClientRects())boxes.push({start:Math.floor((rect.top-top)*scale),end:Math.ceil((rect.bottom-top)*scale)});
-    }
-    const result=[];let start=0;
-    while(start<totalHeight){let end=Math.min(totalHeight,start+maxHeight);
-      if(end<totalHeight){for(let i=0;i<20;i++){const crossing=boxes.filter(r=>r.start<end&&r.end>end&&r.start>start+maxHeight*.35);if(!crossing.length)break;const earlier=Math.min(...crossing.map(r=>r.start));if(earlier>=end)break;end=earlier;}}
-      if(end<=start)end=Math.min(totalHeight,start+maxHeight);result.push([start,end]);start=end;
-    }return result;
-  }
   async function renderPdf(record) {
     if(!window.html2canvas||!window.PDFLib?.PDFDocument)throw new Error('Die eingebauten PDF-Bibliotheken fehlen. Lade die vollständige neue nachweise.html hoch.');
     if(JSON.stringify(record.daten||{}).length>1500000)throw new Error('Die gespeicherten Formulardaten sind zu groß für die PDF-Vorschau.');
@@ -210,23 +194,19 @@ window.VELogFormPDF = (() => {
     try {
       const canvas=await window.html2canvas(prepared.root,{backgroundColor:'#ffffff',scale:2,useCORS:true,allowTaint:false,logging:false,windowWidth:prepared.cssWidth,windowHeight:prepared.doc.body.scrollHeight,scrollX:0,scrollY:0,imageTimeout:8000});
       const mm=72/25.4,width=prepared.spec.widthMm*mm,height=prepared.spec.heightMm*mm,margin=prepared.spec.marginMm*mm,contentWidth=width-2*margin,contentHeight=height-2*margin-12;
-      const pagePixels=Math.floor(contentHeight/contentWidth*canvas.width);
-      const cuts=cutsFor(prepared.root,canvas.width/prepared.cssWidth,pagePixels,canvas.height);
-      if(cuts.length>30)throw new Error('Der Nachweis ist zu lang. Bitte kürze die Angaben.');
+      // Das gesamte Formular proportional auf genau eine A4-Seite einpassen.
+      // Breite UND Höhe begrenzen, damit unten keine Angaben abgeschnitten werden.
+      const fit=Math.min(contentWidth/canvas.width,contentHeight/canvas.height);
+      const drawnWidth=canvas.width*fit,drawnHeight=canvas.height*fit;
       let bytes;
       for(const quality of [.92,.84,.72]){
         const doc=await window.PDFLib.PDFDocument.create();
         doc.setTitle(String(record.titel||'Nachweis'));doc.setAuthor('VE-Log');doc.setSubject('Formularlayout aus gespeicherten Nachweisdaten');
         const font=await doc.embedFont(window.PDFLib.StandardFonts.Helvetica);
-        for(let i=0;i<cuts.length;i++){
-          const [start,end]=cuts[i],slice=document.createElement('canvas');slice.width=canvas.width;slice.height=end-start;
-          slice.getContext('2d').drawImage(canvas,0,start,canvas.width,end-start,0,0,slice.width,slice.height);
-          const image=await doc.embedJpg(slice.toDataURL('image/jpeg',quality));const page=doc.addPage([width,height]);
-          const drawnHeight=slice.height/canvas.width*contentWidth;
-          page.drawImage(image,{x:margin,y:height-margin-drawnHeight,width:contentWidth,height:drawnHeight});
-          page.drawText('Seite '+(i+1)+' / '+cuts.length,{x:margin,y:margin/2,font,size:8,color:window.PDFLib.rgb(.5,.5,.5)});
-          slice.width=1;slice.height=1;
-        }
+        const image=await doc.embedJpg(canvas.toDataURL('image/jpeg',quality));
+        const page=doc.addPage([width,height]);
+        page.drawImage(image,{x:margin+(contentWidth-drawnWidth)/2,y:height-margin-drawnHeight,width:drawnWidth,height:drawnHeight});
+        page.drawText('Seite 1 / 1',{x:margin,y:margin/2,font,size:8,color:window.PDFLib.rgb(.5,.5,.5)});
         bytes=await doc.save();if(bytes.length<=MAX_BYTES)break;
       }
       if(bytes.length>MAX_BYTES)throw new Error('Die PDF überschreitet die bestehende Grenze von 512 KB. Bitte kürze sehr lange Texte oder große Unterschriften.');
