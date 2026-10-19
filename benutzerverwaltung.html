@@ -281,7 +281,7 @@ const firebaseConfig = {
 };
 const $ = id => document.getElementById(id);
 const roleNames = {mitarbeiter:'Mitarbeiter', manager:'Manager', admin:'Administrator', superadmin:'Superadministrator'};
-let auth, db, D, currentUser = null, ownRole = null;
+let auth, db, D, currentUser = null, ownRole = null, deleteEmployeeCallable = null;
 let profiles = {}, userRoles = new Map(), roleSubscriptions = new Map();
 let stopOwnRole = null, stopProfiles = null, generation = 0;
 let loaded = false, page = 0, editingUid = null, saving = false;
@@ -369,7 +369,7 @@ function render() {
     button.type = 'button'; button.className = 'quiet-button'; button.textContent = 'Bearbeiten';
     button.disabled = saving; button.setAttribute('aria-label', `Profil bearbeiten: ${nameOf(uid)}`);
     button.addEventListener('click', () => openEditor(uid)); cell.append(button);
-    if (ownRole === 'superadmin') {
+    if (canManage()) {
       const deleteButton = document.createElement('button');
       deleteButton.type = 'button'; deleteButton.className = 'quiet-button';
       deleteButton.style.marginLeft = '6px'; deleteButton.textContent = 'Löschen';
@@ -406,36 +406,42 @@ function openEditor(uid) {
   $('editor').showModal();
 }
 async function deleteEmployee(uid) {
-  if (ownRole !== 'superadmin' || !currentUser || !Object.hasOwn(profiles, uid) || saving) return;
+  if (!canManage() || !currentUser || !Object.hasOwn(profiles, uid) || saving) return;
   if (uid === currentUser.uid) {
     status('Das eigene Konto kann hier nicht gelöscht werden.', true);
     return;
   }
   const employeeName = nameOf(uid);
+  const targetRole = userRoles.get(uid)?.value;
+  if (targetRole === 'superadmin') {
+    status('Superadmin-Konten können über diese Mitarbeiterverwaltung nicht gelöscht werden.', true);
+    return;
+  }
   const confirmed = window.confirm(
-    `Mitarbeiterkonto löschen?\n\n${employeeName}\n\nDas Datenbankprofil und der Rollen-Eintrag werden gelöscht. Das Firebase-Authentication-Konto und dessen Anmeldemöglichkeit werden dadurch NICHT gelöscht. Fortfahren?`
+    `Mitarbeiterkonto vollständig löschen?\n\n${employeeName}\n\nDas Firebase-Authentication-Konto sowie das Datenbankprofil und der Rollen-Eintrag werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden. Fortfahren?`
   );
   if (!confirmed) return;
 
   const session = generation;
   saving = true;
   render();
-  status(`Profil von ${employeeName} wird gelöscht …`);
+  status(`Mitarbeiterkonto von ${employeeName} wird vollständig gelöscht …`);
   try {
-    // Atomarer Mehrpfad-Update: Profil und Rollen-Eintrag gemeinsam entfernen.
-    await D.update(D.ref(db), {
-      [`users/${uid}`]: null,
-      [`roles/${uid}`]: null
-    });
+    if (!deleteEmployeeCallable) throw new Error('delete-function-unavailable');
+    await deleteEmployeeCallable({ uid });
     if (session === generation) {
-      status(`Das Datenbankprofil und der Rollen-Eintrag von ${employeeName} wurden gelöscht. Das Firebase-Authentication-Konto besteht weiterhin.`);
+      status(`Das Konto von ${employeeName} wurde aus Firebase Authentication und der Realtime Database gelöscht.`);
     }
   } catch (error) {
-    if (session === generation) {
-      status(String(error.code || '').toLowerCase().includes('permission')
-        ? 'Löschen verweigert. Prüfe, ob deine Superadmin-Rolle und die veröffentlichten Firebase-Datenbankregeln das Löschen von users/<Konto-ID> und roles/<Konto-ID> erlauben.'
-        : 'Das Mitarbeiterkonto konnte nicht gelöscht werden. Prüfe die Verbindung und versuche es erneut.', true);
-    }
+    console.error('Mitarbeiterkonto löschen:', error);
+    const code = String(error?.code || '').toLowerCase();
+    let message = 'Das Mitarbeiterkonto konnte nicht vollständig gelöscht werden. Prüfe die Verbindung und die Cloud-Function-Protokolle.';
+    if (code.includes('permission-denied')) message = 'Löschen verweigert. Nur angemeldete Administratoren und Superadministratoren dürfen diese Funktion ausführen.';
+    else if (code.includes('unauthenticated')) message = 'Deine Anmeldung ist abgelaufen. Bitte melde dich erneut an.';
+    else if (code.includes('failed-precondition')) message = error.message || 'Das Konto kann aufgrund seines Status nicht gelöscht werden.';
+    else if (code.includes('not-found')) message = 'Das Authentifizierungskonto wurde nicht gefunden. Die Funktion hat geprüft, ob Datenbankreste bereinigt werden konnten.';
+    else if (code.includes('delete-function-unavailable')) message = 'Die Löschfunktion ist nicht initialisiert. Prüfe, ob die Cloud Function bereitgestellt wurde.';
+    if (session === generation) status(message, true);
   } finally {
     saving = false;
     if (session === generation) render();
@@ -510,13 +516,16 @@ function applyAccess(session) {
 }
 async function start() {
   try {
-    const [appSDK, A, databaseSDK] = await Promise.all([
+    const [appSDK, A, databaseSDK, functionsSDK] = await Promise.all([
       import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
       import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
-      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-functions.js')
     ]);
     D = databaseSDK;
     const app = appSDK.initializeApp(firebaseConfig); auth = A.getAuth(app); db = D.getDatabase(app);
+    const functions = functionsSDK.getFunctions(app, 'europe-west1');
+    deleteEmployeeCallable = functionsSDK.httpsCallable(functions, 'deleteEmployeeAccount');
     A.onAuthStateChanged(auth, user => {
       generation++; const session = generation;
       if (stopOwnRole) stopOwnRole(); stopOwnRole = null;
