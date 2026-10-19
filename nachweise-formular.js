@@ -1,721 +1,223 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Leistungsnachweis · VE-Log</title>
+// VE-Log – gemeinsamer Speicher- und PDF-Code für Arbeitsnachweis und Arbeitsnachweis LKW.
+// Speichert den Nachweis und seine PDF in Firebase Realtime Database unter nachweise/<uid>/<id>.
+'use strict';
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+const firebaseConfig = {
+  apiKey: 'AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM',
+  authDomain: 've-log.firebaseapp.com',
+  databaseURL: 'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 've-log',
+  storageBucket: 've-log.firebasestorage.app',
+  messagingSenderId: '749978080433',
+  appId: '1:749978080433:web:8f64ef99a557fe2346be90'
+};
 
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #f4f4f4;
-      color: #233247;
-      font: 15px/1.5 Arial, sans-serif;
-    }
+const form = document.getElementById('nachweisForm');
+const saveButton = document.getElementById('saveNachweis');
+const statusElement = document.getElementById('nachweisStatus');
+const type = document.body.dataset.nachweisTyp || (location.pathname.includes('lkw') ? 'arbeitsnachweis_lkw' : 'arbeitsnachweis');
+const title = document.body.dataset.nachweisTitel || (type === 'arbeitsnachweis_lkw' ? 'Arbeitsnachweis LKW' : 'Arbeitsnachweis');
+const NEW_RECORD = new URLSearchParams(location.search).get('new') === '1';
+if (NEW_RECORD) history.replaceState(null, '', location.pathname);
+let auth, db, DB, app, saving = false, connected = false;
 
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 25px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 3px 10px #0001;
-    }
-
-    .nav-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .nav-btn,
-    .save-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      border: 0;
-      border-radius: 8px;
-      background: #8e2f2b;
-      color: white;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: bold;
-      line-height: 1.2;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      opacity: .5;
-      cursor: default;
-    }
-
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible,
-    select:focus-visible {
-      outline: 3px solid #bd7774;
-      outline-offset: 3px;
-    }
-
-    h1 {
-      margin: 0 0 20px;
-      font-size: 26px;
-    }
-
-    .row {
-      display: grid;
-      gap: 15px;
-      margin-bottom: 15px;
-    }
-
-    .row-2 {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #444;
-      font-weight: bold;
-    }
-
-    input:not([type=checkbox]):not([type=radio]),
-    textarea,
-    select {
-      width: 100%;
-      min-width: 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font: inherit;
-    }
-
-    input[type=checkbox],
-    input[type=radio] {
-      width: 17px;
-      height: 17px;
-      accent-color: #8e2f2b;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      gap: 25px;
-      margin-bottom: 25px;
-    }
-
-    .logo {
-      text-align: right;
-      font-size: 12px;
-      color: #555;
-    }
-
-    .logo-img {
-      max-width: 230px;
-      height: auto;
-    }
-
-    .option {
-      margin: 20px 0;
-    }
-
-    .fahrzeug {
-      display: grid;
-      grid-template-columns: 25px 1fr 110px 20px;
-      gap: 10px;
-      align-items: center;
-      margin: 10px 0;
-    }
-
-    .fahrzeug label {
-      margin: 0;
-      font-weight: normal;
-    }
-
-    .signatures {
-      display: flex;
-      justify-content: space-between;
-      gap: 30px;
-      margin-top: 60px;
-    }
-
-    .sign {
-      width: 250px;
-      text-align: center;
-    }
-
-    .sign hr {
-      border: 0;
-      border-top: 1px solid black;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .actions .save-btn,
-    .actions .nav-btn {
-      min-height: 44px;
-      margin: 0;
-      padding: 12px 18px;
-      font-size: 14px;
-      line-height: 1.2;
-    }
-
-    .new-record {
-      display: inline-flex;
-      align-items: center;
-      min-height: 44px;
-      color: #8e2f2b;
-    }
-
-    .status {
-      margin: 16px 0;
-      padding: 12px;
-      border-radius: 9px;
-      background: #f8f9fb;
-      font-size: 13px;
-    }
-
-    .fine {
-      color: #727785;
-      font-size: 12px;
-    }
-
-    @media (max-width: 700px) {
-      body {
-        padding: 12px;
-      }
-
-      .container {
-        padding: 18px;
-      }
-
-      .row-2 {
-        grid-template-columns: 1fr;
-      }
-
-      .header,
-      .signatures {
-        flex-direction: column;
-      }
-
-      .logo {
-        text-align: left;
-      }
-
-      .sign {
-        width: 100%;
-      }
-
-      .fahrzeug {
-        grid-template-columns: 25px minmax(0, 1fr) 80px 20px;
-        gap: 6px;
-      }
-    }
-
-    @media print {
-      .nav-buttons,
-      .actions,
-      .status,
-      .fine {
-        display: none !important;
-      }
-
-      body {
-        padding: 0;
-        background: white;
-      }
-
-      .container {
-        padding: 0;
-        border-radius: 0;
-        box-shadow: none;
-      }
-
-      input,
-      textarea {
-        color: black !important;
-        opacity: 1 !important;
-      }
-    }
-  </style>
-<style>
-/* Einheitlicher Firmenkopf aus dem Urlaubsformular. */
-.ve-form-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:25px;break-inside:avoid}
-.ve-form-heading>h1{flex:1;min-width:0;margin:0;overflow-wrap:anywhere}
-.ve-form-brand{flex:0 1 260px;width:260px;max-width:100%;margin-left:auto;color:#444;font:14px/1.5 Arial,Helvetica,sans-serif;text-align:left;break-inside:avoid}
-.ve-form-brand>img{display:block;width:260px;max-width:100%;height:auto}
-.ve-form-brand>p{margin:12px 0 0;font:inherit;color:inherit}
-.ve-form-brand-row{display:flex;justify-content:flex-end;margin-bottom:25px;break-inside:avoid}
-@media screen and (max-width:600px){.ve-form-heading{flex-direction:column;gap:18px}.ve-form-brand{flex:none;width:210px;font-size:13px}.ve-form-brand>img{width:210px}}
-@media print{.ve-form-heading{display:flex;flex-direction:row;gap:20px;break-inside:avoid}.ve-form-brand{display:block!important;flex:0 0 230px;width:230px;max-width:45%;print-color-adjust:exact}.ve-form-brand>img{width:230px}.ve-form-brand-row{display:flex!important}}
-</style>
-
-<style id="ve-heading-alignment">
-/* Überschrift am unteren Rand des Firmenkopfs über den Eingabefeldern. */
-.ve-form-heading>h1,
-.ve-form-heading>div:not(.ve-form-brand){align-self:flex-end}
-@media screen and (max-width:600px){
- .ve-form-heading>.ve-form-brand{order:-1}
- .ve-form-heading>h1,
- .ve-form-heading>div:not(.ve-form-brand){align-self:flex-start}
+function setStatus(message, error = false) {
+  if (!statusElement) return;
+  statusElement.textContent = message;
+  statusElement.style.color = error ? '#8e2f2b' : '';
+  statusElement.setAttribute('aria-live', 'polite');
 }
-</style>
-<style>
-.ve-signatures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:30px;break-inside:avoid}
-.ve-signature-box{width:100%;min-width:0;text-align:left;break-inside:avoid}
-.ve-signature-label{display:block;margin:0 0 8px;font-size:14px;color:#18395b}
-.ve-signature-pad{display:block;width:100%;height:180px;border:1px solid #aaa;border-radius:7px;background:#fff;touch-action:none;cursor:crosshair}
-.ve-signature-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
-.ve-signature-tools>span{font-size:11px;color:#727785}
-.ve-signature-tools>.nav-btn{padding:8px 10px;min-height:36px;font-size:12px}
-.ve-signature-status{min-height:18px;margin:5px 0;font-size:11px;color:#727785}
-.ve-signature-caption{margin-top:8px;padding-top:7px;border-top:1px solid #233247;text-align:center;font-size:12px}
-@media screen and (max-width:700px){.ve-signatures{grid-template-columns:1fr}}
-@media print{.ve-signatures{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;break-inside:avoid}.ve-signature-tools,.ve-signature-status{display:none!important}.ve-signature-pad{height:180px;border:0;border-radius:0}.ve-signature-label{font-size:12px}}
-</style>
-</head>
-
-<body
-  data-nachweis-typ="leistungsnachweis"
-  data-nachweis-titel="Leistungsnachweis"
->
-  <div class="container">
-    <div class="nav-buttons">
-      <a class="nav-btn" href="formular.html">📋 Formulare</a>
-      <a class="nav-btn" href="dashboard.html">🏠 Dashboard</a>
-      <a class="nav-btn" href="nachweise.html">▣ Meine Nachweise</a>
-    </div>
-
-    <div class="ve-form-heading"><h1>Leistungsnachweis</h1><div class="ve-form-brand" aria-label="VE-LOG Firmendaten"><img src="logo.png" alt="VE-LOG Logo"><p>Flächenmanagement · Umschlag · Transport<br>Sperberweg 15 · 91056 Erlangen<br>Tel. 09131 / 7515-10</p></div></div>
-
-    <form id="nachweisForm">
-      
-
-      <div class="row row-2">
-        <div>
-          <label for="firma">Firma</label>
-          <input id="firma" name="firma" type="text">
-        </div>
-        <div>
-          <label for="datum">Datum</label>
-          <input id="datum" name="datum" type="date" required>
-        </div>
-      </div>
-
-      <div class="row row-2">
-        <div>
-          <label for="firmenzusatz">Firmenzusatz</label>
-          <input id="firmenzusatz" name="firmenzusatz" type="text">
-        </div>
-        <div>
-          <label for="fahrzeugNummer">Kfz / M-Nr.</label>
-          <input id="fahrzeugNummer" name="fahrzeugNummer" type="text">
-        </div>
-      </div>
-
-      <div>
-        <label for="baustelle">Baustelle</label>
-        <input id="baustelle" name="baustelle" type="text">
-      </div>
-
-      <div class="option">
-        <label>
-          <input
-            type="radio"
-            name="leistung"
-            value="geliefert_abgeholt"
-          >
-          geliefert / abgeholt
-        </label>
-
-        <div>
-          <label for="beschreibung">Beschreibung</label>
-          <input id="beschreibung" name="beschreibung" type="text">
-        </div>
-      </div>
-
-      <div class="option">
-        <label>
-          <input
-            type="radio"
-            name="leistung"
-            value="fahrzeug_gestellt"
-          >
-          Fahrzeug gestellt
-        </label>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug0"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Zweiachser"
-          >
-          <label for="fahrzeug0">Zweiachser</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden0"
-            name="fahrzeugStunden0"
-            aria-label="Stunden Zweiachser"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug1"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Dreiachser"
-          >
-          <label for="fahrzeug1">Dreiachser</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden1"
-            name="fahrzeugStunden1"
-            aria-label="Stunden Dreiachser"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug2"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Vierachser"
-          >
-          <label for="fahrzeug2">Vierachser</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden2"
-            name="fahrzeugStunden2"
-            aria-label="Stunden Vierachser"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug3"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Sattel / Zug"
-          >
-          <label for="fahrzeug3">Sattel / Zug</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden3"
-            name="fahrzeugStunden3"
-            aria-label="Stunden Sattel / Zug"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug4"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Tieflader / bis 22 to"
-          >
-          <label for="fahrzeug4">Tieflader / bis 22 to</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden4"
-            name="fahrzeugStunden4"
-            aria-label="Stunden Tieflader / bis 22 to"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug5"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Tieflader / ab 22 to"
-          >
-          <label for="fahrzeug5">Tieflader / ab 22 to</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden5"
-            name="fahrzeugStunden5"
-            aria-label="Stunden Tieflader / ab 22 to"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug6"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Bagger / Radbagger"
-          >
-          <label for="fahrzeug6">Bagger / Radbagger</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden6"
-            name="fahrzeugStunden6"
-            aria-label="Stunden Bagger / Radbagger"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug7"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Radlader"
-          >
-          <label for="fahrzeug7">Radlader</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden7"
-            name="fahrzeugStunden7"
-            aria-label="Stunden Radlader"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug8"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Kehrbesen"
-          >
-          <label for="fahrzeug8">Kehrbesen</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden8"
-            name="fahrzeugStunden8"
-            aria-label="Stunden Kehrbesen"
-          >
-          <span>h</span>
-        </div>
-
-        <div class="fahrzeug">
-          <input
-            id="fahrzeug9"
-            type="radio"
-            name="fahrzeugtyp"
-            value="Traktor mit Kippmulde"
-          >
-          <label for="fahrzeug9">Traktor mit Kippmulde</label>
-          <input
-            type="number"
-            min="0"
-            step="0.25"
-            id="fahrzeugStunden9"
-            name="fahrzeugStunden9"
-            aria-label="Stunden Traktor mit Kippmulde"
-          >
-          <span>h</span>
-        </div>
-      </div>
-
-      <div class="option">
-        <label>
-          <input
-            type="checkbox"
-            name="wartezeitAktiv"
-            id="wartezeitAktiv"
-          >
-          Wartezeit für LKW
-        </label>
-
-        <div>
-          <label for="wartezeit">Wartezeit (Stunden)</label>
-          <input
-            id="wartezeit"
-            name="wartezeit"
-            type="number"
-            min="0"
-            step="0.25"
-          >
-        </div>
-      </div>
-
-      <div>
-        <label for="weitereAngaben">Weitere Angaben</label>
-        <input id="weitereAngaben" name="weitereAngaben" type="text">
-      </div>
-
-      <div class="signatures ve-signatures"><div class="sign ve-signature-box"><label class="ve-signature-label" for="signatureVELog">Unterschrift VE-Log GmbH</label><canvas id="signatureVELog" class="ve-signature-pad" data-field="signatureVELogData" width="800" height="360" aria-label="Unterschrift VE-Log GmbH: mit Maus, Finger oder Stift zeichnen">Bitte einen Browser mit Canvas-Unterstützung verwenden.</canvas><input type="hidden" id="signatureVELogData" name="signatureVELogData" value=""><div class="ve-signature-tools"><span>Mit Maus, Finger oder Stift unterschreiben</span><button type="button" class="nav-btn" data-clear-signature="signatureVELog">Unterschrift löschen</button></div><p id="signatureVELogStatus" class="ve-signature-status" role="status"></p><div class="ve-signature-caption">VE-Log GmbH</div></div><div class="sign ve-signature-box"><label class="ve-signature-label" for="signatureEmpfaenger">Unterschrift Empfänger</label><canvas id="signatureEmpfaenger" class="ve-signature-pad" data-field="signatureEmpfaengerData" width="800" height="360" aria-label="Unterschrift Empfänger: mit Maus, Finger oder Stift zeichnen">Bitte einen Browser mit Canvas-Unterstützung verwenden.</canvas><input type="hidden" id="signatureEmpfaengerData" name="signatureEmpfaengerData" value=""><div class="ve-signature-tools"><span>Mit Maus, Finger oder Stift unterschreiben</span><button type="button" class="nav-btn" data-clear-signature="signatureEmpfaenger">Unterschrift löschen</button></div><p id="signatureEmpfaengerStatus" class="ve-signature-status" role="status"></p><div class="ve-signature-caption">Empfänger</div></div></div>
-
-      <div class="actions">
-        <button
-          id="saveNachweis"
-          type="button"
-          class="save-btn"
-          disabled
-        >
-          💾 Leistungsnachweis speichern
-        </button>
-
-        <button
-          class="nav-btn"
-          type="button"
-          onclick="window.print()"
-        >
-          🖨 Drucken / PDF
-        </button>
-
-        <a class="new-record" href="leistungsnachweis.html">
-          + Neuer Nachweis
-        </a>
-      </div>
-
-      <p class="status" id="nachweisStatus" role="status">
-        Speicherfunktion wird geladen …
-      </p>
-
-      <p class="fine">
-        Gespeicherte Daten sind unter „Meine Nachweise“ abrufbar.
-        Ein erneuter Klick aktualisiert denselben Nachweis.
-      </p>
-    </form>
-  </div>
-
-<script>
-(() => {
-  'use strict';
-  const form = document.getElementById('nachweisForm');
-  const pads = [];
-  for (const canvas of document.querySelectorAll('.ve-signature-pad')) {
-    const field = document.getElementById(canvas.dataset.field);
-    const ctx = canvas.getContext('2d');
-    const status = document.getElementById(canvas.id + 'Status');
-    let pointer = null, previous = null, image = null, generation = 0;
-    const nativeValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
-    let internal = false;
-    function dimensions() { return canvas.getBoundingClientRect(); }
-    function refresh() {
-      const rect = dimensions();
-      if (!rect.width || !rect.height) return;
-      const ratio = window.devicePixelRatio || 1;
-      canvas.width = Math.round(rect.width * ratio);
-      canvas.height = Math.round(rect.height * ratio);
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111'; ctx.fillStyle = '#111';
-      if (image) ctx.drawImage(image, 0, 0, rect.width, rect.height);
+function safeText(value) {
+  return String(value ?? '')
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '')
+    .replace(/[–—]/g, '-')
+    .replace(/…/g, '...')
+    .replace(/[\u{1F300}-\u{1FAFF}]/gu, '');
+}
+function collectData() {
+  const data = {};
+  for (const el of Array.from(form.elements)) {
+    if (!el.name || el.disabled || ['button','submit','reset'].includes(el.type)) continue;
+    if (el.type === 'radio') {
+      if (el.checked) data[el.name] = el.value;
+      else if (!(el.name in data)) data[el.name] = '';
+    } else if (el.type === 'checkbox') {
+      data[el.name] = Boolean(el.checked);
+    } else if (el.type === 'file') {
+      continue;
+    } else {
+      data[el.name] = el.value;
     }
-    function restore(value) {
-      const version = ++generation;
-      if (!value) { image = null; refresh(); status.textContent = ''; return; }
-      if (!/^data:image\/png;base64,/.test(value)) return;
-      const next = new Image();
-      next.onload = () => { if (generation !== version) return; image = next; refresh(); status.textContent = 'Unterschrift vorhanden.'; };
-      next.src = value;
-    }
-    // Auch später durch die Nachweisverwaltung geladene Feldwerte wieder anzeigen.
-    Object.defineProperty(field, 'value', {
-      configurable: true,
-      get() { return nativeValue.get.call(field); },
-      set(value) { nativeValue.set.call(field, value); if (!internal) restore(String(value || '')); }
-    });
-    function snapshot() {
-      const data = canvas.toDataURL('image/png');
-      internal = true; field.value = data; internal = false;
-      const saved = document.createElement('canvas'); saved.width = canvas.width; saved.height = canvas.height; saved.getContext('2d').drawImage(canvas, 0, 0); image = saved;
-      field.dispatchEvent(new Event('input', {bubbles: true}));
-      field.dispatchEvent(new Event('change', {bubbles: true}));
-      status.textContent = 'Unterschrift erfasst.';
-    }
-    function point(event) {
-      const rect = dimensions();
-      return {x: Math.max(0, Math.min(rect.width, event.clientX - rect.left)), y: Math.max(0, Math.min(rect.height, event.clientY - rect.top))};
-    }
-    canvas.addEventListener('pointerdown', event => {
-      if (field.disabled || pointer !== null || (event.pointerType === 'mouse' && event.button !== 0)) return;
-      event.preventDefault(); generation++; pointer = event.pointerId; previous = point(event);
-      canvas.setPointerCapture(pointer);
-      ctx.beginPath(); ctx.arc(previous.x, previous.y, 1, 0, Math.PI * 2); ctx.fill();
-    });
-    canvas.addEventListener('pointermove', event => {
-      if (field.disabled || event.pointerId !== pointer) return;
-      event.preventDefault();
-      const samples = event.getCoalescedEvents?.();
-      for (const sample of (samples?.length ? samples : [event])) {
-        const next = point(sample); ctx.beginPath(); ctx.moveTo(previous.x, previous.y); ctx.lineTo(next.x, next.y); ctx.stroke(); previous = next;
-      }
-    });
-    function finish(event) {
-      if (event.pointerId !== pointer) return;
-      const id = pointer; pointer = null; previous = null;
-      if (canvas.hasPointerCapture(id)) canvas.releasePointerCapture(id);
-      if (!field.disabled) snapshot();
-      else restore(field.value);
-    }
-    canvas.addEventListener('pointerup', finish);
-    canvas.addEventListener('pointercancel', finish);
-    canvas.addEventListener('lostpointercapture', finish);
-    const clearButton = document.querySelector('[data-clear-signature="' + canvas.id + '"]');
-    clearButton.addEventListener('click', () => {
-      if (field.disabled) return;
-      pointer = null; previous = null; field.value = '';
-      field.dispatchEvent(new Event('input', {bubbles: true}));
-      field.dispatchEvent(new Event('change', {bubbles: true}));
-      status.textContent = 'Unterschrift gelöscht.';
-    });
-    function syncReadonly() {
-      clearButton.disabled = field.disabled;
-      canvas.setAttribute('aria-disabled', String(field.disabled));
-      canvas.style.cursor = field.disabled ? 'default' : 'crosshair';
-      if (field.disabled && pointer !== null) finish({pointerId: pointer});
-    }
-    if (window.MutationObserver) new MutationObserver(syncReadonly).observe(field, {attributes: true, attributeFilter: ['disabled']});
-    syncReadonly();
-    field.addEventListener('change', () => { if (field.value && !internal) restore(field.value); });
-    if (window.ResizeObserver) new ResizeObserver(() => { if (pointer === null) refresh(); }).observe(canvas);
-    else window.addEventListener('resize', refresh);
-    refresh(); restore(field.value);
-    pads.push({canvas, field, refresh, commit: () => { if (pointer !== null) finish({pointerId: pointer}); }});
   }
-  form.addEventListener('reset', () => { setTimeout(() => { for (const pad of pads) { if (!pad.field.disabled) pad.field.value = ''; } }, 0); });
-  // Vor einem vorhandenen Speicherklick sind die Bilddaten auch als Formularwerte verfügbar.
-  document.getElementById('saveNachweis').addEventListener('click', () => {
-    for (const pad of pads) pad.commit();
-  }, true);
-})();
+  return data;
+}
+function fieldLabel(el, key) {
+  const label = el.labels && el.labels[0] ? el.labels[0].textContent.trim() : '';
+  if (label) return label.replace(/\s+/g, ' ');
+  const aria = el.getAttribute('aria-label');
+  if (aria) return aria;
+  return key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' ');
+}
+function collectLabels() {
+  const labels = {};
+  for (const el of Array.from(form.elements)) {
+    if (el.name && !labels[el.name]) labels[el.name] = fieldLabel(el, el.name);
+  }
+  return labels;
+}
+function wrapText(text, font, size, maxWidth) {
+  const words = safeText(text).split(/\s+/);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const candidate = line ? line + ' ' + word : word;
+    if (font.widthOfTextAtSize(candidate, size) <= maxWidth || !line) line = candidate;
+    else { lines.push(line); line = word; }
+  }
+  if (line) lines.push(line);
+  return lines.length ? lines : [''];
+}
+async function createPdf(record) {
+  // The same PDF format is used by „Meine Nachweise“: filename, mime, base64, sizeBytes.
+  const { PDFDocument, StandardFonts, rgb } = await import('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/+esm');
+  const pdfDoc = await PDFDocument.create();
+  pdfDoc.setTitle(record.titel || title);
+  pdfDoc.setAuthor('VE-Log');
+  pdfDoc.setSubject('Arbeitsnachweis');
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const pageSize = [595.28, 841.89]; // A4
+  const margin = 42, maxWidth = pageSize[0] - margin * 2;
+  const data = record.daten || {};
+  const labels = record.feldLabels || {};
+  let page = pdfDoc.addPage(pageSize);
+  let y = pageSize[1] - margin;
+  const newPage = () => { page = pdfDoc.addPage(pageSize); y = pageSize[1] - margin; };
+  const ensure = (height) => { if (y - height < margin) newPage(); };
+  page.drawText(safeText(record.titel || title), { x: margin, y, size: 19, font: bold, color: rgb(0.56, 0.18, 0.17) });
+  y -= 27;
+  page.drawText('VE-LOG GmbH · Sperberweg 15 · 91056 Erlangen · Tel. 09131 / 7515-10', { x: margin, y, size: 8.5, font, color: rgb(0.3, 0.3, 0.3) });
+  y -= 18;
+  page.drawLine({ start: { x: margin, y }, end: { x: pageSize[0] - margin, y }, thickness: 0.8, color: rgb(0.75, 0.75, 0.75) });
+  y -= 18;
+  for (const [key, raw] of Object.entries(data)) {
+    if (key.toLowerCase().includes('signature') || key.toLowerCase().includes('unterschrift')) continue;
+    let value = raw;
+    if (typeof value === 'boolean') value = value ? 'Ja' : 'Nein';
+    if (value === '' || value === null || value === undefined) continue;
+    const label = safeText(labels[key] || key.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' '));
+    const valueLines = wrapText(String(value), font, 9.5, maxWidth - 150);
+    const rowHeight = Math.max(14, valueLines.length * 12 + 4);
+    ensure(rowHeight);
+    page.drawText(label.slice(0, 80), { x: margin, y, size: 9.5, font: bold, color: rgb(0.18, 0.2, 0.24) });
+    valueLines.forEach((line, index) => page.drawText(line, { x: margin + 150, y: y - index * 12, size: 9.5, font, color: rgb(0.12, 0.12, 0.12) }));
+    y -= rowHeight;
+    page.drawLine({ start: { x: margin, y: y + 2 }, end: { x: pageSize[0] - margin, y: y + 2 }, thickness: 0.25, color: rgb(0.88, 0.88, 0.88) });
+  }
+  const signatures = [
+    ['Unterschrift VE-Log GmbH', data.signatureVELogData || data.unterschriftVELog],
+    ['Unterschrift Empfänger', data.signatureEmpfaengerData || data.unterschriftEmpfaenger]
+  ].filter(([, value]) => typeof value === 'string' && value.startsWith('data:image/png;base64,'));
+  if (signatures.length) {
+    ensure(150);
+    if (y < margin + 150) newPage();
+    y -= 12;
+    page.drawText('Unterschriften', { x: margin, y, size: 11, font: bold, color: rgb(0.18, 0.2, 0.24) });
+    y -= 18;
+    const boxWidth = (maxWidth - 18) / 2;
+    for (let i = 0; i < signatures.length; i++) {
+      const [label, dataUrl] = signatures[i];
+      const base64 = dataUrl.split(',')[1];
+      const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+      const image = await pdfDoc.embedPng(bytes);
+      const dims = image.scale(Math.min(boxWidth / image.width, 82 / image.height));
+      const x = margin + i * (boxWidth + 18);
+      page.drawImage(image, { x, y: y - dims.height, width: dims.width, height: dims.height });
+      page.drawLine({ start: { x, y: y - 86 }, end: { x: x + boxWidth, y: y - 86 }, thickness: 0.6, color: rgb(0.15, 0.15, 0.15) });
+      page.drawText(label, { x, y: y - 100, size: 8.5, font, color: rgb(0.2, 0.2, 0.2) });
+    }
+  }
+  const bytes = await pdfDoc.save({ useObjectStreams: true });
+  if (bytes.length > 512 * 1024) throw new Error('Die PDF ist größer als 512 KB. Bitte entferne sehr lange Texte oder zeichne die Unterschrift kleiner.');
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+  const day = String(record.datum || data.datum || '').replace(/[^0-9-]/g, '').slice(0, 10);
+  return { filename: 'VE-Log-' + (type === 'arbeitsnachweis_lkw' ? 'arbeitsnachweis-lkw' : 'arbeitsnachweis') + (day ? '-' + day : '') + '.pdf', mime: 'application/pdf', base64: btoa(binary), sizeBytes: bytes.length };
+}
+function makeId() {
+  return 'nachweis_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
+}
+async function saveRecord() {
+  if (saving) return;
+  if (!form.reportValidity()) return;
+  if (!auth?.currentUser) { setStatus('Bitte zuerst anmelden. Danach kannst du den Nachweis speichern.', true); return; }
+  if (!connected) { setStatus('Keine Verbindung zu Firebase. Bitte Internetverbindung prüfen und erneut versuchen.', true); return; }
+  saving = true; saveButton.disabled = true; setStatus('Nachweis und PDF werden erstellt und gespeichert …');
+  try {
+    const user = auth.currentUser;
+    const data = collectData();
+    const existingId = NEW_RECORD ? null : new URLSearchParams(location.search).get('id');
+    const id = existingId || makeId();
+    const record = {
+      id, uid: user.uid, typ: type, titel: title,
+      datum: String(data.datum || new Date().toISOString().slice(0, 10)),
+      status: 'entwurf', daten: data, feldLabels: collectLabels(),
+      createdAt: Date.now(), updatedAt: Date.now(),
+      erstelltVon: user.email || user.uid
+    };
+    const pdf = await createPdf(record);
+    record.pdf = { ...pdf, generatedAt: Date.now() };
+    const ref = DB.ref(db, 'nachweise/' + user.uid + '/' + id);
+    // Existing ID is updated; otherwise create a new record.
+    if (existingId) {
+      const snapshot = await DB.get(ref);
+      const previous = snapshot.val();
+      if (previous && previous.status !== 'entwurf') throw new Error('Dieser Nachweis wurde bereits eingereicht und kann nicht überschrieben werden. Bitte starte einen neuen Nachweis.');
+      if (previous) record.createdAt = previous.createdAt || record.createdAt;
+    }
+    await DB.set(ref, record);
+    history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(id));
+    setStatus('Gespeichert! Formular und PDF liegen jetzt unter „Meine Nachweise“.');
+  } catch (error) {
+    console.error('VE-Log Nachweis speichern:', error);
+    const message = /permission_denied|permission denied/i.test(String(error?.message || error))
+      ? 'Firebase hat das Speichern abgelehnt. Bitte die Realtime-Database-Regeln und die Anmeldung prüfen.'
+      : (error?.message || 'Speichern fehlgeschlagen. Bitte erneut versuchen.');
+    setStatus(message, true);
+  } finally {
+    saving = false;
+    saveButton.disabled = !auth?.currentUser || !connected;
+  }
+}
 
-</script>
-  <script type="module" src="nachweise-formular.js?v=2"></script>
-</body>
-</html>
+saveButton?.addEventListener('click', saveRecord);
+
+(async function init() {
+  try {
+    setStatus('Firebase wird verbunden …');
+    const [App, Auth, Database] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')
+    ]);
+    app = App.getApps().length ? App.getApp() : App.initializeApp(firebaseConfig);
+    auth = Auth.getAuth(app);
+    DB = Database;
+    db = DB.getDatabase(app);
+    DB.onValue(DB.ref(db, '.info/connected'), snapshot => {
+      connected = snapshot.val() === true;
+      saveButton.disabled = !auth?.currentUser || !connected || saving;
+      if (!connected) setStatus('Warte auf Firebase-Verbindung …');
+      else if (auth?.currentUser) setStatus('Bereit. Formular ausfüllen und auf „Speichern“ klicken.');
+    }, error => setStatus(error.message || 'Firebase-Verbindung fehlgeschlagen.', true));
+    Auth.onAuthStateChanged(auth, user => {
+      saveButton.disabled = !user || !connected || saving;
+      if (!user) setStatus('Nicht angemeldet. Bitte zuerst über index.html anmelden.', true);
+      else if (connected) setStatus('Angemeldet. Formular ausfüllen und auf „Speichern“ klicken.');
+    });
+  } catch (error) {
+    console.error('VE-Log Initialisierung:', error);
+    saveButton.disabled = true;
+    setStatus('Speicherfunktion konnte nicht geladen werden. Öffne die Seite über deine Website (HTTPS) und prüfe die Internetverbindung.', true);
+  }
+})();
