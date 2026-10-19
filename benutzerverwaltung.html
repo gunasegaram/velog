@@ -368,7 +368,18 @@ function render() {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'quiet-button'; button.textContent = 'Bearbeiten';
     button.disabled = saving; button.setAttribute('aria-label', `Profil bearbeiten: ${nameOf(uid)}`);
-    button.addEventListener('click', () => openEditor(uid)); cell.append(button); row.append(cell);
+    button.addEventListener('click', () => openEditor(uid)); cell.append(button);
+    if (ownRole === 'superadmin') {
+      const deleteButton = document.createElement('button');
+      deleteButton.type = 'button'; deleteButton.className = 'quiet-button';
+      deleteButton.style.marginLeft = '6px'; deleteButton.textContent = 'Löschen';
+      deleteButton.disabled = saving || uid === currentUser?.uid;
+      deleteButton.setAttribute('aria-label', `Mitarbeiterprofil löschen: ${nameOf(uid)}`);
+      deleteButton.title = uid === currentUser?.uid ? 'Das eigene Konto kann hier nicht gelöscht werden.' : 'Profil und Rollen-Eintrag löschen';
+      deleteButton.addEventListener('click', () => deleteEmployee(uid));
+      cell.append(deleteButton);
+    }
+    row.append(cell);
     $('userRows').append(row);
   }
   $('tableWrap').hidden = !loaded || !ids.length;
@@ -394,6 +405,43 @@ function openEditor(uid) {
   editStatus(''); $('editFields').disabled = false; $('saveButton').disabled = false; $('closeEditor').disabled = false;
   $('editor').showModal();
 }
+async function deleteEmployee(uid) {
+  if (ownRole !== 'superadmin' || !currentUser || !Object.hasOwn(profiles, uid) || saving) return;
+  if (uid === currentUser.uid) {
+    status('Das eigene Konto kann hier nicht gelöscht werden.', true);
+    return;
+  }
+  const employeeName = nameOf(uid);
+  const confirmed = window.confirm(
+    `Mitarbeiterkonto löschen?\n\n${employeeName}\n\nDas Datenbankprofil und der Rollen-Eintrag werden gelöscht. Das Firebase-Authentication-Konto und dessen Anmeldemöglichkeit werden dadurch NICHT gelöscht. Fortfahren?`
+  );
+  if (!confirmed) return;
+
+  const session = generation;
+  saving = true;
+  render();
+  status(`Profil von ${employeeName} wird gelöscht …`);
+  try {
+    // Atomarer Mehrpfad-Update: Profil und Rollen-Eintrag gemeinsam entfernen.
+    await D.update(D.ref(db), {
+      [`users/${uid}`]: null,
+      [`roles/${uid}`]: null
+    });
+    if (session === generation) {
+      status(`Das Datenbankprofil und der Rollen-Eintrag von ${employeeName} wurden gelöscht. Das Firebase-Authentication-Konto besteht weiterhin.`);
+    }
+  } catch (error) {
+    if (session === generation) {
+      status(String(error.code || '').toLowerCase().includes('permission')
+        ? 'Löschen verweigert. Prüfe, ob deine Superadmin-Rolle und die veröffentlichten Firebase-Datenbankregeln das Löschen von users/<Konto-ID> und roles/<Konto-ID> erlauben.'
+        : 'Das Mitarbeiterkonto konnte nicht gelöscht werden. Prüfe die Verbindung und versuche es erneut.', true);
+    }
+  } finally {
+    saving = false;
+    if (session === generation) render();
+  }
+}
+
 async function saveProfile(event) {
   event.preventDefault();
   if (!canManage() || !currentUser || !editingUid || saving || !Object.hasOwn(profiles, editingUid)) return;
