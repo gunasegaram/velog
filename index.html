@@ -4,7 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VE-LOG Login</title>
+<meta name="theme-color" content="#8e2f2b">
+<title>VE-LOG | Anmeldung</title>
 
 <style>
 * {
@@ -28,7 +29,7 @@ body {
     max-width: 420px;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -109,10 +110,21 @@ button:disabled {
     gap: 2px;
 }
 
-.microsoft-logo span:nth-child(1) { background: #f25022; }
-.microsoft-logo span:nth-child(2) { background: #7fba00; }
-.microsoft-logo span:nth-child(3) { background: #00a4ef; }
-.microsoft-logo span:nth-child(4) { background: #ffb900; }
+.microsoft-logo span:nth-child(1) {
+    background: #f25022;
+}
+
+.microsoft-logo span:nth-child(2) {
+    background: #7fba00;
+}
+
+.microsoft-logo span:nth-child(3) {
+    background: #00a4ef;
+}
+
+.microsoft-logo span:nth-child(4) {
+    background: #ffb900;
+}
 
 .divider {
     display: flex;
@@ -142,6 +154,10 @@ button:disabled {
     font-weight: bold;
 }
 
+.register a:hover {
+    text-decoration: underline;
+}
+
 #status {
     font-size: 14px;
     overflow-wrap: anywhere;
@@ -153,6 +169,10 @@ button:disabled {
 
 #status.success {
     color: #167044;
+}
+
+#status.info {
+    color: #1d3557;
 }
 
 @media (max-width: 480px) {
@@ -168,18 +188,20 @@ button:disabled {
 </head>
 <body>
 
-<div class="login-box">
+<main class="login-box">
 
     <div class="logo">
-        <img src="logo.png" alt="VE-LOG"
-             onerror="this.style.display='none'">
+        <img
+            src="logo.png"
+            alt="VE-LOG"
+            onerror="this.style.display='none'"
+        >
     </div>
 
     <h1>Herzlich Willkommen</h1>
-
     <p>Melde dich mit deinem Mitarbeiterkonto an.</p>
 
-    <!-- Bestehender Firebase-Login -->
+    <!-- Firebase-Anmeldung -->
     <form id="firebaseForm">
 
         <label for="email">E-Mail-Adresse</label>
@@ -208,15 +230,17 @@ button:disabled {
 
     <div class="divider">ODER</div>
 
-    <!-- Neuer Microsoft-Login -->
+    <!-- Microsoft-Entra-Anmeldung -->
     <button
         id="microsoftButton"
         class="microsoft-button"
         type="button"
     >
         <span class="microsoft-logo" aria-hidden="true">
-            <span></span><span></span>
-            <span></span><span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </span>
         Mit Microsoft 365 anmelden
     </button>
@@ -228,7 +252,7 @@ button:disabled {
         <a href="registrieren.html">Jetzt registrieren</a>
     </div>
 
-</div>
+</main>
 
 <script type="module">
 
@@ -241,10 +265,9 @@ import {
     signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-/* =========================================
-   1. FIREBASE-KONFIGURATION
-   Bestehende Konfiguration beibehalten
-========================================= */
+/* ==========================================
+   1. FIREBASE
+========================================== */
 
 const firebaseConfig = {
     apiKey: "AIzaSyDXTAVeddKxwOp_C_2Z4lPY9yI5bAm0KM",
@@ -259,21 +282,19 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 
-/* =========================================
-   2. MICROSOFT ENTRA ID / MSAL
-========================================= */
+/* ==========================================
+   2. MICROSOFT ENTRA ID
+========================================== */
 
-// HIER DEINE CLIENT-ID AUS ENTRA EINTRAGEN
-const MICROSOFT_CLIENT_ID = "DEINE-CLIENT-ID-HIER";
+const MICROSOFT_CLIENT_ID =
+    "2ed4f84e-b690-4e7b-929c-98c98c45eda1";
 
-// "organizations": Geschäfts- und Schulkonten
-// "common": Geschäfts-, Schul- und persönliche Microsoft-Konten
-// Für VE-LOG mit Firmenkonten und externen Organisationen:
+// Anmeldung mit Geschäfts- und Schulkonten
+// aus verschiedenen Microsoft-Organisationen.
 const MICROSOFT_AUTHORITY =
     "https://login.microsoftonline.com/organizations";
 
-// Muss exakt in Entra unter
-// Authentication > Single-page application stehen.
+// Muss in Entra als SPA-Redirect-URI eingetragen sein.
 const MICROSOFT_REDIRECT_URI =
     window.location.origin + window.location.pathname;
 
@@ -291,17 +312,18 @@ const microsoftConfig = {
 
 let microsoftApp = null;
 let microsoftReady = false;
+let loginInProgress = false;
 
-/* =========================================
-   3. ELEMENTE UND STATUS
-========================================= */
+/* ==========================================
+   3. BEDIENELEMENTE
+========================================== */
 
 const statusElement = document.getElementById("status");
 const firebaseForm = document.getElementById("firebaseForm");
 const firebaseButton = document.getElementById("firebaseButton");
 const microsoftButton = document.getElementById("microsoftButton");
 
-function showStatus(message, type = "") {
+function showStatus(message, type = "info") {
     statusElement.textContent = message;
     statusElement.className = type;
 }
@@ -311,21 +333,31 @@ function setBusy(isBusy) {
     microsoftButton.disabled = isBusy;
 }
 
-/* =========================================
+function goToDashboard() {
+    window.location.replace("dashboard.html");
+}
+
+/* ==========================================
    4. FIREBASE-LOGIN
-========================================= */
+========================================== */
 
 firebaseForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    if (loginInProgress) return;
 
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("passwort").value;
 
     if (!email || !password) {
-        showStatus("Bitte E-Mail-Adresse und Passwort eingeben.", "error");
+        showStatus(
+            "Bitte E-Mail-Adresse und Passwort eingeben.",
+            "error"
+        );
         return;
     }
 
+    loginInProgress = true;
     setBusy(true);
     showStatus("Anmeldung wird geprüft ...");
 
@@ -336,105 +368,133 @@ firebaseForm.addEventListener("submit", async (event) => {
             password
         );
 
-        showStatus("Anmeldung erfolgreich. Weiterleitung ...", "success");
-        window.location.assign("dashboard.html");
+        showStatus(
+            "Anmeldung erfolgreich. Weiterleitung ...",
+            "success"
+        );
+
+        goToDashboard();
 
     } catch (error) {
-        console.error("Firebase-Anmeldung fehlgeschlagen:", error);
+        // Technische Details nur in der Entwicklerkonsole.
+        console.error("Firebase-Login fehlgeschlagen:", error);
 
-        // Keine technischen oder kontospezifischen Details offenlegen.
         showStatus(
             "Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.",
             "error"
         );
+
+        loginInProgress = false;
         setBusy(false);
     }
 });
 
-/* =========================================
-   5. MICROSOFT-LOGIN
-========================================= */
+/* ==========================================
+   5. MICROSOFT-INITIALISIERUNG
+========================================== */
 
 async function initializeMicrosoft() {
     if (!window.msal) {
-        throw new Error("Die Microsoft-Anmeldebibliothek wurde nicht geladen.");
+        throw new Error(
+            "MSAL.js konnte nicht geladen werden."
+        );
     }
 
-    if (
-        !MICROSOFT_CLIENT_ID ||
-        MICROSOFT_CLIENT_ID === "DEINE-CLIENT-ID-HIER"
-    ) {
-        throw new Error("Die Microsoft Client-ID wurde noch nicht konfiguriert.");
-    }
-
-    microsoftApp = new msal.PublicClientApplication(microsoftConfig);
+    microsoftApp = new msal.PublicClientApplication(
+        microsoftConfig
+    );
 
     await microsoftApp.initialize();
 
-    // Verarbeitet die Rückkehr von Microsoft nach dem Login.
+    // Antwort nach der Microsoft-Weiterleitung verarbeiten.
     const result = await microsoftApp.handleRedirectPromise();
 
     if (result?.account) {
         microsoftApp.setActiveAccount(result.account);
     }
 
-    // Unterstützt auch eine bestehende Sitzung.
     const accounts = microsoftApp.getAllAccounts();
 
-    if (!microsoftApp.getActiveAccount() && accounts.length > 0) {
+    if (
+        !microsoftApp.getActiveAccount() &&
+        accounts.length > 0
+    ) {
         microsoftApp.setActiveAccount(accounts[0]);
     }
 
     microsoftReady = true;
 
-    // Nach erfolgreicher Microsoft-Anmeldung zum Dashboard.
+    // Nur eine erfolgreich abgeschlossene Anmeldung
+    // löst die Weiterleitung aus.
     if (result?.account) {
-        showStatus("Microsoft-Anmeldung erfolgreich. Weiterleitung ...", "success");
-        window.location.replace("dashboard.html");
+        showStatus(
+            "Microsoft-Anmeldung erfolgreich. Weiterleitung ...",
+            "success"
+        );
+
+        goToDashboard();
     }
 }
 
+/* ==========================================
+   6. MICROSOFT-LOGIN
+========================================== */
+
 microsoftButton.addEventListener("click", async () => {
+    if (loginInProgress) return;
+
     if (!microsoftReady || !microsoftApp) {
         showStatus(
-            "Microsoft-Anmeldung ist noch nicht bereit. Bitte Konfiguration prüfen.",
+            "Microsoft-Login ist nicht verfügbar. Bitte Konfiguration und Verbindung prüfen.",
             "error"
         );
         return;
     }
 
+    loginInProgress = true;
     setBusy(true);
-    showStatus("Weiterleitung zur Microsoft-Anmeldung ...");
+
+    showStatus(
+        "Weiterleitung zur Microsoft-Anmeldung ..."
+    );
 
     try {
         await microsoftApp.loginRedirect({
             scopes: ["openid", "profile"]
         });
+
     } catch (error) {
-        console.error("Microsoft-Anmeldung fehlgeschlagen:", error);
+        console.error("Microsoft-Login fehlgeschlagen:", error);
 
         showStatus(
-            "Microsoft-Anmeldung konnte nicht gestartet werden.",
+            "Microsoft-Anmeldung konnte nicht gestartet werden. Bitte Entra-Konfiguration prüfen.",
             "error"
         );
+
+        loginInProgress = false;
         setBusy(false);
     }
 });
 
-/* =========================================
-   6. INITIALISIERUNG
-========================================= */
+/* ==========================================
+   7. START
+========================================== */
 
 try {
     await initializeMicrosoft();
-} catch (error) {
-    console.error("Microsoft-Initialisierung:", error);
 
-    // Firebase bleibt weiterhin nutzbar,
-    // auch wenn Microsoft noch nicht eingerichtet ist.
+} catch (error) {
+    console.error(
+        "Microsoft-Initialisierung fehlgeschlagen:",
+        error
+    );
+
+    // Firebase-Login bleibt unabhängig davon verfügbar.
+    microsoftReady = false;
+
     showStatus(
-        "Microsoft-Login noch nicht eingerichtet. Der Mitarbeiter-Login bleibt verfügbar.",
-        "error"
+        "Microsoft-Login ist noch nicht verfügbar. Du kannst den Mitarbeiter-Login weiterhin verwenden.",
+        "info"
     );
 }
 
