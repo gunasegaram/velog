@@ -1,89 +1,169 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VE-Log Login</title>
+<title>VE-LOG Login</title>
 
 <style>
-body{
+* {
+    box-sizing: border-box;
+}
+
+body {
     font-family: Arial, sans-serif;
-    background:#ececec;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    margin:0;
+    background: #ececec;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
 }
 
-.login-box{
-    background:white;
-    width:420px;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+.login-box {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.logo{
-    text-align:center;
-    margin-bottom:20px;
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.logo img{
-    max-width:200px;
+.logo img {
+    max-width: 200px;
+    max-height: 100px;
+    object-fit: contain;
 }
 
-h1{
-    color:#1d3557;
-    margin-bottom:10px;
+h1 {
+    color: #1d3557;
+    margin-bottom: 10px;
 }
 
-p{
-    color:#666;
+p {
+    color: #666;
+    line-height: 1.5;
 }
 
-label{
-    display:block;
-    margin-top:20px;
-    margin-bottom:5px;
-    font-weight:bold;
+label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-input{
-    width:100%;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    box-sizing:border-box;
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
 }
 
-button{
-    width:100%;
-    margin-top:25px;
-    padding:15px;
-    border:none;
-    border-radius:10px;
-    background:#8e2f2b;
-    color:white;
-    font-size:18px;
-    cursor:pointer;
+button {
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #8e2f2b;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-button:hover{
-    background:#762522;
+button:hover {
+    background: #762522;
 }
 
-.register{
-    text-align:center;
-    margin-top:25px;
+button:disabled {
+    opacity: 0.65;
+    cursor: wait;
 }
 
-.register a{
-    color:#8e2f2b;
-    text-decoration:none;
-    font-weight:bold;
+.microsoft-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    color: #333;
+    border: 1px solid #d5d5d5;
+}
+
+.microsoft-button:hover {
+    background: #f5f5f5;
+}
+
+.microsoft-logo {
+    display: grid;
+    grid-template-columns: repeat(2, 10px);
+    grid-template-rows: repeat(2, 10px);
+    gap: 2px;
+}
+
+.microsoft-logo span:nth-child(1) { background: #f25022; }
+.microsoft-logo span:nth-child(2) { background: #7fba00; }
+.microsoft-logo span:nth-child(3) { background: #00a4ef; }
+.microsoft-logo span:nth-child(4) { background: #ffb900; }
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+    color: #888;
+    font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+}
+
+.register {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.register a {
+    color: #8e2f2b;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#status {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+#status.error {
+    color: #b42318;
+}
+
+#status.success {
+    color: #167044;
+}
+
+@media (max-width: 480px) {
+    .login-box {
+        padding: 28px 22px;
+    }
 }
 </style>
+
+<!-- Microsoft Authentication Library -->
+<script src="https://alcdn.msauth.net/browser/4.25.0/js/msal-browser.min.js"></script>
 
 </head>
 <body>
@@ -91,20 +171,57 @@ button:hover{
 <div class="login-box">
 
     <div class="logo">
-        <img src="logo.png" alt="VE-LOG">
+        <img src="logo.png" alt="VE-LOG"
+             onerror="this.style.display='none'">
     </div>
 
     <h1>Herzlich Willkommen</h1>
 
     <p>Melde dich mit deinem Mitarbeiterkonto an.</p>
 
-    <label>E-Mail-Adresse</label>
-    <input id="email" type="email" placeholder="name@unternehmen.de">
+    <!-- Bestehender Firebase-Login -->
+    <form id="firebaseForm">
 
-    <label>Passwort</label>
-    <input id="passwort" type="password" placeholder="Passwort eingeben">
+        <label for="email">E-Mail-Adresse</label>
+        <input
+            id="email"
+            type="email"
+            autocomplete="username"
+            placeholder="name@unternehmen.de"
+            required
+        >
 
-    <button onclick="anmelden()">Anmelden</button>
+        <label for="passwort">Passwort</label>
+        <input
+            id="passwort"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Passwort eingeben"
+            required
+        >
+
+        <button id="firebaseButton" type="submit">
+            Mit Mitarbeiterkonto anmelden
+        </button>
+
+    </form>
+
+    <div class="divider">ODER</div>
+
+    <!-- Neuer Microsoft-Login -->
+    <button
+        id="microsoftButton"
+        class="microsoft-button"
+        type="button"
+    >
+        <span class="microsoft-logo" aria-hidden="true">
+            <span></span><span></span>
+            <span></span><span></span>
+        </span>
+        Mit Microsoft 365 anmelden
+    </button>
+
+    <p id="status" role="status" aria-live="polite"></p>
 
     <div class="register">
         <p>Noch kein Konto?</p>
@@ -115,42 +232,214 @@ button:hover{
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+    getAuth,
+    signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+/* =========================================
+   1. FIREBASE-KONFIGURATION
+   Bestehende Konfiguration beibehalten
+========================================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-  authDomain: "ve-log.firebaseapp.com",
-  databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ve-log",
-  storageBucket: "ve-log.firebasestorage.app",
-  messagingSenderId: "749978080433",
-  appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+    apiKey: "AIzaSyDXTAVeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+    authDomain: "ve-log.firebaseapp.com",
+    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ve-log",
+    storageBucket: "ve-log.firebasestorage.app",
+    messagingSenderId: "749978080433",
+    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const firebaseApp = initializeApp(firebaseConfig);
+const firebaseAuth = getAuth(firebaseApp);
 
-window.anmelden = function () {
+/* =========================================
+   2. MICROSOFT ENTRA ID / MSAL
+========================================= */
 
-    const email = document.getElementById("email").value;
-    const passwort = document.getElementById("passwort").value;
+// HIER DEINE CLIENT-ID AUS ENTRA EINTRAGEN
+const MICROSOFT_CLIENT_ID = "DEINE-CLIENT-ID-HIER";
 
-    signInWithEmailAndPassword(auth, email, passwort)
-    .then(() => {
+// "organizations": Geschäfts- und Schulkonten
+// "common": Geschäfts-, Schul- und persönliche Microsoft-Konten
+// Für VE-LOG mit Firmenkonten und externen Organisationen:
+const MICROSOFT_AUTHORITY =
+    "https://login.microsoftonline.com/organizations";
 
-        window.location.href = "dashboard.html";
+// Muss exakt in Entra unter
+// Authentication > Single-page application stehen.
+const MICROSOFT_REDIRECT_URI =
+    window.location.origin + window.location.pathname;
 
-    })
-    .catch((error) => {
-
-        alert("Anmeldung fehlgeschlagen: " + error.message);
-
-    });
+const microsoftConfig = {
+    auth: {
+        clientId: MICROSOFT_CLIENT_ID,
+        authority: MICROSOFT_AUTHORITY,
+        redirectUri: MICROSOFT_REDIRECT_URI,
+        postLogoutRedirectUri: MICROSOFT_REDIRECT_URI
+    },
+    cache: {
+        cacheLocation: "sessionStorage"
+    }
 };
+
+let microsoftApp = null;
+let microsoftReady = false;
+
+/* =========================================
+   3. ELEMENTE UND STATUS
+========================================= */
+
+const statusElement = document.getElementById("status");
+const firebaseForm = document.getElementById("firebaseForm");
+const firebaseButton = document.getElementById("firebaseButton");
+const microsoftButton = document.getElementById("microsoftButton");
+
+function showStatus(message, type = "") {
+    statusElement.textContent = message;
+    statusElement.className = type;
+}
+
+function setBusy(isBusy) {
+    firebaseButton.disabled = isBusy;
+    microsoftButton.disabled = isBusy;
+}
+
+/* =========================================
+   4. FIREBASE-LOGIN
+========================================= */
+
+firebaseForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("passwort").value;
+
+    if (!email || !password) {
+        showStatus("Bitte E-Mail-Adresse und Passwort eingeben.", "error");
+        return;
+    }
+
+    setBusy(true);
+    showStatus("Anmeldung wird geprüft ...");
+
+    try {
+        await signInWithEmailAndPassword(
+            firebaseAuth,
+            email,
+            password
+        );
+
+        showStatus("Anmeldung erfolgreich. Weiterleitung ...", "success");
+        window.location.assign("dashboard.html");
+
+    } catch (error) {
+        console.error("Firebase-Anmeldung fehlgeschlagen:", error);
+
+        // Keine technischen oder kontospezifischen Details offenlegen.
+        showStatus(
+            "Anmeldung fehlgeschlagen. Bitte Zugangsdaten prüfen.",
+            "error"
+        );
+        setBusy(false);
+    }
+});
+
+/* =========================================
+   5. MICROSOFT-LOGIN
+========================================= */
+
+async function initializeMicrosoft() {
+    if (!window.msal) {
+        throw new Error("Die Microsoft-Anmeldebibliothek wurde nicht geladen.");
+    }
+
+    if (
+        !MICROSOFT_CLIENT_ID ||
+        MICROSOFT_CLIENT_ID === "DEINE-CLIENT-ID-HIER"
+    ) {
+        throw new Error("Die Microsoft Client-ID wurde noch nicht konfiguriert.");
+    }
+
+    microsoftApp = new msal.PublicClientApplication(microsoftConfig);
+
+    await microsoftApp.initialize();
+
+    // Verarbeitet die Rückkehr von Microsoft nach dem Login.
+    const result = await microsoftApp.handleRedirectPromise();
+
+    if (result?.account) {
+        microsoftApp.setActiveAccount(result.account);
+    }
+
+    // Unterstützt auch eine bestehende Sitzung.
+    const accounts = microsoftApp.getAllAccounts();
+
+    if (!microsoftApp.getActiveAccount() && accounts.length > 0) {
+        microsoftApp.setActiveAccount(accounts[0]);
+    }
+
+    microsoftReady = true;
+
+    // Nach erfolgreicher Microsoft-Anmeldung zum Dashboard.
+    if (result?.account) {
+        showStatus("Microsoft-Anmeldung erfolgreich. Weiterleitung ...", "success");
+        window.location.replace("dashboard.html");
+    }
+}
+
+microsoftButton.addEventListener("click", async () => {
+    if (!microsoftReady || !microsoftApp) {
+        showStatus(
+            "Microsoft-Anmeldung ist noch nicht bereit. Bitte Konfiguration prüfen.",
+            "error"
+        );
+        return;
+    }
+
+    setBusy(true);
+    showStatus("Weiterleitung zur Microsoft-Anmeldung ...");
+
+    try {
+        await microsoftApp.loginRedirect({
+            scopes: ["openid", "profile"]
+        });
+    } catch (error) {
+        console.error("Microsoft-Anmeldung fehlgeschlagen:", error);
+
+        showStatus(
+            "Microsoft-Anmeldung konnte nicht gestartet werden.",
+            "error"
+        );
+        setBusy(false);
+    }
+});
+
+/* =========================================
+   6. INITIALISIERUNG
+========================================= */
+
+try {
+    await initializeMicrosoft();
+} catch (error) {
+    console.error("Microsoft-Initialisierung:", error);
+
+    // Firebase bleibt weiterhin nutzbar,
+    // auch wenn Microsoft noch nicht eingerichtet ist.
+    showStatus(
+        "Microsoft-Login noch nicht eingerichtet. Der Mitarbeiter-Login bleibt verfügbar.",
+        "error"
+    );
+}
 
 </script>
-    
 
 </body>
 </html>
+```
