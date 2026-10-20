@@ -1,0 +1,42 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #f4f6f9;
+  color: #20252b;
+}
+
+.container {
+  max-width: 760px;
+  margin: 48px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 14px;
+}
+
+button, input {
+  font: inherit;
+  padding: 10px 14px;
+  margin: 5px 0;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 7px;
+  background: #175cd3;
+  color: white;
+}
+
+input {
+  width: min(95%, 440px);
+  border: 1px solid #aaa;
+  border-radius: 7px;
+}
+
+li {
+  margin: 12px 0;
+}
+
+[hidden] {
+  display: none !important;
+}
