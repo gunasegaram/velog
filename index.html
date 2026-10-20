@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -235,6 +234,7 @@ button:disabled {
         id="microsoftButton"
         class="microsoft-button"
         type="button"
+        disabled
     >
         <span class="microsoft-logo" aria-hidden="true">
             <span></span>
@@ -326,6 +326,31 @@ const microsoftButton = document.getElementById("microsoftButton");
 function showStatus(message, type = "info") {
     statusElement.textContent = message;
     statusElement.className = type;
+}
+
+function describeMicrosoftError(error) {
+    const code = error?.errorCode || error?.code || "";
+    const message = error?.errorMessage || error?.message || "";
+    console.error("Microsoft-Login-Fehler:", error);
+
+    if (!navigator.onLine) {
+        return "Keine Internetverbindung. Bitte Verbindung prüfen und erneut versuchen.";
+    }
+    if (!window.msal) {
+        return "Die Microsoft-Anmeldebibliothek konnte nicht geladen werden. Bitte Internetverbindung oder CDN-Zugriff prüfen.";
+    }
+    if (/redirect_uri|redirect uri/i.test(message) || /redirect_uri/.test(code)) {
+        return "Die Redirect-URI stimmt wahrscheinlich nicht mit der URI in Microsoft Entra überein.";
+    }
+    if (/client.*(not found|invalid)|invalid_client/i.test(message + " " + code)) {
+        return "Die Microsoft-App-ID oder App-Registrierung ist ungültig. Bitte Client-ID in Entra prüfen.";
+    }
+    if (code || message) {
+        return "Microsoft-Login konnte nicht initialisiert werden (" +
+            (code || message).toString().slice(0, 180) +
+            "). Bitte Entra-Konfiguration prüfen.";
+    }
+    return "Microsoft-Login konnte nicht initialisiert werden. Bitte Entra-Konfiguration und Browser-Konsole prüfen.";
 }
 
 function setBusy(isBusy) {
@@ -423,6 +448,7 @@ async function initializeMicrosoft() {
     }
 
     microsoftReady = true;
+    microsoftButton.disabled = false;
 
     // Nur eine erfolgreich abgeschlossene Anmeldung
     // löst die Weiterleitung aus.
@@ -445,7 +471,7 @@ microsoftButton.addEventListener("click", async () => {
 
     if (!microsoftReady || !microsoftApp) {
         showStatus(
-            "Microsoft-Login ist nicht verfügbar. Bitte Konfiguration und Verbindung prüfen.",
+            "Microsoft-Login wird noch vorbereitet oder konnte nicht initialisiert werden. Bitte die angezeigte Fehlermeldung prüfen.",
             "error"
         );
         return;
@@ -467,7 +493,7 @@ microsoftButton.addEventListener("click", async () => {
         console.error("Microsoft-Login fehlgeschlagen:", error);
 
         showStatus(
-            "Microsoft-Anmeldung konnte nicht gestartet werden. Bitte Entra-Konfiguration prüfen.",
+            describeMicrosoftError(error),
             "error"
         );
 
@@ -491,10 +517,11 @@ try {
 
     // Firebase-Login bleibt unabhängig davon verfügbar.
     microsoftReady = false;
+    microsoftButton.disabled = true;
 
     showStatus(
-        "Microsoft-Login ist noch nicht verfügbar. Du kannst den Mitarbeiter-Login weiterhin verwenden.",
-        "info"
+        describeMicrosoftError(error) + " Der Mitarbeiter-Login bleibt verfügbar.",
+        "error"
     );
 }
 
@@ -502,4 +529,3 @@ try {
 
 </body>
 </html>
-```
