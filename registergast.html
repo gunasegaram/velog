@@ -1,1 +1,94 @@
 
+
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { initializeApp } = require("firebase-admin/app");
+const { getDatabase, ServerValue } = require("firebase-admin/database");
+
+initializeApp({
+    databaseURL:
+        "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app"
+});
+
+const db = getDatabase();
+
+exports.registerGastProfile = onCall(
+    { region: "europe-west1" },
+    async (request) => {
+        // Nur angemeldete Benutzer dürfen die Funktion aufrufen.
+        if (!request.auth) {
+            throw new HttpsError(
+                "unauthenticated",
+                "Bitte melde dich zuerst an."
+            );
+        }
+
+        const uid = request.auth.uid;
+        const data = request.data || {};
+
+        const vorname =
+            typeof data.vorname === "string" ? data.vorname.trim() : "";
+        const nachname =
+            typeof data.nachname === "string" ? data.nachname.trim() : "";
+        const handy =
+            typeof data.handy === "string" ? data.handy.trim() : "";
+
+        if (
+            !vorname || vorname.length > 100 ||
+            !nachname || nachname.length > 100 ||
+            handy.length > 40
+        ) {
+            throw new HttpsError(
+                "invalid-argument",
+                "Bitte überprüfe deine Angaben."
+            );
+        }
+
+        const roleRef = db.ref(`roles/${uid}`);
+
+        // Atomar: Eine bestehende Rolle wird niemals überschrieben.
+        const result = await roleRef.transaction((currentRole) => {
+            if (currentRole !== null) {
+                return; // Transaktion abbrechen
+            }
+
+            return "gast";
+        });
+
+        if (!result.committed) {
+            throw new HttpsError(
+                "already-exists",
+                "Für dieses Konto ist bereits eine Rolle hinterlegt. " +
+                "Bitte wende dich an den Administrator."
+            );
+        }
+
+        try {
+            const user = {
+                uid,
+                vorname,
+                nachname,
+                email: request.auth.token.email || "",
+                handy,
+                rolle: "gast",
+                aktiv: true,
+                erstelltAm: new Date().toISOString()
+            };
+
+            await db.ref(`users/${uid}`).set(user);
+
+            return {
+                success: true,
+                role: "gast"
+            };
+        } catch (error) {
+            // Rolle bleibt "gast"; es werden keine höheren Rechte vergeben.
+            console.error("Gastprofil konnte nicht gespeichert werden:", error);
+
+            throw new HttpsError(
+                "internal",
+                "Gastrolle wurde angelegt, aber das Profil konnte nicht " +
+                "vollständig gespeichert werden. Bitte kontaktiere den Support."
+            );
+        }
+    }
+);
