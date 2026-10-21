@@ -1,94 +1,296 @@
 
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VE-Log | Gast registrieren</title>
 
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { initializeApp } = require("firebase-admin/app");
-const { getDatabase, ServerValue } = require("firebase-admin/database");
+<style>
+:root {
+    --rot: #922f2b;
+    --blau: #1d3557;
+    --rand: #d9dee5;
+}
 
-initializeApp({
-    databaseURL:
-        "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app"
-});
+* { box-sizing: border-box; }
 
-const db = getDatabase();
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    color: #263238;
+    font-family: Arial, sans-serif;
+}
 
-exports.registerGastProfile = onCall(
-    { region: "europe-west1" },
-    async (request) => {
-        // Nur angemeldete Benutzer dürfen die Funktion aufrufen.
-        if (!request.auth) {
-            throw new HttpsError(
-                "unauthenticated",
-                "Bitte melde dich zuerst an."
-            );
-        }
+.card {
+    width: 100%;
+    max-width: 440px;
+    padding: 32px;
+    border: 1px solid #e8e8e8;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 12px 40px rgba(29,53,87,.09);
+}
 
-        const uid = request.auth.uid;
-        const data = request.data || {};
+.logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+}
 
-        const vorname =
-            typeof data.vorname === "string" ? data.vorname.trim() : "";
-        const nachname =
-            typeof data.nachname === "string" ? data.nachname.trim() : "";
-        const handy =
-            typeof data.handy === "string" ? data.handy.trim() : "";
+.logo img {
+    width: 180px;
+    max-width: 100%;
+    height: auto;
+}
 
-        if (
-            !vorname || vorname.length > 100 ||
-            !nachname || nachname.length > 100 ||
-            handy.length > 40
-        ) {
-            throw new HttpsError(
-                "invalid-argument",
-                "Bitte überprüfe deine Angaben."
-            );
-        }
+h1 {
+    margin: 0 0 10px;
+    color: var(--blau);
+    font-size: 26px;
+}
 
-        const roleRef = db.ref(`roles/${uid}`);
+p {
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.55;
+}
 
-        // Atomar: Eine bestehende Rolle wird niemals überschrieben.
-        const result = await roleRef.transaction((currentRole) => {
-            if (currentRole !== null) {
-                return; // Transaktion abbrechen
-            }
+label {
+    display: block;
+    margin: 17px 0 7px;
+    font-size: 14px;
+    font-weight: 700;
+}
 
-            return "gast";
+input {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px;
+    border: 1px solid var(--rand);
+    border-radius: 9px;
+    font: inherit;
+}
+
+input:focus {
+    outline: 3px solid rgba(29,53,87,.13);
+    border-color: var(--blau);
+}
+
+button, .back {
+    display: flex;
+    width: 100%;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button {
+    margin-top: 23px;
+    border: 0;
+    background: var(--rot);
+    color: white;
+}
+
+button:hover { background: #762522; }
+button:disabled { opacity: .6; cursor: not-allowed; }
+
+.back {
+    margin-top: 10px;
+    border: 1px solid var(--rand);
+    color: var(--blau);
+    background: white;
+}
+
+.status {
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+@media (max-width: 420px) {
+    .card { padding: 24px 20px; }
+}
+</style>
+</head>
+
+<body>
+<main class="card">
+    <div class="logo">
+        <img src="logo.png" alt="VE-Log GmbH">
+    </div>
+
+    <h1>Gastkonto erstellen</h1>
+    <p>
+        Erstelle dein persönliches Gastkonto. Nach erfolgreicher
+        Registrierung wirst du zur Anmeldeseite weitergeleitet.
+    </p>
+
+    <form id="registerForm">
+        <label for="vorname">Vorname</label>
+        <input id="vorname" autocomplete="given-name"
+               maxlength="100" required>
+
+        <label for="nachname">Nachname</label>
+        <input id="nachname" autocomplete="family-name"
+               maxlength="100" required>
+
+        <label for="handy">Telefonnummer (optional)</label>
+        <input id="handy" type="tel" autocomplete="tel"
+               maxlength="40">
+
+        <label for="email">E-Mail-Adresse</label>
+        <input id="email" type="email" autocomplete="email"
+               placeholder="name@beispiel.de" required>
+
+        <label for="password">Passwort (mindestens 12 Zeichen)</label>
+        <input id="password" type="password"
+               autocomplete="new-password" minlength="12" required>
+
+        <label for="passwordRepeat">Passwort wiederholen</label>
+        <input id="passwordRepeat" type="password"
+               autocomplete="new-password" minlength="12" required>
+
+        <button id="submitButton" type="submit">
+            Gastkonto erstellen
+        </button>
+    </form>
+
+    <a class="back" href="index.html">Zurück zur Anmeldung</a>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+</main>
+
+<script type="module">
+import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import { getFunctions, httpsCallable } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-functions.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+    authDomain: "ve-log.firebaseapp.com",
+    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ve-log",
+    storageBucket: "ve-log.firebasestorage.app",
+    messagingSenderId: "749978080433",
+    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const functions = getFunctions(app, "europe-west1");
+
+const registerGastProfile = httpsCallable(
+    functions, "registerGastProfile"
+);
+
+const form = document.getElementById("registerForm");
+const button = document.getElementById("submitButton");
+const status = document.getElementById("status");
+
+function friendlyError(error) {
+    const messages = {
+        "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+        "auth/email-already-in-use": "Diese E-Mail-Adresse ist bereits registriert. Bitte melde dich an.",
+        "auth/weak-password": "Bitte verwende ein stärkeres Passwort mit mindestens 12 Zeichen.",
+        "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
+        "functions/unauthenticated": "Die Anmeldung konnte nicht bestätigt werden. Bitte versuche es erneut.",
+        "functions/already-exists": "Für dieses Konto ist bereits eine Rolle hinterlegt. Bitte kontaktiere den Administrator.",
+        "functions/permission-denied": "Die Registrierung wurde nicht erlaubt. Bitte kontaktiere den Administrator.",
+        "functions/unavailable": "Der Registrierungsdienst ist momentan nicht erreichbar."
+    };
+
+    return messages[error.code] ||
+        "Die Registrierung ist fehlgeschlagen. Bitte prüfe deine Angaben und versuche es erneut.";
+}
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const vorname = document.getElementById("vorname").value.trim();
+    const nachname = document.getElementById("nachname").value.trim();
+    const handy = document.getElementById("handy").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const passwordRepeat =
+        document.getElementById("passwordRepeat").value;
+
+    if (!vorname || !nachname) {
+        status.textContent = "Bitte gib deinen Vor- und Nachnamen ein.";
+        return;
+    }
+
+    if (password.length < 12) {
+        status.textContent =
+            "Bitte wähle ein Passwort mit mindestens 12 Zeichen.";
+        return;
+    }
+
+    if (password !== passwordRepeat) {
+        status.textContent = "Die Passwörter stimmen nicht überein.";
+        return;
+    }
+
+    button.disabled = true;
+    status.textContent = "Gastkonto wird erstellt ...";
+
+    try {
+        // Zuerst das Auth-Konto erstellen.
+        const credential = await createUserWithEmailAndPassword(
+            auth, email, password
+        );
+
+        // Rolle und Profil ausschließlich serverseitig vergeben.
+        await registerGastProfile({
+            vorname,
+            nachname,
+            handy
         });
 
-        if (!result.committed) {
-            throw new HttpsError(
-                "already-exists",
-                "Für dieses Konto ist bereits eine Rolle hinterlegt. " +
-                "Bitte wende dich an den Administrator."
-            );
+        // Nicht automatisch angemeldet bleiben.
+        await signOut(auth);
+
+        status.textContent =
+            "Gastkonto erfolgreich erstellt. Du wirst zur Anmeldung weitergeleitet.";
+
+        window.setTimeout(() => {
+            window.location.replace("index.html");
+        }, 1200);
+
+    } catch (error) {
+        console.error(error);
+
+        // Wenn das Auth-Konto schon erstellt wurde, aber die
+        // Profilfunktion scheitert, wird es nicht automatisch gelöscht.
+        if (auth.currentUser) {
+            try { await signOut(auth); } catch (signOutError) {
+                console.error(signOutError);
+            }
         }
 
-        try {
-            const user = {
-                uid,
-                vorname,
-                nachname,
-                email: request.auth.token.email || "",
-                handy,
-                rolle: "gast",
-                aktiv: true,
-                erstelltAm: new Date().toISOString()
-            };
-
-            await db.ref(`users/${uid}`).set(user);
-
-            return {
-                success: true,
-                role: "gast"
-            };
-        } catch (error) {
-            // Rolle bleibt "gast"; es werden keine höheren Rechte vergeben.
-            console.error("Gastprofil konnte nicht gespeichert werden:", error);
-
-            throw new HttpsError(
-                "internal",
-                "Gastrolle wurde angelegt, aber das Profil konnte nicht " +
-                "vollständig gespeichert werden. Bitte kontaktiere den Support."
-            );
-        }
+        status.textContent = friendlyError(error);
+        button.disabled = false;
     }
-);
+});
+</script>
+</body>
+</html>
