@@ -1,93 +1,176 @@
+
 /*
- * VE-Log – Rollenanzeige im Frontend
+ * VE-Log – Rollen- und Navigationsverwaltung
  *
  * Rollen:
- *   admin       -> alle Bereiche
- *   mitarbeiter -> Arbeitsbereiche, Formulare, eigene Nachweise
- *   gast        -> Dashboard, Formulare, Meine Nachweise, Einstellungen
+ * admin       -> alle Bereiche
+ * superadmin  -> alle Bereiche
+ * mitarbeiter -> Dashboard, Formulare, Nachweise, Urlaub
+ * gast        -> Dashboard, Formulare, Nachweise, Einstellungen
  *
- * WICHTIG:
- * Diese Datei blendet Bereiche aus und steuert die Navigation.
- * Eine im Browser gespeicherte Rolle ist NICHT sicher gegen Manipulation.
- * Für vertrauliche Nachweise und echte Zugriffskontrolle ist ein Backend
- * mit serverseitiger Anmeldung und Berechtigungsprüfung erforderlich.
+ * Hinweis:
+ * Die Rollenprüfung im Frontend ist keine sichere serverseitige
+ * Zugriffskontrolle. Für vertrauliche Daten ist ein Backend nötig.
  */
+
 (function () {
   "use strict";
 
-  const LOGIN_PAGE = "login.html";
+  const LOGIN_PAGE = "./login.html";
+  const DASHBOARD_PAGE = "./dashboard.html";
   const ROLE_KEY = "veLogUser";
 
+  const VALID_ROLES = ["admin", "mitarbeiter", "gast"];
+
+  // Benutzer aus der aktuellen Sitzung lesen
   function readUser() {
     try {
       const raw = sessionStorage.getItem(ROLE_KEY);
-      return raw ? JSON.parse(raw) : null;
+
+      if (!raw) {
+        return null;
+      }
+
+      const user = JSON.parse(raw);
+
+      if (!user || typeof user !== "object") {
+        return null;
+      }
+
+      if (typeof user.role !== "string") {
+        return null;
+      }
+
+      const role = user.role.trim().toLowerCase();
+
+      if (!VALID_ROLES.includes(role)) {
+        return null;
+      }
+
+      return {
+        ...user,
+        role: role
+      };
     } catch (error) {
-      console.warn("VE-Log: Benutzersitzung konnte nicht gelesen werden.", error);
+      console.warn(
+        "VE-Log: Sitzung konnte nicht gelesen werden.",
+        error
+      );
+
       return null;
     }
   }
 
+  // Aktuelle Rolle zurückgeben
   function currentRole() {
     const user = readUser();
-    return user && typeof user.role === "string" ? user.role : null;
+    return user ? user.role : null;
   }
 
-  function applyNavigation() {
-    const role = currentRole();
-
-    document.querySelectorAll(".nav a[data-roles]").forEach((link) => {
-      const allowed = link.dataset.roles.split(",").map((item) => item.trim());
-      link.hidden = !role || !allowed.includes(role);
-    });
-
-    document.querySelectorAll("[data-form-roles]").forEach((card) => {
-      const allowed = card.dataset.formRoles.split(",").map((item) => item.trim());
-      card.hidden = !role || !allowed.includes(role);
-    });
-
-    const user = readUser();
-    const label = document.getElementById("currentUserLabel");
-    if (label && user) {
-      label.textContent = user.name ? `Angemeldet: ${user.name}` : "";
-    }
-  }
-
-  function requirePage(allowedRoles) {
-    const user = readUser();
-
-    if (!user || !user.role) {
-      window.location.replace(LOGIN_PAGE);
+  // Prüfen, ob die Rolle einen Bereich sehen darf
+  function hasRoleAccess(allowedRoles, role) {
+    if (!role || !Array.isArray(allowedRoles)) {
       return false;
     }
 
-    if (!allowedRoles.includes(user.role)) {
-      window.location.replace("dashboard.html");
+    const allowed = allowedRoles.map(function (item) {
+      return String(item).trim().toLowerCase();
+    });
+
+    return allowed.includes(role);
+  }
+
+  // Navigation und Formular-Kacheln filtern
+  function applyNavigation() {
+    const user = readUser();
+    const role = user ? user.role : null;
+
+    // Hauptnavigation
+    document.querySelectorAll(".nav a[data-roles]").forEach(
+      function (link) {
+        const allowedRoles = link.dataset.roles.split(",");
+
+        link.hidden = !hasRoleAccess(allowedRoles, role);
+      }
+    );
+
+    // Formular-Kacheln
+    document.querySelectorAll("[data-form-roles]").forEach(
+      function (card) {
+        const allowedRoles = card.dataset.formRoles.split(",");
+
+        card.hidden = !hasRoleAccess(allowedRoles, role);
+      }
+    );
+
+    // Angemeldeten Benutzer anzeigen
+    const userLabel = document.getElementById("currentUserLabel");
+
+    if (userLabel) {
+      userLabel.textContent = user
+        ? "Angemeldet: " + (user.name || user.role)
+        : "";
+    }
+  }
+
+  // Geschützte Seiten absichern
+  function requirePage(allowedRoles) {
+    const user = readUser();
+
+    // Keine gültige Sitzung: zur Anmeldung
+    if (!user) {
+      window.location.replace(
+        new URL(LOGIN_PAGE, window.location.href).href
+      );
+
+      return false;
+    }
+
+    // Rolle nicht für diese Seite zugelassen
+    if (!hasRoleAccess(allowedRoles, user.role)) {
+      window.location.replace(
+        new URL(DASHBOARD_PAGE, window.location.href).href
+      );
+
       return false;
     }
 
     return true;
   }
 
+  // Abmelden
   function logout() {
     sessionStorage.removeItem(ROLE_KEY);
-    window.location.replace(LOGIN_PAGE);
+
+    window.location.replace(
+      new URL(LOGIN_PAGE, window.location.href).href
+    );
   }
 
+  // Öffentliche Funktionen für die einzelnen HTML-Seiten
   window.VELogAuth = {
     getUser: readUser,
     getRole: currentRole,
-    applyNavigation,
-    requirePage,
-    logout
+    applyNavigation: applyNavigation,
+    requirePage: requirePage,
+    logout: logout
   };
 
-  document.addEventListener("DOMContentLoaded", function () {
+  // Initialisierung unabhängig davon, wann das Script geladen wurde
+  function initialize() {
     applyNavigation();
 
     const logoutButton = document.getElementById("logoutButton");
-    if (logoutButton) {
+
+    if (logoutButton && !logoutButton.dataset.logoutInitialized) {
+      logoutButton.dataset.logoutInitialized = "true";
       logoutButton.addEventListener("click", logout);
     }
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize);
+  } else {
+    initialize();
+  }
 })();
