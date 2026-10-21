@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -16,7 +15,9 @@
     --rand: #d9dee5;
 }
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
 body {
     margin: 0;
@@ -81,7 +82,7 @@ input {
     padding: 12px 14px;
     border: 1px solid var(--rand);
     border-radius: 9px;
-    background: #fff;
+    background: white;
     color: var(--text);
     font: inherit;
     font-size: 14px;
@@ -92,7 +93,8 @@ input:focus {
     border-color: var(--blau);
 }
 
-button, .link-button {
+button,
+.link-button {
     display: flex;
     width: 100%;
     min-height: 46px;
@@ -116,7 +118,9 @@ button, .link-button {
     color: white;
 }
 
-.primary:hover { background: var(--rot-dunkel); }
+.primary:hover {
+    background: var(--rot-dunkel);
+}
 
 .link-button {
     margin-top: 10px;
@@ -125,7 +129,9 @@ button, .link-button {
     color: var(--blau);
 }
 
-.link-button:hover { background: #f5f7fa; }
+.link-button:hover {
+    background: #f5f7fa;
+}
 
 .guest-link {
     border-color: #d8e2f0;
@@ -133,7 +139,9 @@ button, .link-button {
     color: var(--blau);
 }
 
-.guest-link:hover { background: #e0eaf8; }
+.guest-link:hover {
+    background: #e0eaf8;
+}
 
 button:disabled {
     opacity: .6;
@@ -166,49 +174,90 @@ button:disabled {
     line-height: 1.5;
 }
 
-.status:empty { display: none; }
+.status:empty {
+    display: none;
+}
+
+.status.error {
+    color: #b42318;
+}
+
+.status.success {
+    color: #067647;
+}
 
 @media (max-width: 420px) {
-    .login-box { padding: 25px 21px; }
-    h1 { font-size: 24px; }
+    .login-box {
+        padding: 25px 21px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
 }
 </style>
 </head>
 
 <body>
+
 <main class="login-box">
+
     <div class="logo">
         <img src="logo.png" alt="VE-Log GmbH">
     </div>
 
     <h1>Herzlich Willkommen</h1>
+
     <p class="intro">
         Melde dich mit deinen Zugangsdaten bei VE-Log an.
     </p>
 
     <form id="loginForm">
+
         <label for="email">E-Mail-Adresse</label>
-        <input id="email" type="email"
-               placeholder="name@beispiel.de"
-               autocomplete="username" required>
+
+        <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="name@beispiel.de"
+            autocomplete="username"
+            required
+        >
 
         <label for="passwort">Passwort</label>
-        <input id="passwort" type="password"
-               placeholder="Passwort eingeben"
-               autocomplete="current-password"
-               required>
 
-        <button class="primary" id="loginButton" type="submit">
+        <input
+            id="passwort"
+            name="password"
+            type="password"
+            placeholder="Passwort eingeben"
+            autocomplete="current-password"
+            required
+        >
+
+        <button
+            class="primary"
+            id="loginButton"
+            type="submit"
+        >
             Anmelden
         </button>
+
     </form>
 
-    <a class="link-button guest-link" href="#loginForm"
-       id="guestLoginLink">Als Gast anmelden</a>
+    <a
+        class="link-button guest-link"
+        href="#loginForm"
+        id="guestLoginLink"
+    >
+        Zum Gast-Login
+    </a>
 
     <div class="divider"></div>
 
     <h2 class="section-title">Noch kein Konto?</h2>
+
     <p class="small-text">
         Wähle aus, welches Konto du erstellen möchtest.
     </p>
@@ -221,13 +270,21 @@ button:disabled {
         Gast registrieren
     </a>
 
-    <p id="status" class="status" role="status"
-       aria-live="polite"></p>
+    <p
+        id="status"
+        class="status"
+        role="status"
+        aria-live="polite"
+    ></p>
+
 </main>
 
 <script type="module">
-import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+    initializeApp,
+    getApps
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 import {
     getAuth,
@@ -235,83 +292,238 @@ import {
     signOut
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-import { getDatabase, ref, get } from
-    "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import {
+    getDatabase,
+    ref,
+    get
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+
+
+// --------------------------------------------------
+// FIREBASE-KONFIGURATION
+// --------------------------------------------------
 
 const firebaseConfig = {
     apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
     authDomain: "ve-log.firebaseapp.com",
-    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+    databaseURL:
+        "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "ve-log",
     storageBucket: "ve-log.firebasestorage.app",
     messagingSenderId: "749978080433",
     appId: "1:749978080433:web:8f64ef99a557fe2346be90"
 };
 
-const app = initializeApp(firebaseConfig);
+
+// --------------------------------------------------
+// FIREBASE INITIALISIEREN
+// --------------------------------------------------
+
+const app = getApps().length
+    ? getApps()[0]
+    : initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
 const db = getDatabase(app);
+
+
+// --------------------------------------------------
+// HTML-ELEMENTE
+// --------------------------------------------------
 
 const form = document.getElementById("loginForm");
 const button = document.getElementById("loginButton");
 const status = document.getElementById("status");
+const guestLoginLink = document.getElementById("guestLoginLink");
 
-document.getElementById("guestLoginLink").addEventListener("click", () => {
-    document.getElementById("email").focus();
-    status.textContent =
-        "Gäste melden sich hier mit ihrer registrierten E-Mail-Adresse und ihrem Passwort an.";
-});
+let anmeldungLaeuft = false;
 
-function friendlyError(error) {
-    const messages = {
-        "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
-        "auth/invalid-credential": "E-Mail-Adresse oder Passwort ist falsch.",
-        "auth/user-disabled": "Dieses Konto wurde deaktiviert.",
-        "auth/too-many-requests": "Zu viele Versuche. Bitte versuche es später erneut.",
-        "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung."
-    };
-    return messages[error.code] ||
-        "Die Anmeldung ist fehlgeschlagen. Bitte versuche es erneut.";
+
+// --------------------------------------------------
+// STATUSANZEIGE
+// --------------------------------------------------
+
+function zeigeStatus(text, typ = "") {
+    status.textContent = text;
+    status.className = "status";
+
+    if (typ) {
+        status.classList.add(typ);
+    }
 }
 
+
+// --------------------------------------------------
+// LESBARE FIREBASE-FEHLERMELDUNGEN
+// --------------------------------------------------
+
+function friendlyError(error) {
+
+    const messages = {
+        "auth/invalid-email":
+            "Bitte gib eine gültige E-Mail-Adresse ein.",
+
+        "auth/invalid-credential":
+            "E-Mail-Adresse oder Passwort ist falsch.",
+
+        "auth/user-disabled":
+            "Dieses Konto wurde deaktiviert.",
+
+        "auth/too-many-requests":
+            "Zu viele Anmeldeversuche. Bitte versuche es später erneut.",
+
+        "auth/network-request-failed":
+            "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
+
+        "PERMISSION_DENIED":
+            "Der Zugriff auf die Rolleninformationen wurde verweigert. Bitte prüfe deine Firebase-Datenbankregeln."
+    };
+
+    return messages[error.code] ||
+        "Die Anmeldung ist fehlgeschlagen. Bitte überprüfe deine Zugangsdaten und Firebase-Einstellungen.";
+}
+
+
+// --------------------------------------------------
+// GAST-LOGIN-HINWEIS
+// --------------------------------------------------
+
+guestLoginLink.addEventListener("click", () => {
+
+    document.getElementById("email").focus();
+
+    zeigeStatus(
+        "Bitte gib die registrierte E-Mail-Adresse und das Passwort deines Gastkontos ein."
+    );
+
+});
+
+
+// --------------------------------------------------
+// ANMELDUNG UND ROLLENWEITERLEITUNG
+// --------------------------------------------------
+
 form.addEventListener("submit", async (event) => {
+
     event.preventDefault();
+
+    if (anmeldungLaeuft) {
+        return;
+    }
+
+    anmeldungLaeuft = true;
     button.disabled = true;
-    status.textContent = "Anmeldung läuft ...";
+
+    zeigeStatus("Anmeldung läuft ...");
+
+    let angemeldeterBenutzer = null;
 
     try {
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("passwort").value;
+
+        const email = document
+            .getElementById("email")
+            .value
+            .trim();
+
+        const password = document
+            .getElementById("passwort")
+            .value;
+
+
+        // 1. Benutzer bei Firebase anmelden
 
         const credential = await signInWithEmailAndPassword(
-            auth, email, password
+            auth,
+            email,
+            password
         );
 
-        const snapshot = await get(
+        angemeldeterBenutzer = credential.user;
+
+
+        // 2. Benutzerrolle aus Firebase laden
+
+        const roleSnapshot = await get(
             ref(db, "roles/" + credential.user.uid)
         );
 
-        const role = snapshot.exists() ? snapshot.val() : null;
+        const role = roleSnapshot.exists()
+            ? roleSnapshot.val()
+            : null;
+
+
+        // 3. Nur bekannte Rollen zulassen
+
         const allowedRoles = [
-            "gast", "mitarbeiter", "manager", "admin", "superadmin"
+            "gast",
+            "mitarbeiter",
+            "manager",
+            "admin",
+            "superadmin"
         ];
 
         if (!allowedRoles.includes(role)) {
+
             await signOut(auth);
+            angemeldeterBenutzer = null;
+
             throw new Error(
                 "Für dieses Konto ist keine gültige Rolle hinterlegt. Bitte kontaktiere den Administrator."
             );
         }
 
-        window.location.replace("dashboard.html");
+
+        // 4. Passende Zielseite anhand der Rolle auswählen
+
+        const zielseiten = {
+            gast: "gast.html",
+            mitarbeiter: "dashboard.html",
+            manager: "dashboard.html",
+            admin: "dashboard.html",
+            superadmin: "dashboard.html"
+        };
+
+        const zielseite = zielseiten[role];
+
+        zeigeStatus("Anmeldung erfolgreich. Du wirst weitergeleitet ...", "success");
+
+        // 5. Benutzer zur richtigen Seite weiterleiten
+
+        window.location.replace(zielseite);
+
     } catch (error) {
-        console.error(error);
-        status.textContent = error.code
+
+        console.error("Anmeldefehler:", error);
+
+        // Bei einem Fehler nach erfolgreicher Anmeldung
+        // keine Sitzung mit unbestätigter Rolle behalten.
+
+        if (angemeldeterBenutzer && auth.currentUser) {
+
+            try {
+                await signOut(auth);
+            } catch (signOutError) {
+                console.error(
+                    "Fehler beim Beenden der Sitzung:",
+                    signOutError
+                );
+            }
+        }
+
+        const nachricht = error.code
             ? friendlyError(error)
             : error.message;
+
+        zeigeStatus(nachricht, "error");
+
         button.disabled = false;
+        anmeldungLaeuft = false;
+
     }
+
 });
+
 </script>
+
 </body>
 </html>
