@@ -1,136 +1,190 @@
-html
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VE-Log Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VE-Log | Anmeldung</title>
 
 <style>
+:root {
+    --rot: #922f2b;
+    --rot-dunkel: #762522;
+    --blau: #1d3557;
+    --hintergrund: #f3f4f6;
+    --text: #263238;
+    --rand: #d9dee5;
+}
+
+* { box-sizing: border-box; }
+
 body {
-    font-family: Arial, sans-serif;
-    background: #ececec;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
-    padding: 20px;
-    box-sizing: border-box;
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--hintergrund);
+    color: var(--text);
+    font-family: Arial, sans-serif;
 }
 
 .login-box {
+    width: 100%;
+    max-width: 410px;
+    padding: 34px;
     background: white;
-    width: 420px;
-    max-width: 100%;
-    padding: 35px;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    box-sizing: border-box;
+    border: 1px solid #e8e8e8;
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(29, 53, 87, .09);
 }
 
 .logo {
-    text-align: center;
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 26px;
 }
 
 .logo img {
-    max-width: 200px;
-}
-
-h1, h2 {
-    color: #1d3557;
+    display: block;
+    width: 190px;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
 }
 
 h1 {
-    margin-bottom: 10px;
+    margin: 0 0 10px;
+    color: var(--blau);
+    font-size: 27px;
+    line-height: 1.25;
 }
 
-p {
-    color: #666;
+.intro {
+    margin: 0 0 24px;
+    color: #667085;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 label {
     display: block;
-    margin-top: 18px;
-    margin-bottom: 5px;
-    font-weight: bold;
+    margin: 17px 0 7px;
+    font-size: 14px;
+    font-weight: 700;
 }
 
 input {
     width: 100%;
-    padding: 14px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-sizing: border-box;
+    min-height: 47px;
+    padding: 12px 14px;
+    border: 1px solid var(--rand);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
 }
 
-button {
+input:focus {
+    outline: 3px solid rgba(29, 53, 87, .13);
+    border-color: var(--blau);
+}
+
+button, .link-button {
+    display: flex;
     width: 100%;
-    margin-top: 20px;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    background: #8e2f2b;
-    color: white;
-    font-size: 17px;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 9px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
     cursor: pointer;
+    transition: background .15s ease;
 }
 
-button:hover {
-    background: #762522;
+.primary {
+    margin-top: 22px;
+    background: var(--rot);
+    color: white;
 }
+
+.primary:hover { background: var(--rot-dunkel); }
+
+.link-button {
+    margin-top: 10px;
+    border: 1px solid var(--rand);
+    background: white;
+    color: var(--blau);
+}
+
+.link-button:hover { background: #f5f7fa; }
+
+.guest-link {
+    border-color: #d8e2f0;
+    background: #edf3fb;
+    color: var(--blau);
+}
+
+.guest-link:hover { background: #e0eaf8; }
 
 button:disabled {
-    opacity: 0.6;
+    opacity: .6;
     cursor: not-allowed;
 }
 
-.gast-button {
-    background: #1d3557;
+.divider {
+    height: 1px;
+    margin: 26px 0 22px;
+    background: #e5e7eb;
 }
 
-.gast-button:hover {
-    background: #142640;
+.section-title {
+    margin: 0 0 7px;
+    color: var(--blau);
+    font-size: 16px;
 }
 
-.register {
-    text-align: center;
-    margin-top: 22px;
-}
-
-.register a {
-    color: #8e2f2b;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.hidden {
-    display: none;
-}
-
-.status {
-    overflow-wrap: anywhere;
+.small-text {
+    margin: 0 0 14px;
+    color: #667085;
+    font-size: 13px;
     line-height: 1.5;
 }
 
-hr {
-    border: 0;
-    border-top: 1px solid #ddd;
-    margin: 28px 0;
+.status {
+    margin: 16px 0 0;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.status:empty { display: none; }
+
+@media (max-width: 420px) {
+    .login-box { padding: 25px 21px; }
+    h1 { font-size: 24px; }
 }
 </style>
 </head>
 
 <body>
-<div class="login-box">
-
+<main class="login-box">
     <div class="logo">
-        <img src="logo.png" alt="VE-LOG">
+        <img src="logo.png" alt="VE-Log GmbH">
     </div>
 
     <h1>Herzlich Willkommen</h1>
-    <p>Melde dich mit deinem Konto an oder registriere dich als Gast.</p>
+    <p class="intro">
+        Melde dich mit deinen Zugangsdaten bei VE-Log an.
+    </p>
 
     <form id="loginForm">
         <label for="email">E-Mail-Adresse</label>
@@ -141,74 +195,48 @@ hr {
         <label for="passwort">Passwort</label>
         <input id="passwort" type="password"
                placeholder="Passwort eingeben"
-               autocomplete="current-password" required
-               minlength="6">
+               autocomplete="current-password"
+               required>
 
-        <button id="loginButton" type="submit">
+        <button class="primary" id="loginButton" type="submit">
             Anmelden
         </button>
     </form>
 
-    <div class="register">
-        <p>Noch kein Konto?</p>
-        <a href="registrieren.html">Mitarbeiterkonto registrieren</a>
-    </div>
+    <a class="link-button guest-link" href="#loginForm"
+       id="guestLoginLink">Als Gast anmelden</a>
 
-    <hr>
+    <div class="divider"></div>
 
-    <h2>Gastzugang</h2>
-    <p>
-        Erstelle ein eigenes Gastkonto mit E-Mail-Adresse und Passwort.
-        Du kannst dich später mit denselben Zugangsdaten erneut anmelden.
+    <h2 class="section-title">Noch kein Konto?</h2>
+    <p class="small-text">
+        Wähle aus, welches Konto du erstellen möchtest.
     </p>
 
-    <button id="showGuestForm" class="gast-button" type="button">
-        Als Gast registrieren
-    </button>
+    <a class="link-button" href="registrieren.html">
+        Mitarbeiterkonto registrieren
+    </a>
 
-    <form id="guestForm" class="hidden">
-        <label for="guestEmail">E-Mail-Adresse</label>
-        <input id="guestEmail" type="email"
-               placeholder="gast@beispiel.de"
-               autocomplete="email" required>
+    <a class="link-button" href="registergast.html">
+        Gast registrieren
+    </a>
 
-        <label for="guestPassword">Passwort (mindestens 6 Zeichen)</label>
-        <input id="guestPassword" type="password"
-               placeholder="Passwort erstellen"
-               autocomplete="new-password"
-               minlength="6" required>
-
-        <label for="guestPasswordRepeat">Passwort wiederholen</label>
-        <input id="guestPasswordRepeat" type="password"
-               placeholder="Passwort wiederholen"
-               autocomplete="new-password"
-               minlength="6" required>
-
-        <button id="createGuestButton" type="submit">
-            Gastkonto erstellen
-        </button>
-    </form>
-
-    <p id="status" class="status" role="status" aria-live="polite"></p>
-</div>
+    <p id="status" class="status" role="status"
+       aria-live="polite"></p>
+</main>
 
 <script type="module">
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 import {
     getAuth,
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-import {
-    getDatabase,
-    ref,
-    get,
-    set
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import { getDatabase, ref, get } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
@@ -224,67 +252,32 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-const loginForm = document.getElementById("loginForm");
-const guestForm = document.getElementById("guestForm");
-const loginButton = document.getElementById("loginButton");
-const createGuestButton = document.getElementById("createGuestButton");
-const showGuestForm = document.getElementById("showGuestForm");
-const statusText = document.getElementById("status");
+const form = document.getElementById("loginForm");
+const button = document.getElementById("loginButton");
+const status = document.getElementById("status");
 
-function setStatus(message) {
-    statusText.textContent = message;
-}
-
-function setBusy(busy) {
-    loginButton.disabled = busy;
-    createGuestButton.disabled = busy;
-    showGuestForm.disabled = busy;
-}
+document.getElementById("guestLoginLink").addEventListener("click", () => {
+    document.getElementById("email").focus();
+    status.textContent =
+        "Gäste melden sich hier mit ihrer registrierten E-Mail-Adresse und ihrem Passwort an.";
+});
 
 function friendlyError(error) {
     const messages = {
         "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
         "auth/invalid-credential": "E-Mail-Adresse oder Passwort ist falsch.",
-        "auth/email-already-in-use": "Diese E-Mail-Adresse ist bereits registriert. Melde dich bitte an.",
-        "auth/weak-password": "Das Passwort muss mindestens 6 Zeichen lang sein.",
-        "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
-        "auth/too-many-requests": "Zu viele Versuche. Bitte probiere es später erneut.",
-        "auth/operation-not-allowed": "E-Mail-/Passwort-Anmeldung ist in Firebase nicht aktiviert."
+        "auth/user-disabled": "Dieses Konto wurde deaktiviert.",
+        "auth/too-many-requests": "Zu viele Versuche. Bitte versuche es später erneut.",
+        "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung."
     };
-
     return messages[error.code] ||
-        "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.";
+        "Die Anmeldung ist fehlgeschlagen. Bitte versuche es erneut.";
 }
 
-async function openDashboard(user) {
-    // Die Rolle wird ausschließlich gelesen, niemals im Browser
-    // automatisch als "gast" oder "mitarbeiter" gesetzt.
-    const roleSnapshot = await get(ref(db, "roles/" + user.uid));
-    const role = roleSnapshot.exists() ? roleSnapshot.val() : null;
-
-    if (!role) {
-        await auth.signOut();
-        throw new Error(
-            "Für dieses Konto wurde noch keine Rolle vergeben. Bitte wende dich an den Administrator."
-        );
-    }
-
-    if (role === "gast" || role === "mitarbeiter" ||
-        role === "manager" || role === "admin" ||
-        role === "superadmin") {
-        window.location.href = "dashboard.html";
-        return;
-    }
-
-    await auth.signOut();
-    throw new Error("Dieses Konto hat keine gültige Rolle.");
-}
-
-loginForm.addEventListener("submit", async (event) => {
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    setBusy(true);
-    setStatus("Anmeldung läuft ...");
+    button.disabled = true;
+    status.textContent = "Anmeldung läuft ...";
 
     try {
         const email = document.getElementById("email").value.trim();
@@ -294,82 +287,31 @@ loginForm.addEventListener("submit", async (event) => {
             auth, email, password
         );
 
-        await openDashboard(credential.user);
-    } catch (error) {
-        console.error(error);
-        setStatus(error.message.startsWith("Für dieses Konto") ||
-                  error.message.startsWith("Dieses Konto")
-            ? error.message
-            : friendlyError(error));
-        setBusy(false);
-    }
-});
-
-showGuestForm.addEventListener("click", () => {
-    guestForm.classList.toggle("hidden");
-    showGuestForm.textContent = guestForm.classList.contains("hidden")
-        ? "Als Gast registrieren"
-        : "Registrierung schließen";
-    setStatus("");
-});
-
-guestForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const email = document.getElementById("guestEmail").value.trim();
-    const password = document.getElementById("guestPassword").value;
-    const passwordRepeat =
-        document.getElementById("guestPasswordRepeat").value;
-
-    if (password !== passwordRepeat) {
-        setStatus("Die beiden Passwörter stimmen nicht überein.");
-        return;
-    }
-
-    setBusy(true);
-    setStatus("Gastkonto wird erstellt ...");
-
-    let createdUser = null;
-
-    try {
-        const credential = await createUserWithEmailAndPassword(
-            auth, email, password
+        const snapshot = await get(
+            ref(db, "roles/" + credential.user.uid)
         );
 
-        createdUser = credential.user;
+        const role = snapshot.exists() ? snapshot.val() : null;
+        const allowedRoles = [
+            "gast", "mitarbeiter", "manager", "admin", "superadmin"
+        ];
 
-        // Sicherheitsprinzip: Der Client darf sich seine Rolle nicht
-        // selbst vergeben. Die Rolle muss vorher durch einen sicheren
-        // Backend-Prozess oder einen Administrator zugewiesen werden.
-        const roleSnapshot = await get(
-            ref(db, "roles/" + createdUser.uid)
-        );
-
-        if (!roleSnapshot.exists() || roleSnapshot.val() !== "gast") {
-            await auth.signOut();
-
-            setStatus(
-                "Das Konto wurde erstellt, aber die Gastrolle fehlt noch. " +
-                "Bitte lasse die Rolle gast durch einen Administrator " +
-                "oder einen sicheren Backend-Prozess zuweisen."
+        if (!allowedRoles.includes(role)) {
+            await signOut(auth);
+            throw new Error(
+                "Für dieses Konto ist keine gültige Rolle hinterlegt. Bitte kontaktiere den Administrator."
             );
-            setBusy(false);
-            return;
         }
 
-        window.location.href = "dashboard.html";
+        window.location.replace("dashboard.html");
     } catch (error) {
         console.error(error);
-
-        if (createdUser && auth.currentUser) {
-            await auth.signOut();
-        }
-
-        setStatus(friendlyError(error));
-        setBusy(false);
+        status.textContent = error.code
+            ? friendlyError(error)
+            : error.message;
+        button.disabled = false;
     }
 });
 </script>
 </body>
 </html>
-```
