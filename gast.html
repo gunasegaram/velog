@@ -1,224 +1,319 @@
-
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VE-Log Gastbereich</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VE-Log Gastbereich</title>
 
-<style>
-* { box-sizing: border-box; }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-body {
-    margin: 0;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    color: #1d3557;
-}
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1d3557;
+        }
 
-header {
-    background: #1d3557;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-}
+        header {
+            background: #1d3557;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-main {
-    max-width: 900px;
-    margin: 25px auto;
-}
+        header strong {
+            font-size: 22px;
+        }
 
-.card {
-    background: white;
-    padding: 24px;
-    margin-bottom: 18px;
-    border-radius: 12px;
-    box-shadow: 0 3px 12px rgba(0,0,0,.08);
-}
+        main {
+            max-width: 900px;
+            margin: 25px auto;
+        }
 
-button {
-    border: none;
-    padding: 11px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    background: #9b2d2d;
-    color: white;
-    font-size: 15px;
-}
+        .card {
+            background: white;
+            padding: 24px;
+            margin-bottom: 18px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
 
-button:disabled {
-    opacity: .6;
-    cursor: wait;
-}
+        button {
+            border: none;
+            padding: 11px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #9b2d2d;
+            color: white;
+            font-size: 15px;
+        }
 
-#status {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
+        button:hover {
+            background: #7d2222;
+        }
 
-pre {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-</style>
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #status {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            font-family: Arial, sans-serif;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            header,
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<header>
-    <div>
-        <strong>VE-Log</strong>
-        <div>Gastbereich</div>
-    </div>
-    <button id="logoutBtn" type="button">Abmelden</button>
-</header>
 
-<main>
-    <section class="card">
-        <h1>Willkommen im Gastbereich</h1>
-        <p id="status">Zugriffsberechtigung wird geprüft …</p>
-    </section>
+    <header>
+        <div>
+            <strong>VE-Log</strong>
+            <div>Gastbereich</div>
+        </div>
 
-    <section class="card" id="profileCard" hidden>
-        <h2>Dein Profil</h2>
-        <p><strong>Name:</strong> <span id="name"></span></p>
-        <p><strong>E-Mail:</strong> <span id="email"></span></p>
-    </section>
+        <!-- Nur Abmelden, kein Mitarbeiter-Button -->
+        <button id="logoutBtn" type="button">
+            Abmelden
+        </button>
+    </header>
 
-    <section class="card" id="contentCard" hidden>
-        <h2>Freigegebene Informationen</h2>
-        <div id="guestContent">Inhalte werden geladen …</div>
-    </section>
-</main>
+    <main>
+        <section class="card">
+            <h1>Willkommen im Gastbereich</h1>
+            <p id="status" role="status" aria-live="polite">
+                Zugriffsberechtigung wird geprüft …
+            </p>
+        </section>
 
-<script type="module">
-import { initializeApp } from
-    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        <section class="card" id="profileCard" hidden>
+            <h2>Dein Profil</h2>
 
-import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+            <p>
+                <strong>Name:</strong>
+                <span id="name"></span>
+            </p>
 
-import {
-    getDatabase,
-    ref,
-    get
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+            <p>
+                <strong>E-Mail:</strong>
+                <span id="email"></span>
+            </p>
+        </section>
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-    authDomain: "ve-log.firebaseapp.com",
-    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "ve-log",
-    storageBucket: "ve-log.firebasestorage.app",
-    messagingSenderId: "749978080433",
-    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
-};
+        <section class="card" id="contentCard" hidden>
+            <h2>Freigegebene Informationen</h2>
+            <div id="guestContent">
+                Inhalte werden geladen …
+            </div>
+        </section>
+    </main>
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-const statusEl = document.getElementById("status");
-const logoutBtn = document.getElementById("logoutBtn");
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
-let pruefungLaeuft = false;
+        import {
+            getDatabase,
+            ref,
+            get
+        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
-function zeigeStatus(text) {
-    statusEl.textContent = text;
-}
+        const firebaseConfig = {
+            apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+            authDomain: "ve-log.firebaseapp.com",
+            databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "ve-log",
+            storageBucket: "ve-log.firebasestorage.app",
+            messagingSenderId: "749978080433",
+            appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+        };
 
-async function abmelden() {
-    try {
-        await signOut(auth);
-    } finally {
-        window.location.replace("index.html");
-    }
-}
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
 
-logoutBtn.addEventListener("click", abmelden);
+        const statusEl = document.getElementById("status");
+        const logoutBtn = document.getElementById("logoutBtn");
+        const profileCard = document.getElementById("profileCard");
+        const contentCard = document.getElementById("contentCard");
+        const guestContent = document.getElementById("guestContent");
 
-onAuthStateChanged(auth, async (user) => {
-    if (pruefungLaeuft) return;
+        let pruefungLaeuft = false;
+        let abmeldungLaeuft = false;
 
-    if (!user) {
-        window.location.replace("index.html");
-        return;
-    }
-
-    pruefungLaeuft = true;
-    logoutBtn.disabled = true;
-
-    try {
-        // Rolle ausschließlich aus dem geschützten Rollenpfad lesen.
-        const roleSnapshot = await get(
-            ref(database, "roles/" + user.uid)
-        );
-
-        if (!roleSnapshot.exists() || roleSnapshot.val() !== "gast") {
-            await signOut(auth);
-            window.location.replace("index.html");
-            return;
+        function zeigeStatus(text) {
+            statusEl.textContent = text;
         }
 
-        zeigeStatus("Du bist als Gast angemeldet.");
-
-        // Eigenes Profil laden.
-        const profileSnapshot = await get(
-            ref(database, "users/" + user.uid)
-        );
-
-        if (profileSnapshot.exists()) {
-            const profile = profileSnapshot.val();
-
-            document.getElementById("name").textContent =
-                [profile.vorname, profile.nachname]
-                    .filter(Boolean)
-                    .join(" ") || "Gast";
-
-            document.getElementById("email").textContent =
-                user.email || profile.email || "Keine E-Mail hinterlegt";
-
-            document.getElementById("profileCard").hidden = false;
+        function versteckeInhalte() {
+            profileCard.hidden = true;
+            contentCard.hidden = true;
+            document.getElementById("name").textContent = "";
+            document.getElementById("email").textContent = "";
+            guestContent.replaceChildren();
         }
 
-        // Nur der eigens freigegebene Gastbereich wird gelesen.
-        const sharedSnapshot = await get(
-            ref(database, "settings/freigegeben")
-        );
+        async function abmelden() {
+            if (abmeldungLaeuft) return;
 
-        const content = document.getElementById("guestContent");
-        content.replaceChildren();
+            abmeldungLaeuft = true;
+            logoutBtn.disabled = true;
 
-        if (sharedSnapshot.exists()) {
-            const pre = document.createElement("pre");
-            pre.textContent = JSON.stringify(sharedSnapshot.val(), null, 2);
-            content.appendChild(pre);
-        } else {
-            content.textContent =
-                "Aktuell wurden keine Informationen freigegeben.";
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Fehler beim Abmelden:", error);
+            } finally {
+                window.location.replace("index.html");
+            }
         }
 
-        document.getElementById("contentCard").hidden = false;
+        logoutBtn.addEventListener("click", abmelden);
 
-    } catch (error) {
-        console.error("Fehler beim Laden des Gastbereichs:", error);
-        zeigeStatus(
-            "Der Gastbereich konnte nicht geladen werden. " +
-            "Bitte prüfe deine Firebase-Regeln oder versuche es erneut."
-        );
-    } finally {
-        pruefungLaeuft = false;
-        logoutBtn.disabled = false;
-    }
-});
-</script>
+        onAuthStateChanged(auth, async (user) => {
+            if (pruefungLaeuft || abmeldungLaeuft) return;
+
+            if (!user) {
+                window.location.replace("index.html");
+                return;
+            }
+
+            pruefungLaeuft = true;
+            logoutBtn.disabled = true;
+            versteckeInhalte();
+
+            try {
+                // Rolle aus Firebase prüfen.
+                const roleSnapshot = await get(
+                    ref(database, "roles/" + user.uid)
+                );
+
+                if (
+                    !roleSnapshot.exists() ||
+                    roleSnapshot.val() !== "gast"
+                ) {
+                    await signOut(auth);
+                    window.location.replace("index.html");
+                    return;
+                }
+
+                zeigeStatus("Du bist als Gast angemeldet.");
+
+                // Ausschließlich das eigene Profil laden.
+                const profileSnapshot = await get(
+                    ref(database, "users/" + user.uid)
+                );
+
+                if (profileSnapshot.exists()) {
+                    const profile = profileSnapshot.val() || {};
+
+                    document.getElementById("name").textContent =
+                        [
+                            profile.vorname,
+                            profile.nachname
+                        ]
+                            .filter(
+                                value =>
+                                    typeof value === "string" &&
+                                    value.trim() !== ""
+                            )
+                            .join(" ") || "Gast";
+
+                    document.getElementById("email").textContent =
+                        user.email ||
+                        profile.email ||
+                        "Keine E-Mail hinterlegt";
+
+                    profileCard.hidden = false;
+                }
+
+                // Nur die ausdrücklich freigegebenen Informationen lesen.
+                const sharedSnapshot = await get(
+                    ref(database, "settings/freigegeben")
+                );
+
+                guestContent.replaceChildren();
+
+                if (sharedSnapshot.exists()) {
+                    const pre = document.createElement("pre");
+
+                    // Keine HTML-Ausführung der Firebase-Inhalte.
+                    pre.textContent = JSON.stringify(
+                        sharedSnapshot.val(),
+                        null,
+                        2
+                    );
+
+                    guestContent.appendChild(pre);
+                } else {
+                    guestContent.textContent =
+                        "Aktuell wurden keine Informationen freigegeben.";
+                }
+
+                contentCard.hidden = false;
+
+            } catch (error) {
+                console.error(
+                    "Fehler beim Laden des Gastbereichs:",
+                    error
+                );
+
+                versteckeInhalte();
+
+                zeigeStatus(
+                    "Der Gastbereich konnte nicht geladen werden. " +
+                    "Bitte prüfe deine Firebase-Datenbankregeln " +
+                    "oder versuche es später erneut."
+                );
+            } finally {
+                pruefungLaeuft = false;
+
+                if (!abmeldungLaeuft) {
+                    logoutBtn.disabled = false;
+                }
+            }
+        });
+    </script>
+
 </body>
 </html>
+```
