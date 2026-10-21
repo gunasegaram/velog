@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -22,7 +23,7 @@ body {
     background: white;
     width: 420px;
     max-width: 100%;
-    padding: 40px;
+    padding: 35px;
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     box-sizing: border-box;
@@ -35,11 +36,13 @@ body {
 
 .logo img {
     max-width: 200px;
-    max-height: 100px;
+}
+
+h1, h2 {
+    color: #1d3557;
 }
 
 h1 {
-    color: #1d3557;
     margin-bottom: 10px;
 }
 
@@ -49,7 +52,7 @@ p {
 
 label {
     display: block;
-    margin-top: 20px;
+    margin-top: 18px;
     margin-bottom: 5px;
     font-weight: bold;
 }
@@ -64,13 +67,13 @@ input {
 
 button {
     width: 100%;
-    margin-top: 25px;
-    padding: 15px;
+    margin-top: 20px;
+    padding: 14px;
     border: none;
     border-radius: 10px;
     background: #8e2f2b;
     color: white;
-    font-size: 18px;
+    font-size: 17px;
     cursor: pointer;
 }
 
@@ -84,7 +87,6 @@ button:disabled {
 }
 
 .gast-button {
-    margin-top: 12px;
     background: #1d3557;
 }
 
@@ -92,15 +94,9 @@ button:disabled {
     background: #142640;
 }
 
-.status {
-    margin-top: 15px;
-    color: #8e2f2b;
-    overflow-wrap: anywhere;
-}
-
 .register {
     text-align: center;
-    margin-top: 25px;
+    margin-top: 22px;
 }
 
 .register a {
@@ -108,11 +104,25 @@ button:disabled {
     text-decoration: none;
     font-weight: bold;
 }
+
+.hidden {
+    display: none;
+}
+
+.status {
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 28px 0;
+}
 </style>
 </head>
 
 <body>
-
 <div class="login-box">
 
     <div class="logo">
@@ -120,41 +130,66 @@ button:disabled {
     </div>
 
     <h1>Herzlich Willkommen</h1>
-    <p>Melde dich mit deinem Mitarbeiterkonto an oder fahre als Gast fort.</p>
+    <p>Melde dich mit deinem Konto an oder registriere dich als Gast.</p>
 
     <form id="loginForm">
         <label for="email">E-Mail-Adresse</label>
-        <input
-            id="email"
-            type="email"
-            placeholder="name@unternehmen.de"
-            autocomplete="username"
-            required
-        >
+        <input id="email" type="email"
+               placeholder="name@beispiel.de"
+               autocomplete="username" required>
 
         <label for="passwort">Passwort</label>
-        <input
-            id="passwort"
-            type="password"
-            placeholder="Passwort eingeben"
-            autocomplete="current-password"
-            required
-        >
+        <input id="passwort" type="password"
+               placeholder="Passwort eingeben"
+               autocomplete="current-password" required
+               minlength="6">
 
-        <button id="loginButton" type="submit">Anmelden</button>
+        <button id="loginButton" type="submit">
+            Anmelden
+        </button>
     </form>
-
-    <button id="gastButton" class="gast-button" type="button">
-        Als Gast fortfahren
-    </button>
-
-    <p id="status" class="status" role="status" aria-live="polite"></p>
 
     <div class="register">
         <p>Noch kein Konto?</p>
-        <a href="registrieren.html">Jetzt registrieren</a>
+        <a href="registrieren.html">Mitarbeiterkonto registrieren</a>
     </div>
 
+    <hr>
+
+    <h2>Gastzugang</h2>
+    <p>
+        Erstelle ein eigenes Gastkonto mit E-Mail-Adresse und Passwort.
+        Du kannst dich später mit denselben Zugangsdaten erneut anmelden.
+    </p>
+
+    <button id="showGuestForm" class="gast-button" type="button">
+        Als Gast registrieren
+    </button>
+
+    <form id="guestForm" class="hidden">
+        <label for="guestEmail">E-Mail-Adresse</label>
+        <input id="guestEmail" type="email"
+               placeholder="gast@beispiel.de"
+               autocomplete="email" required>
+
+        <label for="guestPassword">Passwort (mindestens 6 Zeichen)</label>
+        <input id="guestPassword" type="password"
+               placeholder="Passwort erstellen"
+               autocomplete="new-password"
+               minlength="6" required>
+
+        <label for="guestPasswordRepeat">Passwort wiederholen</label>
+        <input id="guestPasswordRepeat" type="password"
+               placeholder="Passwort wiederholen"
+               autocomplete="new-password"
+               minlength="6" required>
+
+        <button id="createGuestButton" type="submit">
+            Gastkonto erstellen
+        </button>
+    </form>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
 </div>
 
 <script type="module">
@@ -165,8 +200,15 @@ import {
 import {
     getAuth,
     signInWithEmailAndPassword,
-    signInAnonymously
+    createUserWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    getDatabase,
+    ref,
+    get,
+    set
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
@@ -180,58 +222,154 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getDatabase(app);
 
 const loginForm = document.getElementById("loginForm");
+const guestForm = document.getElementById("guestForm");
 const loginButton = document.getElementById("loginButton");
-const gastButton = document.getElementById("gastButton");
+const createGuestButton = document.getElementById("createGuestButton");
+const showGuestForm = document.getElementById("showGuestForm");
 const statusText = document.getElementById("status");
 
-function setLoading(isLoading, message = "") {
-    loginButton.disabled = isLoading;
-    gastButton.disabled = isLoading;
+function setStatus(message) {
     statusText.textContent = message;
+}
+
+function setBusy(busy) {
+    loginButton.disabled = busy;
+    createGuestButton.disabled = busy;
+    showGuestForm.disabled = busy;
+}
+
+function friendlyError(error) {
+    const messages = {
+        "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+        "auth/invalid-credential": "E-Mail-Adresse oder Passwort ist falsch.",
+        "auth/email-already-in-use": "Diese E-Mail-Adresse ist bereits registriert. Melde dich bitte an.",
+        "auth/weak-password": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+        "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
+        "auth/too-many-requests": "Zu viele Versuche. Bitte probiere es später erneut.",
+        "auth/operation-not-allowed": "E-Mail-/Passwort-Anmeldung ist in Firebase nicht aktiviert."
+    };
+
+    return messages[error.code] ||
+        "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.";
+}
+
+async function openDashboard(user) {
+    // Die Rolle wird ausschließlich gelesen, niemals im Browser
+    // automatisch als "gast" oder "mitarbeiter" gesetzt.
+    const roleSnapshot = await get(ref(db, "roles/" + user.uid));
+    const role = roleSnapshot.exists() ? roleSnapshot.val() : null;
+
+    if (!role) {
+        await auth.signOut();
+        throw new Error(
+            "Für dieses Konto wurde noch keine Rolle vergeben. Bitte wende dich an den Administrator."
+        );
+    }
+
+    if (role === "gast" || role === "mitarbeiter" ||
+        role === "manager" || role === "admin" ||
+        role === "superadmin") {
+        window.location.href = "dashboard.html";
+        return;
+    }
+
+    await auth.signOut();
+    throw new Error("Dieses Konto hat keine gültige Rolle.");
 }
 
 loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const passwort = document.getElementById("passwort").value;
-
-    setLoading(true, "Anmeldung läuft ...");
+    setBusy(true);
+    setStatus("Anmeldung läuft ...");
 
     try {
-        await signInWithEmailAndPassword(auth, email, passwort);
-        window.location.href = "dashboard.html";
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("passwort").value;
+
+        const credential = await signInWithEmailAndPassword(
+            auth, email, password
+        );
+
+        await openDashboard(credential.user);
     } catch (error) {
-        console.error("Login fehlgeschlagen:", error);
-        setLoading(false, "Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen.");
+        console.error(error);
+        setStatus(error.message.startsWith("Für dieses Konto") ||
+                  error.message.startsWith("Dieses Konto")
+            ? error.message
+            : friendlyError(error));
+        setBusy(false);
     }
 });
 
-gastButton.addEventListener("click", async () => {
-    setLoading(true, "Gastzugang wird eingerichtet ...");
+showGuestForm.addEventListener("click", () => {
+    guestForm.classList.toggle("hidden");
+    showGuestForm.textContent = guestForm.classList.contains("hidden")
+        ? "Als Gast registrieren"
+        : "Registrierung schließen";
+    setStatus("");
+});
+
+guestForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("guestEmail").value.trim();
+    const password = document.getElementById("guestPassword").value;
+    const passwordRepeat =
+        document.getElementById("guestPasswordRepeat").value;
+
+    if (password !== passwordRepeat) {
+        setStatus("Die beiden Passwörter stimmen nicht überein.");
+        return;
+    }
+
+    setBusy(true);
+    setStatus("Gastkonto wird erstellt ...");
+
+    let createdUser = null;
 
     try {
-        await signInAnonymously(auth);
+        const credential = await createUserWithEmailAndPassword(
+            auth, email, password
+        );
+
+        createdUser = credential.user;
+
+        // Sicherheitsprinzip: Der Client darf sich seine Rolle nicht
+        // selbst vergeben. Die Rolle muss vorher durch einen sicheren
+        // Backend-Prozess oder einen Administrator zugewiesen werden.
+        const roleSnapshot = await get(
+            ref(db, "roles/" + createdUser.uid)
+        );
+
+        if (!roleSnapshot.exists() || roleSnapshot.val() !== "gast") {
+            await auth.signOut();
+
+            setStatus(
+                "Das Konto wurde erstellt, aber die Gastrolle fehlt noch. " +
+                "Bitte lasse die Rolle gast durch einen Administrator " +
+                "oder einen sicheren Backend-Prozess zuweisen."
+            );
+            setBusy(false);
+            return;
+        }
+
         window.location.href = "dashboard.html";
     } catch (error) {
-        console.error("Gastzugang fehlgeschlagen:", error);
+        console.error(error);
 
-        if (error.code === "auth/operation-not-allowed") {
-            setLoading(
-                false,
-                "Der Gastzugang ist noch nicht aktiviert. Bitte aktiviere in Firebase Authentication die anonyme Anmeldung."
-            );
-        } else {
-            setLoading(
-                false,
-                "Gastzugang fehlgeschlagen. Bitte versuche es später erneut."
-            );
+        if (createdUser && auth.currentUser) {
+            await auth.signOut();
         }
+
+        setStatus(friendlyError(error));
+        setBusy(false);
     }
 });
 </script>
-
 </body>
 </html>
+```
