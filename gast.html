@@ -1,317 +1,101 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VE-Log Gastbereich</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            color: #1d3557;
-        }
-
-        header {
-            background: #1d3557;
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        header strong {
-            font-size: 22px;
-        }
-
-        main {
-            max-width: 900px;
-            margin: 25px auto;
-        }
-
-        .card {
-            background: white;
-            padding: 24px;
-            margin-bottom: 18px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        button {
-            border: none;
-            padding: 11px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            background: #9b2d2d;
-            color: white;
-            font-size: 15px;
-        }
-
-        button:hover {
-            background: #7d2222;
-        }
-
-        button:disabled {
-            opacity: 0.6;
-            cursor: wait;
-        }
-
-        #status {
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        pre {
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-            font-family: Arial, sans-serif;
-        }
-
-        [hidden] {
-            display: none !important;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-
-            header,
-            .card {
-                padding: 18px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>VE-Log · Gastbereich</title>
+<style>
+:root{--brand:#8e2f2b;--brand-dark:#68201f;--ink:#232735;--muted:#727785;--line:#e9e9ed;--bg:#f5f6f8;--radius:18px;--shadow:0 5px 24px #21253608}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}a{color:inherit;text-decoration:none}button,a,input{ -webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #bd7774;outline-offset:3px}[hidden]{display:none!important}
+.layout{min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:235px;background:#fff;border-right:1px solid var(--line);padding:28px 18px;display:flex;flex-direction:column}.brand{padding:0 10px 30px}.wordmark{font-size:29px;font-weight:850;color:var(--brand);letter-spacing:-1px}.brand small{display:block;font-size:9px;letter-spacing:1.4px;color:var(--muted);font-weight:700}.nav-label{font-size:10px;letter-spacing:1.5px;color:var(--muted);padding:10px 13px;font-weight:750}.nav{display:grid;gap:6px}.nav a{padding:12px 13px;border-radius:10px;color:#626675;font-weight:600}.nav a:hover,.nav a.active{background:#f7eae9;color:var(--brand)}.side-note{margin-top:auto;padding:18px 12px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.shell{margin-left:235px}.topbar{min-height:78px;padding:16px 36px;background:#ffffffdf;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}.crumb{color:var(--muted);font-size:13px}.account{display:flex;align-items:center;gap:11px;min-width:0}.avatar{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#f7eae9;color:var(--brand);font-weight:800}.account-copy{min-width:0;font-size:12px}.account-copy strong{display:block;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.account-copy span{color:var(--muted)}.button{border:0;border-radius:9px;padding:10px 14px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}.button:hover{background:var(--brand-dark)}.button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line)}main{max-width:1250px;margin:auto;padding:34px 36px}.eyebrow{font-size:10px;font-weight:800;letter-spacing:1.7px;color:var(--brand);text-transform:uppercase}h1{font-size:clamp(26px,3vw,35px);line-height:1.2;letter-spacing:-1px;margin:7px 0 8px}h2{font-size:18px;margin:0}p{margin:0}.muted{color:var(--muted)}.intro{margin-bottom:25px}.notice{padding:13px 16px;border-radius:11px;background:#fff4de;border:1px solid #f1dfb4;color:#805b23;font-size:13px;margin-bottom:20px;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:23px;box-shadow:var(--shadow);min-width:0}.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.tag{font-size:10px;background:#f4f5f7;color:var(--muted);border-radius:6px;padding:4px 8px}.profile-top{display:flex;align-items:center;gap:15px;margin-bottom:20px}.profile-avatar{width:60px;height:60px;border-radius:17px;background:linear-gradient(145deg,#8e2f2b,#bb6660);color:#fff;display:grid;place-items:center;font-size:21px;font-weight:800}.profile-top h3{font-size:17px;margin:0 0 4px;overflow-wrap:anywhere}.field{display:grid;gap:6px;margin:13px 0}.field label{font-size:12px;font-weight:700;color:#555b69}.field input{width:100%;border:1px solid #dce0e6;border-radius:9px;padding:11px 12px;background:#fff;color:var(--ink)}.field input[readonly]{background:#f7f7f9;color:var(--muted)}.form-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.card-copy{color:var(--muted);font-size:13px;margin:7px 0 18px}.links{display:grid;gap:10px}.module-link{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--line);border-radius:12px}.module-link:hover{border-color:#d9b9b7;background:#fcf7f7}.tile-icon{display:grid;place-items:center;flex-shrink:0;width:39px;height:39px;border-radius:11px;background:#f8eceb;color:var(--brand);font-size:19px}.module-link strong{display:block;font-size:13px}.module-link small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.arrow{margin-left:auto;color:var(--muted)}.status{font-size:12px;margin-top:12px;min-height:18px}.status.error{color:#a12e2e}.status.success{color:#2d7046}.footer{padding:22px 0;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:12px}.gate{max-width:700px;margin:40px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:25px}.gate h1{font-size:25px}.gate p{color:var(--muted);margin:12px 0}.gate-status{background:#fff4de;color:#805b23;padding:12px;border-radius:9px;font-size:13px;overflow-wrap:anywhere}
+@media(max-width:900px){.sidebar{width:200px}.shell{margin-left:200px}.topbar{padding:14px 22px}main{padding:26px 22px}.grid{grid-template-columns:1fr}}
+@media(max-width:650px){.sidebar{position:static;width:100%;padding:16px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 5px 15px}.nav-label,.side-note{display:none}.nav{display:flex;overflow-x:auto}.nav a{white-space:nowrap;padding:9px 11px;font-size:12px}.shell{margin:0}.topbar{padding:12px 17px}.crumb{display:none}.account{flex:1}.account-copy{flex:1}.account-copy strong{max-width:180px}.topbar .button{padding:8px 10px;font-size:12px}main{padding:23px 16px}.card{padding:18px}.footer{flex-wrap:wrap}}
+</style>
 </head>
-
 <body>
-
-    <header>
-        <div>
-            <strong>VE-Log</strong>
-            <div>Gastbereich</div>
-        </div>
-
-        <!-- Nur Abmelden, kein Mitarbeiter-Button -->
-        <button id="logoutBtn" type="button">
-            Abmelden
-        </button>
-    </header>
-
-    <main>
-        <section class="card">
-            <h1>Willkommen im Gastbereich</h1>
-            <p id="status" role="status" aria-live="polite">
-                Zugriffsberechtigung wird geprüft …
-            </p>
-        </section>
-
-        <section class="card" id="profileCard" hidden>
-            <h2>Dein Profil</h2>
-
-            <p>
-                <strong>Name:</strong>
-                <span id="name"></span>
-            </p>
-
-            <p>
-                <strong>E-Mail:</strong>
-                <span id="email"></span>
-            </p>
-        </section>
-
-        <section class="card" id="contentCard" hidden>
-            <h2>Freigegebene Informationen</h2>
-            <div id="guestContent">
-                Inhalte werden geladen …
-            </div>
-        </section>
-    </main>
-
-    <script type="module">
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
-        import {
-            getAuth,
-            onAuthStateChanged,
-            signOut
-        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
-        import {
-            getDatabase,
-            ref,
-            get
-        } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-            authDomain: "ve-log.firebaseapp.com",
-            databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "ve-log",
-            storageBucket: "ve-log.firebasestorage.app",
-            messagingSenderId: "749978080433",
-            appId: "1:749978080433:web:8f64ef99a557fe2346be90"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
-
-        const statusEl = document.getElementById("status");
-        const logoutBtn = document.getElementById("logoutBtn");
-        const profileCard = document.getElementById("profileCard");
-        const contentCard = document.getElementById("contentCard");
-        const guestContent = document.getElementById("guestContent");
-
-        let pruefungLaeuft = false;
-        let abmeldungLaeuft = false;
-
-        function zeigeStatus(text) {
-            statusEl.textContent = text;
-        }
-
-        function versteckeInhalte() {
-            profileCard.hidden = true;
-            contentCard.hidden = true;
-            document.getElementById("name").textContent = "";
-            document.getElementById("email").textContent = "";
-            guestContent.replaceChildren();
-        }
-
-        async function abmelden() {
-            if (abmeldungLaeuft) return;
-
-            abmeldungLaeuft = true;
-            logoutBtn.disabled = true;
-
-            try {
-                await signOut(auth);
-            } catch (error) {
-                console.error("Fehler beim Abmelden:", error);
-            } finally {
-                window.location.replace("index.html");
-            }
-        }
-
-        logoutBtn.addEventListener("click", abmelden);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (pruefungLaeuft || abmeldungLaeuft) return;
-
-            if (!user) {
-                window.location.replace("index.html");
-                return;
-            }
-
-            pruefungLaeuft = true;
-            logoutBtn.disabled = true;
-            versteckeInhalte();
-
-            try {
-                // Rolle aus Firebase prüfen.
-                const roleSnapshot = await get(
-                    ref(database, "roles/" + user.uid)
-                );
-
-                if (
-                    !roleSnapshot.exists() ||
-                    roleSnapshot.val() !== "gast"
-                ) {
-                    await signOut(auth);
-                    window.location.replace("index.html");
-                    return;
-                }
-
-                zeigeStatus("Du bist als Gast angemeldet.");
-
-                // Ausschließlich das eigene Profil laden.
-                const profileSnapshot = await get(
-                    ref(database, "users/" + user.uid)
-                );
-
-                if (profileSnapshot.exists()) {
-                    const profile = profileSnapshot.val() || {};
-
-                    document.getElementById("name").textContent =
-                        [
-                            profile.vorname,
-                            profile.nachname
-                        ]
-                            .filter(
-                                value =>
-                                    typeof value === "string" &&
-                                    value.trim() !== ""
-                            )
-                            .join(" ") || "Gast";
-
-                    document.getElementById("email").textContent =
-                        user.email ||
-                        profile.email ||
-                        "Keine E-Mail hinterlegt";
-
-                    profileCard.hidden = false;
-                }
-
-                // Nur die ausdrücklich freigegebenen Informationen lesen.
-                const sharedSnapshot = await get(
-                    ref(database, "settings/freigegeben")
-                );
-
-                guestContent.replaceChildren();
-
-                if (sharedSnapshot.exists()) {
-                    const pre = document.createElement("pre");
-
-                    // Keine HTML-Ausführung der Firebase-Inhalte.
-                    pre.textContent = JSON.stringify(
-                        sharedSnapshot.val(),
-                        null,
-                        2
-                    );
-
-                    guestContent.appendChild(pre);
-                } else {
-                    guestContent.textContent =
-                        "Aktuell wurden keine Informationen freigegeben.";
-                }
-
-                contentCard.hidden = false;
-
-            } catch (error) {
-                console.error(
-                    "Fehler beim Laden des Gastbereichs:",
-                    error
-                );
-
-                versteckeInhalte();
-
-                zeigeStatus(
-                    "Der Gastbereich konnte nicht geladen werden. " +
-                    "Bitte prüfe deine Firebase-Datenbankregeln " +
-                    "oder versuche es später erneut."
-                );
-            } finally {
-                pruefungLaeuft = false;
-
-                if (!abmeldungLaeuft) {
-                    logoutBtn.disabled = false;
-                }
-            }
-        });
-    </script>
-
+<div class="layout">
+<aside class="sidebar" aria-label="Gastnavigation">
+<a class="brand" href="gast.html"><span class="wordmark">VE-Log</span><small>MITARBEITERPORTAL · GAST</small></a>
+<div class="nav-label">MEIN BEREICH</div>
+<nav class="nav">
+<a class="active" href="gast.html" aria-current="page">⌂ &nbsp; Übersicht</a>
+<a href="#profil">♙ &nbsp; Mein Profil</a>
+<a href="#formulare">▤ &nbsp; Formulare</a>
+<a href="#nachweise">✓ &nbsp; Meine Nachweise</a>
+</nav>
+<div class="side-note">Dein persönlicher Bereich.<br>Nur die für dich vorgesehenen Funktionen.</div>
+</aside>
+<div class="shell">
+<header class="topbar">
+<div class="crumb">Mein Bereich &nbsp;/&nbsp; <strong>Gast-Dashboard</strong></div>
+<div class="account"><div class="avatar" id="topAvatar">VE</div><div class="account-copy"><strong id="topName">Sitzung wird geprüft …</strong><span id="topEmail">Firebase wird geladen</span></div><button class="button secondary" id="signOut" type="button" disabled>Abmelden</button></div>
+</header>
+<section id="authGate" class="gate" aria-live="polite">
+<h1>Gastbereich – Anmeldung erforderlich</h1><div class="gate-status" id="gateStatus">Deine Firebase-Sitzung wird geprüft.</div>
+<p>Bitte melde dich über die reguläre VE-Log-Anmeldeseite an. Der Gastbereich benötigt eine bestätigte Firebase-Sitzung.</p>
+<a class="button" href="index.html">Zur Anmeldung</a>
+</section>
+<main id="main" hidden>
+<section class="intro"><div class="eyebrow">Persönlicher Arbeitsbereich</div><h1 id="greeting">Willkommen bei VE-Log.</h1><p class="muted">Hier kannst du dein eigenes Profil, Formulare und deine Nachweise verwalten.</p></section>
+<div class="notice" id="notice" role="status" hidden></div>
+<div class="grid">
+<section class="card" id="profil" aria-labelledby="profileHeading">
+<div class="card-head"><h2 id="profileHeading">Mein Profil</h2><span class="tag">PERSÖNLICH</span></div>
+<div class="profile-top"><div class="profile-avatar" id="profileAvatar">VE</div><div><h3 id="profileDisplayName">Profil wird geladen …</h3><p class="muted" id="profileRole">Gast</p></div></div>
+<form id="profileForm">
+<div class="field"><label for="firstName">Vorname</label><input id="firstName" name="vorname" maxlength="80" autocomplete="given-name" required></div>
+<div class="field"><label for="lastName">Nachname</label><input id="lastName" name="nachname" maxlength="80" autocomplete="family-name" required></div>
+<div class="field"><label for="phone">Telefon / Handy</label><input id="phone" name="handy" maxlength="40" autocomplete="tel"></div>
+<div class="field"><label for="profileEmail">E-Mail-Adresse (nicht hier änderbar)</label><input id="profileEmail" readonly autocomplete="email"></div>
+<div class="form-actions"><button class="button" id="saveProfile" type="submit">Profil speichern</button><button class="button secondary" id="reloadProfile" type="button">Änderungen verwerfen</button></div>
+<p class="status" id="profileStatus" role="status" aria-live="polite"></p>
+</form>
+</section>
+<section class="card" id="formulare" aria-labelledby="formsHeading">
+<div class="card-head"><h2 id="formsHeading">Formulare</h2><span class="tag">DOKUMENTE</span></div>
+<p class="card-copy">Öffne den Formularbereich, um verfügbare Formulare aufzurufen und zu bearbeiten.</p>
+<div class="links">
+<a class="module-link" href="formular.html"><span class="tile-icon">▤</span><span><strong>Formularübersicht</strong><small>Formulare und Dokumente ansehen</small></span><span class="arrow">→</span></a>
+<a class="module-link" href="arbeitsnachweis.html"><span class="tile-icon">✎</span><span><strong>Arbeitsnachweis</strong><small>Arbeitszeiten und Leistungen erfassen</small></span><span class="arrow">→</span></a>
+<a class="module-link" href="lieferschein.html"><span class="tile-icon">▧</span><span><strong>Lieferscheine</strong><small>Lieferbelege ansehen und bearbeiten</small></span><span class="arrow">→</span></a>
+</div>
+<p class="card-copy" style="margin:14px 0 0">Hinweis: Ob vorhandene Formulare tatsächlich nur eigene Daten zeigen und bearbeiten lassen, muss zusätzlich im jeweiligen Modul und in den Firebase-Regeln abgesichert sein.</p>
+</section>
+<section class="card" id="nachweise" aria-labelledby="proofHeading">
+<div class="card-head"><h2 id="proofHeading">Meine Nachweise</h2><span class="tag">EIGENE NACHWEISE</span></div>
+<p class="card-copy">Hier findest du die vorhandenen Bereiche für deine Arbeits- und Leistungsnachweise.</p>
+<div class="links">
+<a class="module-link" href="nachweise.html"><span class="tile-icon">✓</span><span><strong>Nachweisarchiv</strong><small>Nachweise ansehen und bearbeiten</small></span><span class="arrow">→</span></a>
+<a class="module-link" href="leistungsnachweis.html"><span class="tile-icon">▤</span><span><strong>Leistungsnachweise</strong><small>Erfasste Leistungen kontrollieren</small></span><span class="arrow">→</span></a>
+<a class="module-link" href="arbeitsnachweis.html"><span class="tile-icon">◷</span><span><strong>Arbeitsnachweise</strong><small>Stunden und Tätigkeiten dokumentieren</small></span><span class="arrow">→</span></a>
+</div>
+<p class="card-copy" style="margin:14px 0 0">Die Links öffnen deine bestehenden Module. Für einen sicheren Gastzugriff müssen diese Module Datensätze serverseitig auf die angemeldete Benutzer-ID begrenzen.</p>
+</section>
+<section class="card" aria-labelledby="accessHeading">
+<div class="card-head"><h2 id="accessHeading">Zugriffsbereich</h2><span class="tag">GAST</span></div>
+<p class="card-copy">In dieser Ansicht gibt es keine Links zur Mitarbeiterverwaltung, zum Fuhrpark, zur Einsatzplanung oder zu Administratorberichten.</p>
+<div class="notice" style="margin:0">Sicherheitshinweis: Die Rollenprüfung in der Oberfläche ist keine Zugriffssperre. Schütze Daten mit Firebase Security Rules und prüfe die Rolle serverseitig.</div>
+</section>
+</div>
+<footer class="footer"><span>© <span id="year"></span> VE-Log · Gastbereich</span><a href="einstellungen.html">Kontoeinstellungen</a></footer>
+</main>
+</div>
+</div>
+<script type="module">
+'use strict';
+const $=id=>document.getElementById(id);
+$('year').textContent=new Date().getFullYear();
+const firebaseConfig={apiKey:"AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",authDomain:"ve-log.firebaseapp.com",databaseURL:"https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",projectId:"ve-log",storageBucket:"ve-log.firebasestorage.app",messagingSenderId:"749978080433",appId:"1:749978080433:web:8f64ef99a557fe2346be90"};
+let auth=null,db=null,signOutFn=null,user=null,profileRef=null,profileListener=null,profileRecord={};
+function setStatus(message,type=''){const el=$('profileStatus');el.textContent=message;el.className='status '+type}
+function displayProfile(record={}){profileRecord=record&&typeof record==='object'?record:{};const first=typeof profileRecord.vorname==='string'?profileRecord.vorname:'',last=typeof profileRecord.nachname==='string'?profileRecord.nachname:'',name=[first.trim(),last.trim()].filter(Boolean).join(' ')||user?.displayName||user?.email||'Gast';const initials=[first,last].filter(v=>v.trim()).map(v=>v.trim()[0]).join('').toUpperCase()||name.slice(0,2).toUpperCase();$('firstName').value=first;$('lastName').value=last;$('phone').value=typeof profileRecord.handy==='string'?profileRecord.handy:'';$('profileEmail').value=user?.email||'';$('profileDisplayName').textContent=name;$('profileAvatar').textContent=initials;$('topAvatar').textContent=initials;$('topName').textContent=name;$('topEmail').textContent=user?.email||'Angemeldet';$('greeting').textContent=`Willkommen${first.trim()?', '+first.trim():''} bei VE-Log.`}
+$('reloadProfile').addEventListener('click',()=>{displayProfile(profileRecord);setStatus('Nicht gespeicherte Änderungen wurden verworfen.')});
+$('profileForm').addEventListener('submit',async event=>{event.preventDefault();if(!user||!profileRef)return;const vorname=$('firstName').value.trim(),nachname=$('lastName').value.trim(),handy=$('phone').value.trim();if(!vorname||!nachname){setStatus('Bitte Vor- und Nachnamen eintragen.','error');return}const button=$('saveProfile');button.disabled=true;setStatus('Profil wird gespeichert …');try{const {update}=await import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js');await update(profileRef,{vorname,nachname,handy});setStatus('Dein Profil wurde gespeichert.','success')}catch(error){console.error(error);setStatus('Speichern fehlgeschlagen. Prüfe die Firebase-Datenbankregeln für dein eigenes Profil.','error')}finally{button.disabled=false}});
+$('signOut').addEventListener('click',async()=>{if(!auth||!signOutFn)return;const button=$('signOut');button.disabled=true;try{await signOutFn(auth);window.location.href='index.html'}catch(error){console.error(error);$('notice').textContent='Abmeldung fehlgeschlagen. Bitte versuche es erneut.';$('notice').hidden=false;button.disabled=false}});
+async function init(){try{const [appSDK,authSDK,dbSDK]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js')]);const app=appSDK.initializeApp(firebaseConfig);auth=authSDK.getAuth(app);signOutFn=authSDK.signOut;db=dbSDK.getDatabase(app);authSDK.onAuthStateChanged(auth,async currentUser=>{user=currentUser;if(profileListener){profileListener();profileListener=null}if(!currentUser){$('main').hidden=true;$('authGate').hidden=false;$('gateStatus').textContent='Keine aktive Firebase-Sitzung erkannt. Bitte melde dich über die Login-Seite an.';$('signOut').disabled=true;return}$('signOut').disabled=false;$('authGate').hidden=true;$('main').hidden=false;profileRef=dbSDK.ref(db,'users/'+currentUser.uid);profileListener=dbSDK.onValue(profileRef,snapshot=>{displayProfile(snapshot.exists()?snapshot.val():{});if(!snapshot.exists()){$('notice').textContent='Für dein Konto wurde noch kein Profil unter users/'+currentUser.uid+' gefunden. Speichern funktioniert nur, wenn die Datenbankregeln das Anlegen erlauben.';$('notice').hidden=false}else{$('notice').hidden=true}},error=>{console.error(error);$('notice').textContent='Dein Profil konnte nicht geladen werden. Prüfe die Firebase-Verbindung und Leserechte.';$('notice').hidden=false;setStatus('Profil konnte nicht geladen werden.','error')})})}catch(error){console.error(error);$('gateStatus').textContent='Firebase konnte nicht geladen werden. Zugriff bleibt gesperrt. Prüfe die Internetverbindung und öffne die Datei über deine Website oder einen lokalen Webserver.'}}
+init();
+</script>
 </body>
 </html>
