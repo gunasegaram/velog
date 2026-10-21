@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -6,86 +7,111 @@
 <title>VE-Log Login</title>
 
 <style>
-body{
+body {
     font-family: Arial, sans-serif;
-    background:#ececec;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    margin:0;
+    background: #ececec;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.login-box{
-    background:white;
-    width:420px;
-    padding:40px;
-    border-radius:20px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+.login-box {
+    background: white;
+    width: 420px;
+    max-width: 100%;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
 }
 
-.logo{
-    text-align:center;
-    margin-bottom:20px;
+.logo {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.logo img{
-    max-width:200px;
+.logo img {
+    max-width: 200px;
+    max-height: 100px;
 }
 
-h1{
-    color:#1d3557;
-    margin-bottom:10px;
+h1 {
+    color: #1d3557;
+    margin-bottom: 10px;
 }
 
-p{
-    color:#666;
+p {
+    color: #666;
 }
 
-label{
-    display:block;
-    margin-top:20px;
-    margin-bottom:5px;
-    font-weight:bold;
+label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-input{
-    width:100%;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    box-sizing:border-box;
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-sizing: border-box;
 }
 
-button{
-    width:100%;
-    margin-top:25px;
-    padding:15px;
-    border:none;
-    border-radius:10px;
-    background:#8e2f2b;
-    color:white;
-    font-size:18px;
-    cursor:pointer;
+button {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #8e2f2b;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
 }
 
-button:hover{
-    background:#762522;
+button:hover {
+    background: #762522;
 }
 
-.register{
-    text-align:center;
-    margin-top:25px;
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
-.register a{
-    color:#8e2f2b;
-    text-decoration:none;
-    font-weight:bold;
+.gast-button {
+    margin-top: 12px;
+    background: #1d3557;
+}
+
+.gast-button:hover {
+    background: #142640;
+}
+
+.status {
+    margin-top: 15px;
+    color: #8e2f2b;
+    overflow-wrap: anywhere;
+}
+
+.register {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.register a {
+    color: #8e2f2b;
+    text-decoration: none;
+    font-weight: bold;
 }
 </style>
-
 </head>
+
 <body>
 
 <div class="login-box">
@@ -95,16 +121,35 @@ button:hover{
     </div>
 
     <h1>Herzlich Willkommen</h1>
+    <p>Melde dich mit deinem Mitarbeiterkonto an oder fahre als Gast fort.</p>
 
-    <p>Melde dich mit deinem Mitarbeiterkonto an.</p>
+    <form id="loginForm">
+        <label for="email">E-Mail-Adresse</label>
+        <input
+            id="email"
+            type="email"
+            placeholder="name@unternehmen.de"
+            autocomplete="username"
+            required
+        >
 
-    <label>E-Mail-Adresse</label>
-    <input id="email" type="email" placeholder="name@unternehmen.de">
+        <label for="passwort">Passwort</label>
+        <input
+            id="passwort"
+            type="password"
+            placeholder="Passwort eingeben"
+            autocomplete="current-password"
+            required
+        >
 
-    <label>Passwort</label>
-    <input id="passwort" type="password" placeholder="Passwort eingeben">
+        <button id="loginButton" type="submit">Anmelden</button>
+    </form>
 
-    <button onclick="anmelden()">Anmelden</button>
+    <button id="gastButton" class="gast-button" type="button">
+        Als Gast fortfahren
+    </button>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
 
     <div class="register">
         <p>Noch kein Konto?</p>
@@ -114,43 +159,81 @@ button:hover{
 </div>
 
 <script type="module">
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signInAnonymously
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-  authDomain: "ve-log.firebaseapp.com",
-  databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ve-log",
-  storageBucket: "ve-log.firebasestorage.app",
-  messagingSenderId: "749978080433",
-  appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+    apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+    authDomain: "ve-log.firebaseapp.com",
+    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ve-log",
+    storageBucket: "ve-log.firebasestorage.app",
+    messagingSenderId: "749978080433",
+    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-window.anmelden = function () {
+const loginForm = document.getElementById("loginForm");
+const loginButton = document.getElementById("loginButton");
+const gastButton = document.getElementById("gastButton");
+const statusText = document.getElementById("status");
 
-    const email = document.getElementById("email").value;
+function setLoading(isLoading, message = "") {
+    loginButton.disabled = isLoading;
+    gastButton.disabled = isLoading;
+    statusText.textContent = message;
+}
+
+loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
     const passwort = document.getElementById("passwort").value;
 
-    signInWithEmailAndPassword(auth, email, passwort)
-    .then(() => {
+    setLoading(true, "Anmeldung läuft ...");
 
+    try {
+        await signInWithEmailAndPassword(auth, email, passwort);
         window.location.href = "dashboard.html";
+    } catch (error) {
+        console.error("Login fehlgeschlagen:", error);
+        setLoading(false, "Anmeldung fehlgeschlagen. Bitte E-Mail und Passwort prüfen.");
+    }
+});
 
-    })
-    .catch((error) => {
+gastButton.addEventListener("click", async () => {
+    setLoading(true, "Gastzugang wird eingerichtet ...");
 
-        alert("Anmeldung fehlgeschlagen: " + error.message);
+    try {
+        await signInAnonymously(auth);
+        window.location.href = "dashboard.html";
+    } catch (error) {
+        console.error("Gastzugang fehlgeschlagen:", error);
 
-    });
-};
-
+        if (error.code === "auth/operation-not-allowed") {
+            setLoading(
+                false,
+                "Der Gastzugang ist noch nicht aktiviert. Bitte aktiviere in Firebase Authentication die anonyme Anmeldung."
+            );
+        } else {
+            setLoading(
+                false,
+                "Gastzugang fehlgeschlagen. Bitte versuche es später erneut."
+            );
+        }
+    }
+});
 </script>
-    
 
 </body>
 </html>
+```
