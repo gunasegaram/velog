@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -215,7 +216,6 @@ button:disabled {
     <form id="loginForm">
 
         <label for="email">E-Mail-Adresse</label>
-
         <input
             id="email"
             name="email"
@@ -226,7 +226,6 @@ button:disabled {
         >
 
         <label for="passwort">Passwort</label>
-
         <input
             id="passwort"
             name="password"
@@ -376,7 +375,10 @@ function friendlyError(error) {
             "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
 
         "PERMISSION_DENIED":
-            "Der Zugriff auf die Rolleninformationen wurde verweigert. Bitte prüfe deine Firebase-Datenbankregeln."
+            "Der Zugriff auf die Rolleninformationen wurde verweigert. Bitte prüfe deine Firebase-Datenbankregeln.",
+
+        "auth/operation-not-allowed":
+            "Die E-Mail-/Passwort-Anmeldung ist in Firebase nicht aktiviert."
     };
 
     return messages[error.code] ||
@@ -385,17 +387,15 @@ function friendlyError(error) {
 
 
 // --------------------------------------------------
-// GAST-LOGIN-HINWEIS
+// GAST-LOGIN-BUTTON
 // --------------------------------------------------
 
 guestLoginLink.addEventListener("click", () => {
-
     document.getElementById("email").focus();
 
     zeigeStatus(
-        "Bitte gib die registrierte E-Mail-Adresse und das Passwort deines Gastkontos ein."
+        "Melde dich mit der registrierten E-Mail-Adresse und dem Passwort deines Gastkontos an."
     );
-
 });
 
 
@@ -447,12 +447,16 @@ form.addEventListener("submit", async (event) => {
             ref(db, "roles/" + credential.user.uid)
         );
 
-        const role = roleSnapshot.exists()
-            ? roleSnapshot.val()
-            : null;
+        if (!roleSnapshot.exists()) {
+            throw new Error(
+                "Für dieses Konto ist keine Rolle hinterlegt. Bitte kontaktiere den Administrator."
+            );
+        }
+
+        const role = roleSnapshot.val();
 
 
-        // 3. Nur bekannte Rollen zulassen
+        // 3. Rolle prüfen
 
         const allowedRoles = [
             "gast",
@@ -462,32 +466,35 @@ form.addEventListener("submit", async (event) => {
             "superadmin"
         ];
 
-        if (!allowedRoles.includes(role)) {
-
-            await signOut(auth);
-            angemeldeterBenutzer = null;
-
+        if (
+            typeof role !== "string" ||
+            !allowedRoles.includes(role)
+        ) {
             throw new Error(
                 "Für dieses Konto ist keine gültige Rolle hinterlegt. Bitte kontaktiere den Administrator."
             );
         }
 
 
-        // 4. Passende Zielseite anhand der Rolle auswählen
+        // 4. Zielseite anhand der Rolle bestimmen
 
         const zielseiten = {
-            gast: "gast.html",
-            mitarbeiter: "dashboard.html",
-            manager: "dashboard.html",
-            admin: "dashboard.html",
-            superadmin: "dashboard.html"
+            gast: "./gast.html",
+            mitarbeiter: "./dashboard.html",
+            manager: "./dashboard.html",
+            admin: "./dashboard.html",
+            superadmin: "./dashboard.html"
         };
 
         const zielseite = zielseiten[role];
 
-        zeigeStatus("Anmeldung erfolgreich. Du wirst weitergeleitet ...", "success");
 
-        // 5. Benutzer zur richtigen Seite weiterleiten
+        // 5. Erfolgreich anmelden und weiterleiten
+
+        zeigeStatus(
+            "Anmeldung erfolgreich. Du wirst weitergeleitet ...",
+            "success"
+        );
 
         window.location.replace(zielseite);
 
@@ -495,8 +502,8 @@ form.addEventListener("submit", async (event) => {
 
         console.error("Anmeldefehler:", error);
 
-        // Bei einem Fehler nach erfolgreicher Anmeldung
-        // keine Sitzung mit unbestätigter Rolle behalten.
+        // Keine Sitzung behalten, wenn die Rollenprüfung
+        // nach erfolgreicher Anmeldung fehlschlägt.
 
         if (angemeldeterBenutzer && auth.currentUser) {
 
@@ -518,7 +525,6 @@ form.addEventListener("submit", async (event) => {
 
         button.disabled = false;
         anmeldungLaeuft = false;
-
     }
 
 });
