@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VE-LOG Materialausgabe-Schein</title>
+
+
+<style>
+
+/* =========================================================
+   GRUNDLAYOUT
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    width:100%;
+    overflow-x:hidden;
+}
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#f4f4f4;
+
+    color:#222;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   HAUPT-FORMULAR
+========================================================= */
+
+.formular{
+
+    width:calc(100% - 30px);
+
+    max-width:1000px;
+
+    margin:15px auto;
+
+    background:#ffffff;
+
+    border-radius:15px;
+
+    padding:28px;
+
+    box-shadow:
+        0 2px 12px rgba(0,0,0,0.12);
+
+}
+
+
+/* =========================================================
+   TOP BUTTONS
+========================================================= */
+
+.top-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:18px;
+
+}
+
+.top-button{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-decoration:none;
+
+    background:#8e2f2b;
+
+    color:#ffffff;
+
+    border:none;
+
+    border-radius:6px;
+
+    padding:10px 18px;
+
+    min-height:42px;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.top-button:hover{
+
+    background:#742522;
+
+}
+
+
+/* =========================================================
+   KOPF
+========================================================= */
+
+.kopf{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:30px;
+
+}
+
+.titel{
+
+    color:#18395b;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin-bottom:18px;
+
+}
+
+.lieferschein{
+
+    color:#18395b;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+
+.lieferschein span{
+
+    color:#8e2f2b;
+
+    font-size:24px;
+
+    margin-left:5px;
+
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo{
+
+    text-align:right;
+
+    flex-shrink:0;
+
+}
+
+.logo-img{
+
+    width:250px;
+
+    max-width:100%;
+
+    height:auto;
+
+    display:block;
+
+}
+
+.logo p{
+
+    margin-top:8px;
+
+    font-size:12px;
+
+    line-height:1.45;
+
+    color:#444;
+
+}
+
+
+/* =========================================================
+   TRENNLINIE
+========================================================= */
+
+.linie{
+
+    border-top:1px solid #aaa;
+
+    margin:22px 0 25px 0;
+
+}
+
+
+/* =========================================================
+   FELDER
+========================================================= */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    column-gap:25px;
+
+    row-gap:18px;
+
+}
+
+.feld{
+
+    width:100%;
+
+}
+
+.feld label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+
+}
+
+.feld input{
+
+    width:100%;
+
+    height:38px;
+
+    padding:5px 8px;
+
+    font-size:15px;
+
+    background:transparent;
+
+    border:none;
+
+    border-bottom:1px solid #999;
+
+    outline:none;
+
+}
+
+.feld input:focus{
+
+    border-bottom:2px solid #8e2f2b;
+
+}
+
+.voll{
+
+    grid-column:1/-1;
+
+}
+
+
+/* =========================================================
+   MATERIAL KASTEN
+========================================================= */
+
+.materialbox{
+
+    width:100%;
+
+    margin-top:28px;
+
+    padding:14px 12px 12px 12px;
+
+    border:1px solid #777;
+
+    border-radius:5px;
+
+    background:#fff;
+
+}
+
+.materialbox h3{
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    padding-bottom:6px;
+
+    margin-bottom:0;
+
+    border-bottom:1px solid #777;
+
+    text-transform:uppercase;
+
+}
+
+.material-grid{
+
+    display:grid;
+
+    grid-template-columns:3fr 1fr;
+
+    gap:14px;
+
+    padding-top:7px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid #777;
+
+}
+
+.material-grid label{
+
+    display:block;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    margin-bottom:3px;
+
+}
+
+.material-grid input{
+
+    width:100%;
+
+    height:31px;
+
+    border:none;
+
+    border-bottom:1px solid #999;
+
+    padding:3px 5px;
+
+    font-size:14px;
+
+    outline:none;
+
+    background:transparent;
+
+}
+
+.material-grid input:focus{
+
+    border-bottom:2px solid #8e2f2b;
+
+}
+
+
+/* =========================================================
+   CHECKBOXEN
+========================================================= */
+
+.checkboxen{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    column-gap:25px;
+
+    row-gap:8px;
+
+    padding-top:8px;
+
+}
+
+.checkboxen label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    font-size:12px;
+
+    min-height:20px;
+
+    cursor:pointer;
+
+}
+
+.checkboxen input{
+
+    width:15px;
+
+    height:15px;
+
+    margin:0;
+
+    accent-color:#8e2f2b;
+
+}
+
+
+/* =========================================================
+   BEMERKUNGEN
+========================================================= */
+
+.bemerkungen{
+
+    margin-top:22px;
+
+}
+
+.bemerkungen label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:6px;
+
+}
+
+.bemerkungen textarea{
+
+    width:100%;
+
+    min-height:90px;
+
+    resize:vertical;
+
+    border:none;
+
+    border-bottom:1px solid #999;
+
+    padding:8px 5px;
+
+    font-family:Arial,sans-serif;
+
+    font-size:14px;
+
+    outline:none;
+
+}
+
+.bemerkungen textarea:focus{
+
+    border-bottom:2px solid #8e2f2b;
+
+}
+
+
+/* =========================================================
+   SIGNATUREN
+========================================================= */
+
+.signaturen{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:25px;
+
+    margin-top:30px;
+
+}
+
+.signature-box{
+
+    width:100%;
+
+}
+
+.signature-title{
+
+    color:#18395b;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:7px;
+
+}
+
+.signature-pad{
+
+    width:100%;
+
+    height:150px;
+
+    display:block;
+
+    background:#fff;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+
+    touch-action:none;
+
+    cursor:crosshair;
+
+}
+
+.sign-text{
+
+    margin-top:7px;
+
+    padding-top:6px;
+
+    border-top:1px solid #999;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:#444;
+
+}
+
+.signature-buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+
+    margin-top:7px;
+
+}
+
+.signature-button{
+
+    border:none;
+
+    border-radius:5px;
+
+    padding:7px 10px;
+
+    min-height:34px;
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.signature-delete{
+
+    background:#777;
+
+}
+
+.signature-upload{
+
+    background:#444;
+
+}
+
+.signature-png{
+
+    background:#1f4e79;
+
+}
+
+.signature-button:hover{
+
+    opacity:.9;
+
+}
+
+.file-input{
+
+    display:none;
+
+}
+
+
+/* =========================================================
+   HAUPT BUTTONS
+========================================================= */
+
+.buttons{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+    margin-top:28px;
+
+    padding-top:18px;
+
+    border-top:1px solid #ddd;
+
+}
+
+.buttons button{
+
+    border:none;
+
+    border-radius:6px;
+
+    padding:11px 18px;
+
+    min-height:44px;
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.buttons button:hover{
+
+    opacity:.9;
+
+}
+
+.save{
+
+    background:#8e2f2b;
+
+}
+
+.pdf{
+
+    background:#1f4e79;
+
+}
+
+.print{
+
+    background:#444;
+
+}
+
+.clear{
+
+    background:#777;
+
+}
+
+.list-btn{
+
+    background:#18395b;
+
+}
+
+
+/* =========================================================
+   GESPEICHERTE LIEFERSCHEINE
+========================================================= */
+
+.gespeicherte-box{
+
+    display:none;
+
+    width:calc(100% - 30px);
+
+    max-width:1000px;
+
+    margin:0 auto 20px;
+
+    background:#fff;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    box-shadow:
+        0 2px 12px rgba(0,0,0,0.12);
+
+}
+
+.gespeicherte-box.aktiv{
+
+    display:block;
+
+}
+
+.gespeicherte-box h2{
+
+    color:#18395b;
+
+    font-size:20px;
+
+    margin-bottom:18px;
+
+}
+
+.lieferschein-liste{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+.lieferschein-eintrag{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:7px;
+
+    background:#fafafa;
+
+}
+
+.lieferschein-info{
+
+    flex:1;
+
+}
+
+.lieferschein-info strong{
+
+    color:#8e2f2b;
+
+    font-size:16px;
+
+}
+
+.lieferschein-info span{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#555;
+
+    font-size:12px;
+
+}
+
+.eintrag-buttons{
+
+    display:flex;
+
+    gap:6px;
+
+}
+
+.eintrag-buttons button{
+
+    border:none;
+
+    border-radius:5px;
+
+    padding:8px 12px;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.oeffnen-btn{
+
+    background:#1f4e79;
+
+}
+
+.loeschen-btn{
+
+    background:#777;
+
+}
+
+.keine-formulare{
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#777;
+
+    border:1px dashed #bbb;
+
+    border-radius:6px;
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:900px){
+
+    .formular{
+
+        width:calc(100% - 20px);
+
+        margin:10px auto;
+
+        padding:22px;
+
+    }
+
+    .gespeicherte-box{
+
+        width:calc(100% - 20px);
+
+    }
+
+    .kopf{
+
+        gap:20px;
+
+    }
+
+    .logo-img{
+
+        width:210px;
+
+    }
+
+}
+
+
+/* =========================================================
+   HANDY
+========================================================= */
+
+@media(max-width:650px){
+
+    .formular{
+
+        width:100%;
+
+        margin:0;
+
+        min-height:100vh;
+
+        padding:15px;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+    }
+
+    .gespeicherte-box{
+
+        width:100%;
+
+        margin:0;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+        padding:15px;
+
+    }
+
+    .top-buttons{
+
+        width:100%;
+
+        gap:8px;
+
+    }
+
+    .top-button{
+
+        flex:1;
+
+        padding:10px 7px;
+
+        font-size:13px;
+
+    }
+
+    .kopf{
+
+        flex-direction:column;
+
+        gap:15px;
+
+    }
+
+    .logo{
+
+        order:-1;
+
+        width:100%;
+
+        text-align:center;
+
+    }
+
+    .logo-img{
+
+        width:210px;
+
+        margin:0 auto;
+
+    }
+
+    .logo p{
+
+        text-align:center;
+
+        font-size:11px;
+
+    }
+
+    .titel{
+
+        font-size:20px;
+
+        margin-bottom:12px;
+
+    }
+
+    .lieferschein{
+
+        font-size:14px;
+
+    }
+
+    .lieferschein span{
+
+        font-size:21px;
+
+    }
+
+    .grid{
+
+        grid-template-columns:1fr;
+
+        gap:15px;
+
+    }
+
+    .voll{
+
+        grid-column:auto;
+
+    }
+
+    .feld input{
+
+        height:43px;
+
+        font-size:16px;
+
+    }
+
+    .materialbox{
+
+        margin-top:24px;
+
+        padding:12px 10px 10px;
+
+    }
+
+    .material-grid{
+
+        grid-template-columns:1fr;
+
+        gap:10px;
+
+    }
+
+    .material-grid input{
+
+        height:40px;
+
+        font-size:16px;
+
+    }
+
+    .checkboxen{
+
+        grid-template-columns:1fr 1fr;
+
+        column-gap:12px;
+
+        row-gap:10px;
+
+    }
+
+    .checkboxen label{
+
+        font-size:13px;
+
+    }
+
+    .bemerkungen textarea{
+
+        min-height:110px;
+
+        font-size:16px;
+
+    }
+
+    .signaturen{
+
+        grid-template-columns:1fr;
+
+        gap:25px;
+
+    }
+
+    .signature-pad{
+
+        height:180px;
+
+    }
+
+    .signature-buttons{
+
+        display:grid;
+
+        grid-template-columns:1fr;
+
+    }
+
+    .signature-button{
+
+        width:100%;
+
+        min-height:40px;
+
+        font-size:13px;
+
+    }
+
+    .buttons{
+
+        display:grid;
+
+        grid-template-columns:1fr;
+
+        gap:8px;
+
+    }
+
+    .buttons button{
+
+        width:100%;
+
+        min-height:48px;
+
+        font-size:15px;
+
+    }
+
+    .lieferschein-eintrag{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .eintrag-buttons{
+
+        width:100%;
+
+    }
+
+    .eintrag-buttons button{
+
+        flex:1;
+
+        min-height:40px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SEHR KLEINES HANDY
+========================================================= */
+
+@media(max-width:380px){
+
+    .formular{
+
+        padding:12px;
+
+    }
+
+    .top-button{
+
+        font-size:12px;
+
+        padding:9px 5px;
+
+    }
+
+    .checkboxen{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+/* =========================================================
+   DRUCK
+========================================================= */
+
+@media print{
+
+    @page{
+
+        size:A4;
+
+        margin:12mm;
+
+    }
+
+    body{
+
+        background:#fff;
+
+    }
+
+    .formular{
+
+        width:100%;
+
+        max-width:none;
+
+        margin:0;
+
+        padding:0;
+
+        border-radius:0;
+
+        box-shadow:none;
+
+    }
+
+    .gespeicherte-box{
+
+        display:none !important;
+
+    }
+
+    .top-buttons,
+    .buttons,
+    .signature-buttons{
+
+        display:none !important;
+
+    }
+
+}
+
+</style>
+
+<style>@media print{.nachweis-links,#nachweisStatus,#signatureStatus,#saveNachweis{display:none!important}} button:disabled{opacity:.5;cursor:default}</style><style>
+/* Einheitlicher Firmenkopf aus dem Urlaubsformular. */
+.ve-form-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:25px;break-inside:avoid}
+.ve-form-heading>div:not(.ve-form-brand){flex:1;min-width:0;overflow-wrap:anywhere}
+.ve-form-heading>h1{flex:1;min-width:0;margin:0;overflow-wrap:anywhere}
+.ve-form-brand{flex:0 1 260px;width:260px;max-width:100%;margin-left:auto;color:#444;font:14px/1.5 Arial,Helvetica,sans-serif;text-align:left;break-inside:avoid}
+.ve-form-brand>img{display:block;width:260px;max-width:100%;height:auto}
+.ve-form-brand>p{margin:12px 0 0;font:inherit;color:inherit}
+.ve-form-brand-row{display:flex;justify-content:flex-end;margin-bottom:25px;break-inside:avoid}
+@media screen and (max-width:600px){.ve-form-heading{flex-direction:column;gap:18px}.ve-form-brand{flex:none;width:210px;font-size:13px}.ve-form-brand>img{width:210px}}
+@media print{.ve-form-heading{display:flex;flex-direction:row;gap:20px;break-inside:avoid}.ve-form-brand{display:block!important;flex:0 0 230px;width:230px;max-width:45%;print-color-adjust:exact}.ve-form-brand>img{width:230px}.ve-form-brand-row{display:flex!important}}
+</style>
+
+<style id="ve-heading-alignment">
+/* Überschrift am unteren Rand des Firmenkopfs über den Eingabefeldern. */
+.ve-form-heading>h1,
+.ve-form-heading>div:not(.ve-form-brand){align-self:flex-end}
+@media screen and (max-width:600px){
+ .ve-form-heading>.ve-form-brand{order:-1}
+ .ve-form-heading>h1,
+ .ve-form-heading>div:not(.ve-form-brand){align-self:flex-start}
+}
+</style>
+</head>
+
+
+<body data-nachweis-typ="materialausgabe" data-nachweis-titel="Materialausgabe">
+
+
+<!-- =====================================================
+     GESPEICHERTE LIEFERSCHEINE
+===================================================== -->
+
+<!-- =====================================================
+     HAUPTFORMULAR
+===================================================== -->
+
+<div class="formular" id="formular">
+<form id="nachweisForm">
+
+
+<div class="nachweis-links" style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0"><a href="nachweise.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">▣ Meine Nachweise</a><a href="gastmaterialausgabe.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">+ Neuer Nachweis</a><a href="gastformular.html" style="color:#8e2f2b;font-weight:bold;text-decoration:none;padding:8px 0">← Formulare</a></div><!-- NAVIGATION -->
+
+<div class="top-buttons">
+
+    <a href="gastformular.html" class="top-button">
+        📄 Formular
+    </a>
+
+    <a href="gast.html" class="top-button">
+        🏠 Zum Dashboard
+    </a>
+
+</div>
+
+
+
+<!-- KOPF -->
+
+<div class="ve-form-heading">
+
+    <div>
+
+        <div class="titel">
+            Materialausgabe-Schein
+        </div>
+
+        <div class="lieferschein">
+
+            Lieferschein Nr.:
+
+            <span id="lieferscheinNr">Wird beim Speichern vergeben</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="ve-form-brand" aria-label="VE-LOG Firmendaten"><img src="logo.png" alt="VE-LOG Logo"><p>Flächenmanagement · Umschlag · Transport<br>Sperberweg 15 · 91056 Erlangen<br>Tel. 09131 / 7515-10</p></div>
+
+</div>
+
+
+
+<div class="linie"></div>
+
+
+
+<!-- STAMMDATEN -->
+
+<div class="grid">
+
+
+    <div class="feld">
+
+        <label>
+            Empfänger
+        </label>
+
+        <input type="text" id="empfaengerName">
+
+    </div>
+
+
+    <div class="feld">
+
+        <label>
+            Datum
+        </label>
+
+        <input type="date" id="datum" required="required">
+
+    </div>
+
+
+    <div class="feld">
+
+        <label>
+            Gerät / Kennzeichen
+        </label>
+
+        <input type="text" id="geraet">
+
+    </div>
+
+
+    <div class="feld">
+
+        <label>
+            Fahrername
+        </label>
+
+        <input type="text" id="fahrer">
+
+    </div>
+
+
+    <div class="feld voll">
+
+        <label>
+            Baustelle / Standort
+        </label>
+
+        <input type="text" id="baustelle">
+
+    </div>
+
+
+</div>
+
+
+
+<!-- MATERIAL -->
+
+<div class="materialbox">
+
+    <h3>
+        Material &amp; Menge
+    </h3>
+
+
+    <div class="material-grid">
+
+
+        <div>
+
+            <label>
+                MATERIAL
+            </label>
+
+            <input type="text" id="material">
+
+        </div>
+
+
+        <div>
+
+            <label>
+                MENGE
+            </label>
+
+            <input type="text" id="menge">
+
+        </div>
+
+
+    </div>
+
+
+    <div class="checkboxen">
+
+
+        <label>
+            <input type="checkbox" id="diesel">
+            Diesel
+        </label>
+
+
+        <label>
+            <input type="checkbox" id="adblue">
+            AdBlue
+        </label>
+
+
+        <label>
+            <input type="checkbox" id="fett">
+            Fett
+        </label>
+
+
+        <label>
+            <input type="checkbox" id="wasser">
+            Wasser
+        </label>
+
+
+        <label>
+            <input type="checkbox" id="oel">
+            Öl
+        </label>
+
+
+        <label>
+            <input type="checkbox" id="sonstiges">
+            Sonstiges
+        </label>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- BEMERKUNGEN -->
+
+<div class="bemerkungen">
+
+    <label>
+        BEMERKUNGEN
+    </label>
+
+    <textarea id="bemerkungen"></textarea>
+
+</div>
+
+
+
+<!-- SIGNATUREN -->
+
+<div class="signaturen">
+
+
+    <!-- AUSGEBER -->
+
+    <div class="signature-box">
+
+        <div class="signature-title">
+            Unterschrift Ausgeber
+        </div>
+
+        <canvas id="ausgeber" class="signature-pad"></canvas>
+<input type="hidden" id="signatureValueAusgeber" name="ausgeber" value="">
+
+
+        <div class="signature-buttons">
+
+            <button type="button" class="signature-button signature-delete" data-signature-pad="ausgeber" onclick="clearCanvas('ausgeber')">
+                🗑 Löschen
+            </button>
+
+
+            <button type="button" class="signature-button signature-upload" data-signature-pad="ausgeber" onclick="uploadSignature('ausgeber')">
+                📁 Hochladen
+            </button>
+
+
+            <button type="button" class="signature-button signature-png" data-signature-pad="ausgeber" onclick="saveSignaturePNG('ausgeber')">
+                💾 Als PNG
+            </button>
+
+        </div>
+
+
+        <input type="file" id="upload-ausgeber" class="file-input" accept="image/png,image/jpeg,image/webp" onchange="loadSignature(this,'ausgeber')">
+
+
+        <div class="sign-text">
+            UNTERSCHRIFT AUSGEBER
+        </div>
+
+    </div>
+
+
+
+    <!-- EMPFÄNGER -->
+
+    <div class="signature-box">
+
+        <div class="signature-title">
+            Unterschrift Empfänger
+        </div>
+
+        <canvas id="empfaengerSignatur" class="signature-pad"></canvas>
+<input type="hidden" id="signatureValueEmpfaenger" name="empfaengerSignatur" value="">
+
+
+        <div class="signature-buttons">
+
+            <button type="button" class="signature-button signature-delete" data-signature-pad="empfaengerSignatur" onclick="clearCanvas('empfaengerSignatur')">
+                🗑 Löschen
+            </button>
+
+
+            <button type="button" class="signature-button signature-upload" data-signature-pad="empfaengerSignatur" onclick="uploadSignature('empfaengerSignatur')">
+                📁 Hochladen
+            </button>
+
+
+            <button type="button" class="signature-button signature-png" data-signature-pad="empfaengerSignatur" onclick="saveSignaturePNG('empfaengerSignatur')">
+                💾 Als PNG
+            </button>
+
+        </div>
+
+
+        <input type="file" id="upload-empfaengerSignatur" class="file-input" accept="image/png,image/jpeg,image/webp" onchange="loadSignature(this,'empfaengerSignatur')">
+
+
+        <div class="sign-text">
+            UNTERSCHRIFT EMPFÄNGER
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- BUTTONS -->
+
+<p class="status" id="signatureStatus" role="status">Unterschreibe mit Maus, Finger oder Stift oder lade ein Unterschriftsbild hoch. Danach das gesamte Dokument speichern.</p>
+<div class="buttons">
+
+
+    <button type="button" class="save" id="saveNachweis" disabled>💾 In Meine Nachweise speichern</button>
+
+
+    <button type="button" class="list-btn" onclick="window.location.href='gastnachweise.html'">▣ Meine Nachweise</button>
+
+
+    <button type="button" class="pdf" onclick="window.print()">
+        📄 PDF
+    </button>
+
+
+    <button type="button" class="print" onclick="window.print()">
+        🖨 Drucken
+    </button>
+
+
+    <button type="button" class="clear" onclick="clearAllSignatures()">
+        🗑 Signaturen löschen
+    </button>
+
+
+</div>
+
+
+<p id="nachweisStatus" role="status" style="padding:12px;background:#f8f9fb;border-radius:8px;margin:16px 0">Speicherfunktion wird geladen …</p>
+
+
+
+</form>
+</div>
+<script>
+'use strict';
+(() => {
+  const pads = new Map();
+  const message = (text,error=false) => {
+    const status=document.getElementById('signatureStatus');
+    status.textContent=text;status.style.color=error?'#8e2f2b':'';
+  };
+  function setup(canvasId,fieldId,fileId) {
+    const canvas=document.getElementById(canvasId),field=document.getElementById(fieldId),file=document.getElementById(fileId);
+    const state={canvas,field,file,drawing:false,lastSeen:field.value||'',revision:0,dpr:1};
+    pads.set(canvasId,state);
+    function resize() {
+      const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+      const previous=canvas.width&&canvas.height?canvas.toDataURL('image/png'):'';
+      state.dpr=Math.min(window.devicePixelRatio||1,2);
+      canvas.width=Math.round(rect.width*state.dpr);canvas.height=Math.round(rect.height*state.dpr);
+      const context=canvas.getContext('2d');context.setTransform(state.dpr,0,0,state.dpr,0,0);
+      context.lineWidth=2.25;context.lineCap='round';context.lineJoin='round';context.strokeStyle='#233247';context.fillStyle='#233247';
+      if(previous&&state.field.value)paint(state,previous,false);
+    }
+    state.resize=resize;resize();
+    canvas.setAttribute('aria-label',canvasId==='ausgeber'?'Unterschrift Ausgeber zeichnen':'Unterschrift Empfänger zeichnen');
+    function point(event){const r=canvas.getBoundingClientRect();return {x:event.clientX-r.left,y:event.clientY-r.top};}
+    canvas.addEventListener('pointerdown',event=>{
+      if(field.disabled||event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
+      event.preventDefault();state.revision++;state.drawing=true;state.pointerId=event.pointerId;
+      canvas.setPointerCapture?.(event.pointerId);
+      const p=point(event),ctx=canvas.getContext('2d');ctx.beginPath();ctx.arc(p.x,p.y,1.1,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(p.x,p.y);
+    });
+    canvas.addEventListener('pointermove',event=>{
+      if(!state.drawing||event.pointerId!==state.pointerId||field.disabled)return;
+      event.preventDefault();const p=point(event),ctx=canvas.getContext('2d');ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);
+    });
+    const finish=event=>{
+      if(!state.drawing||event.pointerId!==state.pointerId)return;
+      state.drawing=false;if(canvas.hasPointerCapture?.(event.pointerId))canvas.releasePointerCapture?.(event.pointerId);
+      commit(state);message('Unterschrift übernommen. Klicke auf „In Meine Nachweise speichern“, um das Dokument zu speichern.');
+    };
+    canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',finish);canvas.addEventListener('lostpointercapture',finish);
+    if(window.ResizeObserver){state.observer=new ResizeObserver(()=>{
+      const r=canvas.getBoundingClientRect(),ratio=Math.min(window.devicePixelRatio||1,2);
+      if(canvas.width!==Math.round(r.width*ratio)||canvas.height!==Math.round(r.height*ratio))resize();
+    });state.observer.observe(canvas);}
+    return state;
+  }
+  function commit(state) {
+    state.field.value=state.canvas.toDataURL('image/png');state.lastSeen=state.field.value;
+    state.field.dispatchEvent(new Event('input',{bubbles:true}));state.field.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  async function paint(state,source,save=true) {
+    const revision=++state.revision;
+    const image=new Image();
+    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('Das Bild konnte nicht gelesen werden.'));image.src=source;});
+    if(revision!==state.revision)return;
+    const {canvas}=state,ctx=canvas.getContext('2d'),r=canvas.getBoundingClientRect();
+    ctx.clearRect(0,0,r.width,r.height);
+    const factor=Math.min(r.width/image.naturalWidth,r.height/image.naturalHeight);
+    const width=image.naturalWidth*factor,height=image.naturalHeight*factor;
+    ctx.drawImage(image,(r.width-width)/2,(r.height-height)/2,width,height);
+    if(save)commit(state);
+  }
+  function locked(state) {return !state||state.field.disabled;}
+  window.clearCanvas=canvasId=>{
+    const state=pads.get(canvasId);if(locked(state))return;
+    state.revision++;state.drawing=false;const r=state.canvas.getBoundingClientRect();state.canvas.getContext('2d').clearRect(0,0,r.width,r.height);
+    state.field.value='';state.lastSeen='';state.field.dispatchEvent(new Event('change',{bubbles:true}));message('Unterschrift entfernt. Speichere das Dokument, um die Änderung zu übernehmen.');
+  };
+  window.uploadSignature=canvasId=>{const state=pads.get(canvasId);if(!locked(state)){state.file.value='';state.file.click();}};
+  window.loadSignature=async(input,canvasId)=>{
+    const state=pads.get(canvasId);if(locked(state))return;
+    const file=input.files?.[0];if(!file)return;
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){message('Bitte wähle PNG, JPG oder WebP mit höchstens 5 MB.',true);input.value='';return;}
+    try{
+      const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Die Datei konnte nicht gelesen werden.'));reader.readAsDataURL(file);});
+      if(state.field.disabled)return;
+      await paint(state,data);message('Unterschriftsbild übernommen. Klicke jetzt auf „In Meine Nachweise speichern“.');
+    }catch(error){message(error.message||'Das Bild konnte nicht übernommen werden.',true);}
+    finally{input.value='';}
+  };
+  window.saveSignaturePNG=canvasId=>{
+    const state=pads.get(canvasId);if(!state?.field.value){message('Bitte zeichne zuerst eine Unterschrift oder lade ein Bild hoch.',true);return;}
+    const link=document.createElement('a');link.href=state.field.value;link.download='VE-Log-Unterschrift-'+canvasId+'.png';document.body.append(link);link.click();link.remove();
+  };
+  window.clearAllSignatures=()=>{for(const id of pads.keys())window.clearCanvas(id);};
+  setup('ausgeber','signatureValueAusgeber','upload-ausgeber');
+  setup('empfaengerSignatur','signatureValueEmpfaenger','upload-empfaengerSignatur');
+  function restoreAndLock() {
+    for(const state of pads.values()){
+      document.querySelectorAll(`[data-signature-pad="${state.canvas.id}"]`).forEach(button=>button.disabled=state.field.disabled);
+      state.file.disabled=state.field.disabled;state.canvas.setAttribute('aria-disabled',String(state.field.disabled));
+      const value=state.field.value||'';
+      if(value!==state.lastSeen){state.lastSeen=value;
+        if(/^data:image\/(png|jpeg|webp);base64,/.test(value))paint(state,value,false).catch(()=>message('Eine gespeicherte Unterschrift konnte nicht angezeigt werden.',true));
+        else {const r=state.canvas.getBoundingClientRect();state.canvas.getContext('2d').clearRect(0,0,r.width,r.height);}
+      }
+    }
+    const number=document.getElementById('lieferscheinNr');
+    const id=new URLSearchParams(location.search).get('id');
+    if(id)number.textContent=id;
+  }
+  const status=document.getElementById('nachweisStatus');
+  new MutationObserver(restoreAndLock).observe(status,{childList:true,subtree:true,characterData:true});
+  restoreAndLock();
+})();
+
+</script>
+<script type="module">
+'use strict';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM',
+  authDomain: 've-log.firebaseapp.com',
+  databaseURL:
+    'https://ve-log-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 've-log',
+  storageBucket: 've-log.firebasestorage.app',
+  messagingSenderId: '749978080433',
+  appId: '1:749978080433:web:8f64ef99a557fe2346be90'
+};
+
+const form = document.getElementById('nachweisForm');
+const button = document.getElementById('saveNachweis');
+const status = document.getElementById('nachweisStatus');
+
+const typ = document.body.dataset.nachweisTyp;
+const titel = document.body.dataset.nachweisTitel || 'Nachweis';
+
+let recordId = new URLSearchParams(location.search).get('id');
+let busy = false;
+let ready = false;
+let activeUid = null;
+let session = 0;
+
+function message(text, error = false) {
+  status.textContent = text;
+  status.style.color = error ? '#8e2f2b' : '';
+}
+
+function fields() {
+  return [...form.elements].filter(el =>
+    ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName) &&
+    !['button', 'submit', 'reset', 'file', 'password'].includes(el.type) &&
+    (el.name || el.id)
+  );
+}
+
+function collect() {
+  const data = {};
+
+  for (const el of fields()) {
+    const key = el.name || el.id;
+
+    if (
+      /[.#$\[\]\/]/.test(key) ||
+      ['__proto__', 'constructor', 'prototype'].includes(key)
+    ) {
+      throw new Error(
+        'Ein Formularfeld hat einen ungültigen Namen.'
+      );
+    }
+
+    if (el.type === 'radio') {
+      if (el.checked) data[key] = el.value;
+    } else if (el.type === 'checkbox') {
+      data[key] = el.checked;
+    } else if (el.type === 'number') {
+      data[key] = el.value === '' ? '' : el.valueAsNumber;
+    } else {
+      data[key] = el.value;
+    }
+  }
+
+  return data;
+}
+
+function restore(data) {
+  for (const el of fields()) {
+    const key = el.name || el.id;
+
+    if (!Object.hasOwn(data, key)) continue;
+
+    if (el.type === 'checkbox') {
+      el.checked = data[key] === true;
+    } else if (el.type === 'radio') {
+      el.checked = String(data[key]) === el.value;
+    } else {
+      el.value = data[key] ?? '';
+    }
+  }
+}
+
+function errorMessage(error) {
+  if (
+    /permission.denied/i.test(
+      error?.code || error?.message || ''
+    )
+  ) {
+    return (
+      'Firebase verweigert den Zugriff. ' +
+      'Die Datenbankregeln müssen deinem angemeldeten Konto ' +
+      'den Zugriff auf nachweise/' + activeUid + ' erlauben.'
+    );
+  }
+
+  return (
+    error?.message ||
+    'Speichern fehlgeschlagen. Bitte prüfe deine Internetverbindung.'
+  );
+}
+
+async function start() {
+  if (!form || !button || !status || !typ) {
+    throw new Error(
+      'Formular, Speicherbutton, Statusanzeige oder Formularart fehlt.'
+    );
+  }
+
+  button.disabled = true;
+
+  if (
+    recordId &&
+    !/^[A-Za-z0-9_-]{1,128}$/.test(recordId)
+  ) {
+    message('Ungültige Nachweis-ID im Link.', true);
+    return;
+  }
+
+  const [App, Auth, DB] = await Promise.all([
+    import(
+      'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js'
+    ),
+    import(
+      'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js'
+    ),
+    import(
+      'https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js'
+    )
+  ]);
+
+  const app = App.getApps().length
+    ? App.getApp()
+    : App.initializeApp(firebaseConfig);
+
+  const auth = Auth.getAuth(app);
+  const db = DB.getDatabase(app);
+
+  Auth.onAuthStateChanged(
+    auth,
+    async user => {
+      const current = ++session;
+
+      ready = false;
+      button.disabled = true;
+
+      if (activeUid && activeUid !== user?.uid) {
+        activeUid = null;
+
+        fields().forEach(el => {
+          el.disabled = true;
+        });
+
+        message(
+          'Die Anmeldung wurde geändert. Bitte lade die Seite neu.',
+          true
+        );
+        return;
+      }
+
+      activeUid = user?.uid || null;
+
+      if (!user) {
+        message(
+          'Bitte melde dich zuerst über das Dashboard an. ' +
+          'Öffne danach dieses Formular erneut.'
+        );
+        return;
+      }
+
+      try {
+        if (recordId) {
+          message('Nachweis wird geladen …');
+
+          const snapshot = await DB.get(
+            DB.ref(
+              db,
+              `nachweise/${user.uid}/${recordId}`
+            )
+          );
+
+          if (current !== session) return;
+
+          if (!snapshot.exists()) {
+            throw new Error(
+              'Dieser Nachweis wurde nicht gefunden.'
+            );
+          }
+
+          const record = snapshot.val();
+
+          if (record.typ !== typ) {
+            throw new Error(
+              'Der Link gehört zu einer anderen Formularart.'
+            );
+          }
+
+          restore(record.daten || {});
+
+          if (record.status !== 'entwurf') {
+            fields().forEach(el => {
+              el.disabled = true;
+            });
+
+            message(
+              'Dieser Nachweis kann nur angesehen und gedruckt werden.'
+            );
+            return;
+          }
+        }
+
+        ready = true;
+        button.disabled = busy;
+
+        message(
+          recordId
+            ? 'Nachweis geladen. Du kannst ihn bearbeiten und erneut speichern.'
+            : 'Bereit zum Speichern.'
+        );
+      } catch (error) {
+        if (current === session) {
+          message(errorMessage(error), true);
+        }
+      }
+    },
+    error => {
+      message(errorMessage(error), true);
+    }
+  );
+
+  async function save() {
+    if (
+      busy ||
+      !ready ||
+      !auth.currentUser ||
+      !form.reportValidity()
+    ) {
+      return;
+    }
+
+    busy = true;
+    button.disabled = true;
+
+    const user = auth.currentUser;
+    const current = session;
+    const oldText = button.textContent;
+
+    button.textContent = 'Wird gespeichert …';
+
+    message(
+      'Speichern läuft. Bitte lasse die Seite geöffnet, ' +
+      'bis die Bestätigung erscheint.'
+    );
+
+    try {
+      const daten = collect();
+
+      // Erneutes Speichern verwendet dieselbe Nachweis-ID.
+      if (!recordId) {
+        recordId = DB.push(
+          DB.ref(db, `nachweise/${user.uid}`)
+        ).key;
+      }
+
+      const target = DB.ref(
+        db,
+        `nachweise/${user.uid}/${recordId}`
+      );
+
+      const result = await DB.runTransaction(
+        target,
+        existing => {
+          if (
+            existing &&
+            (
+              existing.typ !== typ ||
+              existing.status !== 'entwurf'
+            )
+          ) {
+            return;
+          }
+
+          return {
+              ...(existing || {}),
+            ownerUid: user.uid,
+            typ,
+            titel,
+            datum: daten.datum || '',
+            status: 'entwurf',
+            createdAt:
+              existing?.createdAt ?? DB.serverTimestamp(),
+            updatedAt: DB.serverTimestamp(),
+            daten
+          };
+        },
+        { applyLocally: false }
+      );
+
+      if (!result.committed) {
+        throw new Error(
+          'Der Nachweis wurde inzwischen eingereicht oder geändert ' +
+          'und kann nicht gespeichert werden.'
+        );
+      }
+
+      if (current !== session) return;
+
+      const url = new URL(location.href);
+      url.searchParams.set('id', recordId);
+
+      history.replaceState(null, '', url);
+
+      message(
+        'Nachweis erfolgreich gespeichert. ' +
+        'Du findest ihn unter „Meine Nachweise“. ' +
+        'E-Mail-Versand ist noch nicht eingerichtet.'
+      );
+    } catch (error) {
+      if (current === session) {
+        message(errorMessage(error), true);
+      }
+    } finally {
+      busy = false;
+      button.textContent = oldText;
+      button.disabled = !ready;
+    }
+  }
+
+  button.addEventListener('click', save);
+
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    save();
+  });
+}
+
+start().catch(error => {
+  if (button) button.disabled = true;
+
+  if (status) {
+    message(
+      'Die Speicherfunktion konnte nicht geladen werden: ' +
+      errorMessage(error),
+      true
+    );
+  }
+
+  console.error('VE-Log Speicherfunktion:', error);
+});
+
+</script></body>
+
+</html>
