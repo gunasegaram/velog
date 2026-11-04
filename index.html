@@ -245,13 +245,14 @@ button:disabled {
 
     </form>
 
-    <a
+    <!-- GAST-LOGIN -->
+    <button
         class="link-button guest-link"
-        href="#loginForm"
-        id="guestLoginLink"
+        id="guestLoginButton"
+        type="button"
     >
         Zum Gast-Login
-    </a>
+    </button>
 
     <div class="divider"></div>
 
@@ -315,6 +316,28 @@ const firebaseConfig = {
 
 
 // --------------------------------------------------
+// ZIELSEITEN
+// --------------------------------------------------
+
+const zielseiten = {
+    gast:
+        "https://gunasegaram.github.io/velog/gast.html",
+
+    mitarbeiter:
+        "https://gunasegaram.github.io/velog/dashboard.html",
+
+    manager:
+        "https://gunasegaram.github.io/velog/dashboard.html",
+
+    admin:
+        "https://gunasegaram.github.io/velog/dashboard.html",
+
+    superadmin:
+        "https://gunasegaram.github.io/velog/dashboard.html"
+};
+
+
+// --------------------------------------------------
 // FIREBASE INITIALISIEREN
 // --------------------------------------------------
 
@@ -331,9 +354,13 @@ const db = getDatabase(app);
 // --------------------------------------------------
 
 const form = document.getElementById("loginForm");
+
 const button = document.getElementById("loginButton");
+
+const guestLoginButton =
+    document.getElementById("guestLoginButton");
+
 const status = document.getElementById("status");
-const guestLoginLink = document.getElementById("guestLoginLink");
 
 let anmeldungLaeuft = false;
 
@@ -343,6 +370,7 @@ let anmeldungLaeuft = false;
 // --------------------------------------------------
 
 function zeigeStatus(text, typ = "") {
+
     status.textContent = text;
     status.className = "status";
 
@@ -359,6 +387,7 @@ function zeigeStatus(text, typ = "") {
 function friendlyError(error) {
 
     const messages = {
+
         "auth/invalid-email":
             "Bitte gib eine gültige E-Mail-Adresse ein.",
 
@@ -390,12 +419,13 @@ function friendlyError(error) {
 // GAST-LOGIN-BUTTON
 // --------------------------------------------------
 
-guestLoginLink.addEventListener("click", () => {
-    document.getElementById("email").focus();
+guestLoginButton.addEventListener("click", () => {
 
-    zeigeStatus(
-        "Melde dich mit der registrierten E-Mail-Adresse und dem Passwort deines Gastkontos an."
-    );
+    // Normale Firebase-Anmeldung starten.
+    // Die Gastrolle wird anschließend automatisch geprüft.
+
+    form.requestSubmit();
+
 });
 
 
@@ -412,7 +442,9 @@ form.addEventListener("submit", async (event) => {
     }
 
     anmeldungLaeuft = true;
+
     button.disabled = true;
+    guestLoginButton.disabled = true;
 
     zeigeStatus("Anmeldung läuft ...");
 
@@ -448,9 +480,11 @@ form.addEventListener("submit", async (event) => {
         );
 
         if (!roleSnapshot.exists()) {
+
             throw new Error(
                 "Für dieses Konto ist keine Rolle hinterlegt. Bitte kontaktiere den Administrator."
             );
+
         }
 
         const role = roleSnapshot.val();
@@ -470,23 +504,25 @@ form.addEventListener("submit", async (event) => {
             typeof role !== "string" ||
             !allowedRoles.includes(role)
         ) {
+
             throw new Error(
                 "Für dieses Konto ist keine gültige Rolle hinterlegt. Bitte kontaktiere den Administrator."
             );
+
         }
 
 
         // 4. Zielseite anhand der Rolle bestimmen
 
-        const zielseiten = {
-            gast: "./gast.html",
-            mitarbeiter: "./dashboard.html",
-            manager: "./dashboard.html",
-            admin: "./dashboard.html",
-            superadmin: "./dashboard.html"
-        };
-
         const zielseite = zielseiten[role];
+
+        if (!zielseite) {
+
+            throw new Error(
+                "Für diese Rolle ist keine Zielseite eingerichtet."
+            );
+
+        }
 
 
         // 5. Erfolgreich anmelden und weiterleiten
@@ -502,20 +538,26 @@ form.addEventListener("submit", async (event) => {
 
         console.error("Anmeldefehler:", error);
 
-        // Keine Sitzung behalten, wenn die Rollenprüfung
-        // nach erfolgreicher Anmeldung fehlschlägt.
+
+        // Sitzung beenden, falls die Rollenprüfung fehlschlägt
 
         if (angemeldeterBenutzer && auth.currentUser) {
 
             try {
+
                 await signOut(auth);
+
             } catch (signOutError) {
+
                 console.error(
                     "Fehler beim Beenden der Sitzung:",
                     signOutError
                 );
+
             }
+
         }
+
 
         const nachricht = error.code
             ? friendlyError(error)
@@ -524,7 +566,10 @@ form.addEventListener("submit", async (event) => {
         zeigeStatus(nachricht, "error");
 
         button.disabled = false;
+        guestLoginButton.disabled = false;
+
         anmeldungLaeuft = false;
+
     }
 
 });
