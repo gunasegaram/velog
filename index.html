@@ -235,6 +235,11 @@ button:disabled {
             required
         >
 
+        <p class="forgot-password">
+            Passwort vergessen?
+            <a href="#" id="resetPasswordLink">Passwort zurücksetzen</a>
+        </p>
+
         <button
             class="primary"
             id="loginButton"
@@ -289,6 +294,7 @@ import {
 import {
     getAuth,
     signInWithEmailAndPassword,
+    sendPasswordResetEmail,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
@@ -360,6 +366,9 @@ const button = document.getElementById("loginButton");
 const guestLoginButton =
     document.getElementById("guestLoginButton");
 
+const resetPasswordLink =
+    document.getElementById("resetPasswordLink");
+
 const status = document.getElementById("status");
 
 let anmeldungLaeuft = false;
@@ -413,6 +422,56 @@ function friendlyError(error) {
     return messages[error.code] ||
         "Die Anmeldung ist fehlgeschlagen. Bitte überprüfe deine Zugangsdaten und Firebase-Einstellungen.";
 }
+
+
+// --------------------------------------------------
+// PASSWORT ZURÜCKSETZEN
+// --------------------------------------------------
+
+resetPasswordLink.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+
+    if (!email) {
+        zeigeStatus(
+            "Bitte gib zuerst deine E-Mail-Adresse ein. Danach kannst du dein Passwort zurücksetzen.",
+            "error"
+        );
+        document.getElementById("email").focus();
+        return;
+    }
+
+    resetPasswordLink.style.pointerEvents = "none";
+    zeigeStatus("Die E-Mail zum Zurücksetzen des Passworts wird gesendet ...");
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+
+        zeigeStatus(
+            "Wenn für diese E-Mail-Adresse ein Konto besteht, wurde eine E-Mail zum Zurücksetzen des Passworts versendet. Bitte prüfe auch deinen Spam-Ordner.",
+            "success"
+        );
+    } catch (error) {
+        console.error("Fehler beim Zurücksetzen des Passworts:", error);
+
+        const messages = {
+            "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+            "auth/user-not-found": "Zu dieser E-Mail-Adresse wurde kein Konto gefunden.",
+            "auth/too-many-requests": "Zu viele Anfragen. Bitte versuche es später erneut.",
+            "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
+            "auth/operation-not-allowed": "Das Zurücksetzen des Passworts ist in Firebase nicht aktiviert."
+        };
+
+        zeigeStatus(
+            messages[error.code] ||
+            "Die E-Mail zum Zurücksetzen konnte nicht gesendet werden. Bitte versuche es später erneut.",
+            "error"
+        );
+    } finally {
+        resetPasswordLink.style.pointerEvents = "";
+    }
+});
 
 
 // --------------------------------------------------
