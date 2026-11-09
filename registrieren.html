@@ -2,198 +2,155 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VE-Log Registrierung</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VE-Log | Mitarbeiterregistrierung</title>
 <style>
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#f0f2f5;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
-
-.box{
-    background:#fff;
-    padding:30px;
-    width:380px;
-    border-radius:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.15);
-}
-
-h2{
-    text-align:center;
-    margin-bottom:20px;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin:8px 0;
-    border:1px solid #ccc;
-    border-radius:8px;
-    box-sizing:border-box;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:15px;
-}
-
-.register-btn{
-    margin-top:10px;
-    background:#9b2d2d;
-    color:white;
-}
-
-.register-btn:hover{
-    background:#7d2323;
-}
-
-.back-btn{
-    background:#666;
-    color:white;
-    margin-bottom:15px;
-}
-
-.back-btn:hover{
-    background:#555;
-}
-
-.info{
-    font-size:13px;
-    color:#666;
-    margin-top:10px;
-    text-align:center;
-}
+:root{--rot:#922f2b;--dunkel:#762522;--blau:#1d3557}
+*{box-sizing:border-box}
+body{margin:0;padding:20px;font-family:Arial,sans-serif;background:#f0f2f5;display:flex;justify-content:center;align-items:center;min-height:100vh;color:#263238}
+.box{background:#fff;padding:30px;width:100%;max-width:420px;border-radius:15px;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+h2{text-align:center;margin:8px 0 20px;color:var(--blau)}
+input{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font:inherit}
+button{width:100%;padding:12px;border:0;border-radius:8px;cursor:pointer;font-size:15px;font-weight:700}
+.register-btn{margin-top:10px;background:var(--rot);color:#fff}
+.register-btn:hover{background:var(--dunkel)}
+.back-btn{background:#666;color:#fff;margin-bottom:15px}
+.info{font-size:13px;color:#666;margin-top:12px;text-align:center;line-height:1.5}
+.status{font-size:13px;line-height:1.5;margin-top:14px;overflow-wrap:anywhere}
+.status.error{color:#b42318}.status.success{color:#067647}
+button:disabled{opacity:.6;cursor:not-allowed}
 </style>
 </head>
 <body>
-
-<div class="box">
-
-    <button class="back-btn"
-        onclick="window.location.href='index.html'">
-        ← Zurück zum Login
-    </button>
-
-    <h2>Registrierung</h2>
-
-    <input id="vorname" type="text" placeholder="Vorname">
-    <input id="nachname" type="text" placeholder="Nachname">
-    <input id="email" type="email" placeholder="E-Mail">
-    <input id="handy" type="text" placeholder="Telefonnummer">
-    <input id="passwort" type="password" placeholder="Passwort">
-    <input id="passwort2" type="password" placeholder="Passwort wiederholen">
-
-    <button class="register-btn"
-        onclick="registrieren()">
-        Registrieren
-    </button>
-
-    <div class="info">
-        VE-Log Mitarbeiterkonto erstellen
-    </div>
-
-</div>
+<main class="box">
+  <button class="back-btn" type="button" onclick="location.href='index.html'">← Zurück zum Login</button>
+  <h2>Mitarbeiterregistrierung</h2>
+  <form id="registerForm">
+    <input id="vorname" type="text" placeholder="Vorname" autocomplete="given-name" required>
+    <input id="nachname" type="text" placeholder="Nachname" autocomplete="family-name" required>
+    <input id="email" type="email" placeholder="E-Mail" autocomplete="email" required>
+    <input id="handy" type="tel" placeholder="Telefonnummer" autocomplete="tel">
+    <input id="passwort" type="password" placeholder="Passwort (mindestens 6 Zeichen)" autocomplete="new-password" minlength="6" required>
+    <input id="passwort2" type="password" placeholder="Passwort wiederholen" autocomplete="new-password" minlength="6" required>
+    <button class="register-btn" id="registerButton" type="submit">Mitarbeiterkonto erstellen</button>
+  </form>
+  <p class="info">Jedes neue Konto erhält automatisch die Rolle „Mitarbeiter“.</p>
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+</main>
 
 <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
+import {initializeApp, getApps} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getAuth, createUserWithEmailAndPassword, sendEmailVerification} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {getDatabase, ref, set} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-    authDomain: "ve-log.firebaseapp.com",
-    databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "ve-log",
-    storageBucket: "ve-log.firebasestorage.app",
-    messagingSenderId: "749978080433",
-    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+  apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+  authDomain: "ve-log.firebaseapp.com",
+  databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ve-log",
+  storageBucket: "ve-log.firebasestorage.app",
+  messagingSenderId: "749978080433",
+  appId: "1:749978080433:web:8f64ef99a557fe2346be90"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const database = getDatabase(app);
+const db = getDatabase(app);
+const form = document.getElementById("registerForm");
+const button = document.getElementById("registerButton");
+const statusEl = document.getElementById("status");
 
-window.registrieren = async function() {
+function showStatus(message, type="") {
+  statusEl.textContent = message;
+  statusEl.className = "status" + (type ? " " + type : "");
+}
+function errorText(error) {
+  const messages = {
+    "auth/email-already-in-use": "Diese E-Mail-Adresse ist bereits registriert.",
+    "auth/weak-password": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "auth/invalid-email": "Bitte eine gültige E-Mail-Adresse eingeben.",
+    "auth/operation-not-allowed": "E-Mail-/Passwort-Registrierung ist in Firebase nicht aktiviert.",
+    "auth/network-request-failed": "Netzwerkfehler. Bitte Internetverbindung prüfen.",
+    "PERMISSION_DENIED": "Firebase hat den Datenbankzugriff verweigert. Prüfe die Realtime-Database-Regeln."
+  };
+  return messages[error.code] || error.message || "Registrierung fehlgeschlagen.";
+}
 
-    const vorname = document.getElementById("vorname").value.trim();
-    const nachname = document.getElementById("nachname").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const handy = document.getElementById("handy").value.trim();
-    const passwort = document.getElementById("passwort").value;
-    const passwort2 = document.getElementById("passwort2").value;
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  button.disabled = true;
+  showStatus("Konto wird erstellt ...");
 
-    if(!vorname || !nachname || !email || !passwort){
-        alert("Bitte alle Pflichtfelder ausfüllen.");
-        return;
+  let createdUser = null;
+  let profileSaved = false;
+  let roleSaved = false;
+
+  const vorname = document.getElementById("vorname").value.trim();
+  const nachname = document.getElementById("nachname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const handy = document.getElementById("handy").value.trim();
+  const password = document.getElementById("passwort").value;
+  const password2 = document.getElementById("passwort2").value;
+
+  if (password !== password2) {
+    showStatus("Die Passwörter stimmen nicht überein.", "error");
+    button.disabled = false;
+    return;
+  }
+
+  try {
+    // Schritt 1: Firebase-Authentication-Konto anlegen
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    createdUser = credential.user;
+    const uid = createdUser.uid;
+
+    // Schritt 2: ZUERST die Rolle schreiben.
+    // Die Rules müssen diese einmalige Selbstzuweisung erlauben.
+    await set(ref(db, "roles/" + uid), "mitarbeiter");
+    roleSaved = true;
+
+    // Schritt 3: Danach Profil schreiben, damit die .validate-Regel
+    // für users/$uid/rolle die bereits gespeicherte Rolle findet.
+    await set(ref(db, "users/" + uid), {
+      uid,
+      vorname,
+      nachname,
+      email,
+      handy,
+      rolle: "mitarbeiter",
+      aktiv: true,
+      erstelltAm: new Date().toISOString()
+    });
+    profileSaved = true;
+
+    // Schritt 4: Verifizierungs-E-Mail senden.
+    // Ein Fehler beim Mailversand löscht das Konto/Profil nicht.
+    try {
+      await sendEmailVerification(createdUser);
+      showStatus("Konto erstellt! Deine Rolle ist Mitarbeiter. Bitte bestätige deine E-Mail-Adresse über den zugesandten Link. Du wirst zum Login weitergeleitet.", "success");
+    } catch (mailError) {
+      console.error("Verifizierungs-E-Mail konnte nicht gesendet werden:", mailError);
+      showStatus("Konto und Mitarbeiterprofil wurden erstellt, aber die Verifizierungs-E-Mail konnte nicht gesendet werden. Bitte später erneut versuchen.", "error");
+      button.disabled = false;
+      return;
     }
 
-    if(passwort !== passwort2){
-        alert("Passwörter stimmen nicht überein.");
-        return;
+    setTimeout(() => location.replace("index.html"), 2500);
+
+  } catch (error) {
+    console.error("Registrierungsfehler:", error);
+    let detail = errorText(error);
+
+    if (createdUser) {
+      detail += " Das Auth-Konto wurde bereits erstellt.";
+      if (roleSaved) detail += " Die Mitarbeiterrolle wurde gespeichert.";
+      if (!profileSaved) detail += " Das Mitarbeiterprofil fehlt noch; bitte Administrator kontaktieren, bevor du dich erneut registrierst.";
     }
 
-    try{
-
-        const userCredential =
-            await createUserWithEmailAndPassword(
-                auth,
-                email,
-                passwort
-            );
-
-        const uid = userCredential.user.uid;
-
-        await set(ref(database, "users/" + uid), {
-            uid: uid,
-            vorname: vorname,
-            nachname: nachname,
-            email: email,
-            handy: handy,
-            rolle: "mitarbeiter",
-            aktiv: true,
-            erstelltAm: new Date().toISOString()
-        });
-
-        await set(
-            ref(database, "roles/" + uid),
-            "mitarbeiter"
-        );
-
-        alert("Registrierung erfolgreich.");
-
-        window.location.href = "index.html";
-
-    } catch(error){
-
-        console.error(error);
-
-        if(error.code === "auth/email-already-in-use"){
-            alert("Diese E-Mail ist bereits registriert.");
-        }
-        else if(error.code === "auth/weak-password"){
-            alert("Passwort muss mindestens 6 Zeichen lang sein.");
-        }
-        else if(error.code === "auth/invalid-email"){
-            alert("Ungültige E-Mail-Adresse.");
-        }
-        else{
-            alert(error.message);
-        }
-    }
-};
-
+    showStatus(detail, "error");
+    button.disabled = false;
+  }
+});
 </script>
-
 </body>
 </html>
