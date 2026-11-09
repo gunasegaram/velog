@@ -1184,3 +1184,326 @@ function downloadCSV(filename,rows) {
   a.href=url;
   a.download=filename;
   a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+$('exportOwn').addEventListener('click',()=>{
+  const month=$('monthFilter').value;
+  const records=recordRows(ownRecords).filter(r=>r.day.startsWith(month));
+
+  const rows=[
+    ['Datum','Beginn','Ende','Pause Minuten','Netto Minuten','Projekt','Tätigkeit']
+  ];
+
+  records.forEach(r=>rows.push([
+    r.day,
+    formatTime(r.start),
+    formatTime(r.end),
+    Math.round(breakDuration(r,r.end||Date.now())/60000),
+    Math.round(workDuration(r,r.end||Date.now())/60000),
+    r.project,
+    r.activity
+  ]));
+
+  downloadCSV('VE-Log-Zeiten-'+month+'.csv',rows);
+});
+
+/* --------------------------------
+   ADMINISTRATOR
+-------------------------------- */
+
+function renderAdminStatus() {
+  if (!isAdmin()) return;
+
+  const entries=Object.entries(activeUsers||{})
+    .filter(([uid,record])=>record && record.status);
+
+  const working=entries.filter(([,r])=>r.status==='working').length;
+  const paused=entries.filter(([,r])=>r.status==='paused').length;
+
+  $('adminWorking').textContent=working;
+  $('adminPaused').textContent=paused;
+  $('adminEmployees').textContent=Object.keys(allUsers).length;
+  $('adminEntries').textContent=recordRows(monthlyRecords).length;
+
+  const search=$('adminSearch').value.toLowerCase();
+  const status=$('adminStatus').value;
+
+  $('adminTable').replaceChildren();
+
+  const filtered=entries.filter(([uid,r])=>{
+    const name=allUsers[uid]?.name || r.employeeName || r.email || uid;
+    const matches=name.toLowerCase().includes(search);
+    return matches && (status==='all'||r.status===status);
+  });
+
+  $('adminEmpty').hidden=filtered.length>0;
+
+  filtered.forEach(([uid,r])=>{
+    const tr=document.createElement('tr');
+    const name=allUsers[uid]?.name || r.employeeName || r.email || uid;
+
+    [
+      name,
+      formatTime(r.start),
+      r.project||'—',
+      r.status==='paused'?'Pause':'Arbeitet',
+      formatHours(workDuration(r))
+    ].forEach(value=>{
+      const td=document.createElement('td');
+      td.textContent=value;
+      tr.append(td);
+    });
+
+    $('adminTable').append(tr);
+  });
+}
+
+function renderReport() {
+  if (!isAdmin()) return;
+
+  const month=$('adminMonth').value;
+  const search=$('reportSearch').value.toLowerCase();
+
+  const records=recordRows(monthlyRecords).filter(r=>
+    r.day.startsWith(month)
+  );
+
+  const groups={};
+
+  records.forEach(r=>{
+    const uid=r.uid;
+    if(!groups[uid]){
+      groups[uid]={
+        name:allUsers[uid]?.name||r.employeeName||r.email||uid,
+        days:new Set(),
+        work:0,
+        breaks:0
+      };
+    }
+
+    groups[uid].days.add(r.day);
+    groups[uid].work+=workDuration(r,r.end||Date.now());
+    groups[uid].breaks+=breakDuration(r,r.end||Date.now());
+  });
+
+  $('reportTable').replaceChildren();
+
+  const filtered=Object.values(groups).filter(g=>
+    g.name.toLowerCase().includes(search)
+  );
+
+  $('reportEmpty').hidden=filtered.length>0;
+
+  filtered.forEach(g=>{
+    const tr=document.createElement('tr');
+    const target=40*60*60*1000;
+    const difference=g.work-target;
+
+    [
+      g.name,
+      String(g.days.size),
+      formatHours(g.work),
+      formatHours(g.breaks),
+      '40:00',
+      (difference>=0?'+':'')+formatHours(Math.abs(difference))
+    ].forEach(value=>{
+      const td=document.createElement('td');
+      td.textContent=value;
+      tr.append(td);
+    });
+
+    $('reportTable').append(tr);
+  });
+}
+
+function startAdminListeners() {
+  if (!isAdmin()) return;
+
+  listeners.push(onValue(
+    ref(db,'activeTimeTracking'),
+    snapshot=>{
+      activeUsers=snapshot.val()||{};
+      renderAdminStatus();
+    }
+  ));
+
+  listeners.push(onValue(
+    ref(db,'users'),
+    snapshot=>{
+      allUsers={};
+
+      snapshot.forEach(child=>{
+        const p=child.val()||{};
+        allUsers[child.key]={
+          name:[p.vorname,p.nachname].filter(Boolean).join(' ')
+            ||p.name||p.email||child.key
+        };
+      });
+
+      renderAdminStatus();
+      renderReport();
+    }
+  ));
+
+  listeners.push(onValue(
+    ref(db,'timeTracking'),
+    snapshot=>{
+      monthlyRecords=snapshot.val()||{};
+      renderReport();
+      renderAdminStatus();
+    }
+  ));
+
+  $('adminSection').hidden=false;
+  $('navEmployees').hidden=false;
+  $('navVehicles').hidden=false;
+}
+
+/* --------------------------------
+   LISTENER
+-------------------------------- */
+
+function stopListeners() {
+  listeners.forEach(stop=>stop());
+  listeners=[];
+}
+
+function startOwnListeners() {
+  listeners.push(onValue(
+    ref(db,`activeTimeTracking/${user.uid}`),
+    snapshot=>{
+      active=snapshot.val()||null;
+      renderTimer();
+      renderStats();
+      renderAdminStatus();
+    },
+    error=>showMessage('Aktueller Status konnte nicht geladen werden: '+error.message,'error')
+  ));
+
+  listeners.push(onValue(
+    ref(db,`timeTracking/${user.uid}`),
+    snapshot=>{
+      ownRecords=snapshot.val()||{};
+      renderOwnTable();
+      renderStats();
+    },
+    error=>showMessage('Arbeitszeiten konnten nicht geladen werden: '+error.message,'error')
+  ));
+}
+
+/* --------------------------------
+   FILTER
+-------------------------------- */
+
+$('monthFilter').addEventListener('change',renderOwnTable);
+$('adminMonth').addEventListener('change',renderReport);
+$('reportSearch').addEventListener('input',renderReport);
+$('adminSearch').addEventListener('input',renderAdminStatus);
+$('adminStatus').addEventListener('change',renderAdminStatus);
+
+$('refreshAdmin').addEventListener('click',()=>{
+  renderAdminStatus();
+  renderReport();
+});
+
+$('exportAdmin').addEventListener('click',()=>{
+  if(!isAdmin()) return;
+
+  const month=$('adminMonth').value;
+  const rows=[[
+    'Mitarbeiter','Datum','Beginn','Ende',
+    'Pause Minuten','Netto Minuten','Projekt','Tätigkeit'
+  ]];
+
+  recordRows(monthlyRecords).filter(r=>
+    r.day.startsWith(month)
+  ).forEach(r=>rows.push([
+    allUsers[r.uid]?.name||r.employeeName||r.email||r.uid,
+    r.day,
+    formatTime(r.start),
+    formatTime(r.end),
+    Math.round(breakDuration(r,r.end||Date.now())/60000),
+    Math.round(workDuration(r,r.end||Date.now())/60000),
+    r.project,
+    r.activity
+  ]));
+
+  downloadCSV('VE-Log-Mitarbeiter-'+month+'.csv',rows);
+});
+
+/* --------------------------------
+   ABMELDUNG
+-------------------------------- */
+
+$('logoutButton').addEventListener('click',async()=>{
+  if(active){
+    if(!confirm('Du bist noch eingestempelt. Trotzdem abmelden?')) return;
+  }
+
+  try {
+    await signOut(auth);
+    window.location.href='index.html';
+  } catch(error) {
+    showMessage('Abmeldung fehlgeschlagen: '+error.message,'error');
+  }
+});
+
+/* --------------------------------
+   AUTHENTIFIZIERUNG
+-------------------------------- */
+
+onAuthStateChanged(auth,async currentUser=>{
+  stopListeners();
+  clearInterval(timerInterval);
+
+  user=currentUser;
+
+  if(!user){
+    $('application').hidden=true;
+    $('authError').hidden=false;
+    return;
+  }
+
+  $('authError').hidden=true;
+  $('application').hidden=false;
+
+  try {
+    await loadProfile();
+
+    const roleSnapshot=await get(
+      ref(db,`roles/${user.uid}`)
+    );
+
+    role=roleSnapshot.exists()?roleSnapshot.val():null;
+
+    if(!['mitarbeiter','manager','admin','superadmin'].includes(role)){
+      $('application').hidden=true;
+      showMessage('Für dein Konto ist keine gültige Mitarbeiterrolle hinterlegt.','error');
+      return;
+    }
+
+    if(isAdmin()) {
+      startAdminListeners();
+    }
+
+    startOwnListeners();
+    startTimer();
+
+    $('project').addEventListener('change',()=>{});
+    $('activity').addEventListener('change',()=>{});
+
+    renderTimer();
+
+  } catch(error) {
+    showMessage(
+      'Die Zeiterfassung konnte nicht geladen werden. Bitte prüfe deine Firebase-Berechtigungen: '+error.message,
+      'error'
+    );
+  }
+});
+
+</script>
+</body>
+</html>
