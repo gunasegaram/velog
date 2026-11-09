@@ -1,639 +1,175 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VE-Log | Anmeldung</title>
-
 <style>
-:root {
-    --rot: #922f2b;
-    --rot-dunkel: #762522;
-    --blau: #1d3557;
-    --hintergrund: #f3f4f6;
-    --text: #263238;
-    --rand: #d9dee5;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    padding: 24px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--hintergrund);
-    color: var(--text);
-    font-family: Arial, sans-serif;
-}
-
-.login-box {
-    width: 100%;
-    max-width: 410px;
-    padding: 34px;
-    background: white;
-    border: 1px solid #e8e8e8;
-    border-radius: 18px;
-    box-shadow: 0 12px 40px rgba(29, 53, 87, .09);
-}
-
-.logo {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 26px;
-}
-
-.logo img {
-    display: block;
-    width: 190px;
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-}
-
-h1 {
-    margin: 0 0 10px;
-    color: var(--blau);
-    font-size: 27px;
-    line-height: 1.25;
-}
-
-.intro {
-    margin: 0 0 24px;
-    color: #667085;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-label {
-    display: block;
-    margin: 17px 0 7px;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-input {
-    width: 100%;
-    min-height: 47px;
-    padding: 12px 14px;
-    border: 1px solid var(--rand);
-    border-radius: 9px;
-    background: white;
-    color: var(--text);
-    font: inherit;
-    font-size: 14px;
-}
-
-input:focus {
-    outline: 3px solid rgba(29, 53, 87, .13);
-    border-color: var(--blau);
-}
-
-button,
-.link-button {
-    display: flex;
-    width: 100%;
-    min-height: 46px;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 16px;
-    border: 0;
-    border-radius: 9px;
-    font: inherit;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background .15s ease;
-}
-
-.primary {
-    margin-top: 22px;
-    background: var(--rot);
-    color: white;
-}
-
-.primary:hover {
-    background: var(--rot-dunkel);
-}
-
-.link-button {
-    margin-top: 10px;
-    border: 1px solid var(--rand);
-    background: white;
-    color: var(--blau);
-}
-
-.link-button:hover {
-    background: #f5f7fa;
-}
-
-.guest-link {
-    border-color: #d8e2f0;
-    background: #edf3fb;
-    color: var(--blau);
-}
-
-.guest-link:hover {
-    background: #e0eaf8;
-}
-
-button:disabled {
-    opacity: .6;
-    cursor: not-allowed;
-}
-
-.divider {
-    height: 1px;
-    margin: 26px 0 22px;
-    background: #e5e7eb;
-}
-
-.section-title {
-    margin: 0 0 7px;
-    color: var(--blau);
-    font-size: 16px;
-}
-
-.small-text {
-    margin: 0 0 14px;
-    color: #667085;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.status {
-    margin: 16px 0 0;
-    overflow-wrap: anywhere;
-    font-size: 13px;
-    line-height: 1.5;
-}
-
-.status:empty {
-    display: none;
-}
-
-.status.error {
-    color: #b42318;
-}
-
-.status.success {
-    color: #067647;
-}
-
-@media (max-width: 420px) {
-    .login-box {
-        padding: 25px 21px;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-}
+:root{--rot:#922f2b;--rot-dunkel:#762522;--blau:#1d3557;--hintergrund:#f3f4f6;--text:#263238;--rand:#d9dee5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:24px 16px;display:flex;align-items:center;justify-content:center;background:var(--hintergrund);color:var(--text);font-family:Arial,sans-serif}
+.login-box{width:100%;max-width:410px;padding:34px;background:white;border:1px solid #e8e8e8;border-radius:18px;box-shadow:0 12px 40px rgba(29,53,87,.09)}
+.logo{display:flex;justify-content:center;margin-bottom:26px}
+.logo img{display:block;width:190px;max-width:100%;height:auto;object-fit:contain}
+h1{margin:0 0 10px;color:var(--blau);font-size:27px;line-height:1.25}
+.intro{margin:0 0 24px;color:#667085;font-size:14px;line-height:1.6}
+label{display:block;margin:17px 0 7px;font-size:14px;font-weight:700}
+input{width:100%;min-height:47px;padding:12px 14px;border:1px solid var(--rand);border-radius:9px;background:white;color:var(--text);font:inherit;font-size:14px}
+input:focus{outline:3px solid rgba(29,53,87,.13);border-color:var(--blau)}
+button,.link-button{display:flex;width:100%;min-height:46px;align-items:center;justify-content:center;padding:12px 16px;border:0;border-radius:9px;font:inherit;font-size:14px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer;transition:background .15s ease}
+.primary{margin-top:22px;background:var(--rot);color:white}.primary:hover{background:var(--rot-dunkel)}
+.link-button{margin-top:10px;border:1px solid var(--rand);background:white;color:var(--blau)}
+.link-button:hover{background:#f5f7fa}
+.guest-link{border-color:#d8e2f0;background:#edf3fb;color:var(--blau)}
+button:disabled{opacity:.6;cursor:not-allowed}
+.divider{height:1px;margin:26px 0 22px;background:#e5e7eb}
+.section-title{margin:0 0 7px;color:var(--blau);font-size:16px}
+.small-text{margin:0 0 14px;color:#667085;font-size:13px;line-height:1.5}
+.forgot-password{font-size:13px;color:#667085}
+.forgot-password a{color:var(--blau)}
+.status{margin:16px 0 0;overflow-wrap:anywhere;font-size:13px;line-height:1.5}
+.status:empty{display:none}.status.error{color:#b42318}.status.success{color:#067647}
+@media(max-width:420px){.login-box{padding:25px 21px}h1{font-size:24px}}
 </style>
 </head>
-
 <body>
-
 <main class="login-box">
+  <div class="logo"><img src="logo.png" alt="VE-Log GmbH"></div>
+  <h1>Herzlich Willkommen</h1>
+  <p class="intro">Melde dich mit deinen Zugangsdaten bei VE-Log an.</p>
 
-    <div class="logo">
-        <img src="logo.png" alt="VE-Log GmbH">
-    </div>
+  <form id="loginForm">
+    <label for="email">E-Mail-Adresse</label>
+    <input id="email" name="email" type="email" placeholder="name@beispiel.de" autocomplete="username" required>
+    <label for="passwort">Passwort</label>
+    <input id="passwort" name="password" type="password" placeholder="Passwort eingeben" autocomplete="current-password" required>
+    <p class="forgot-password">Passwort vergessen? <a href="#" id="resetPasswordLink">Passwort zurücksetzen</a></p>
+    <button class="primary" id="loginButton" type="submit">Anmelden</button>
+  </form>
 
-    <h1>Herzlich Willkommen</h1>
-
-    <p class="intro">
-        Melde dich mit deinen Zugangsdaten bei VE-Log an.
-    </p>
-
-    <form id="loginForm">
-
-        <label for="email">E-Mail-Adresse</label>
-        <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="name@beispiel.de"
-            autocomplete="username"
-            required
-        >
-
-        <label for="passwort">Passwort</label>
-        <input
-            id="passwort"
-            name="password"
-            type="password"
-            placeholder="Passwort eingeben"
-            autocomplete="current-password"
-            required
-        >
-
-        <p class="forgot-password">
-            Passwort vergessen?
-            <a href="#" id="resetPasswordLink">Passwort zurücksetzen</a>
-        </p>
-
-        <button
-            class="primary"
-            id="loginButton"
-            type="submit"
-        >
-            Anmelden
-        </button>
-
-    </form>
-
-    <!-- GAST-LOGIN -->
-    <button
-        class="link-button guest-link"
-        id="guestLoginButton"
-        type="button"
-    >
-        Zum Gast-Login
-    </button>
-
-    <div class="divider"></div>
-
-    <h2 class="section-title">Noch kein Konto?</h2>
-
-    <p class="small-text">
-        Wähle aus, welches Konto du erstellen möchtest.
-    </p>
-
-    <a class="link-button" href="registrieren.html">
-        Mitarbeiterkonto registrieren
-    </a>
-
-    <a class="link-button" href="registergast.html">
-        Gast registrieren
-    </a>
-
-    <p
-        id="status"
-        class="status"
-        role="status"
-        aria-live="polite"
-    ></p>
-
+  <button class="link-button guest-link" id="guestLoginButton" type="button">Zum Gast-Login</button>
+  <div class="divider"></div>
+  <h2 class="section-title">Noch kein Konto?</h2>
+  <p class="small-text">Wähle aus, welches Konto du erstellen möchtest.</p>
+  <a class="link-button" href="registrieren.html">Mitarbeiterkonto registrieren</a>
+  <a class="link-button" href="registergast.html">Gast registrieren</a>
+  <p id="status" class="status" role="status" aria-live="polite"></p>
 </main>
 
 <script type="module">
-
-import {
-    initializeApp,
-    getApps
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-
-import {
-    getAuth,
-    signInWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-
-import {
-    getDatabase,
-    ref,
-    get
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
-
-
-// --------------------------------------------------
-// FIREBASE-KONFIGURATION
-// --------------------------------------------------
+import {initializeApp, getApps} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signOut} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {getDatabase, ref, get} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
-    authDomain: "ve-log.firebaseapp.com",
-    databaseURL:
-        "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "ve-log",
-    storageBucket: "ve-log.firebasestorage.app",
-    messagingSenderId: "749978080433",
-    appId: "1:749978080433:web:8f64ef99a557fe2346be90"
+  apiKey: "AIzaSyDXTAVTeddKxwOp_C_2Z4lPY9yI5bAm0KM",
+  authDomain: "ve-log.firebaseapp.com",
+  databaseURL: "https://ve-log-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "ve-log",
+  storageBucket: "ve-log.firebasestorage.app",
+  messagingSenderId: "749978080433",
+  appId: "1:749978080433:web:8f64ef99a557fe2346be90"
 };
 
-
-// --------------------------------------------------
-// ZIELSEITEN
-// --------------------------------------------------
-
-const zielseiten = {
-    gast:
-        "https://gunasegaram.github.io/velog/gast.html",
-
-    mitarbeiter:
-        "https://gunasegaram.github.io/velog/dashboard.html",
-
-    manager:
-        "https://gunasegaram.github.io/velog/dashboard.html",
-
-    admin:
-        "https://gunasegaram.github.io/velog/dashboard.html",
-
-    superadmin:
-        "https://gunasegaram.github.io/velog/dashboard.html"
-};
-
-
-// --------------------------------------------------
-// FIREBASE INITIALISIEREN
-// --------------------------------------------------
-
-const app = getApps().length
-    ? getApps()[0]
-    : initializeApp(firebaseConfig);
-
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
-
-
-// --------------------------------------------------
-// HTML-ELEMENTE
-// --------------------------------------------------
-
 const form = document.getElementById("loginForm");
+const loginButton = document.getElementById("loginButton");
+const guestButton = document.getElementById("guestLoginButton");
+const resetLink = document.getElementById("resetPasswordLink");
+const statusEl = document.getElementById("status");
+let busy = false;
 
-const button = document.getElementById("loginButton");
+const destinations = {
+  gast: "gast.html",
+  mitarbeiter: "dashboard.html",
+  manager: "dashboard.html",
+  admin: "dashboard.html",
+  superadmin: "dashboard.html"
+};
 
-const guestLoginButton =
-    document.getElementById("guestLoginButton");
-
-const resetPasswordLink =
-    document.getElementById("resetPasswordLink");
-
-const status = document.getElementById("status");
-
-let anmeldungLaeuft = false;
-
-
-// --------------------------------------------------
-// STATUSANZEIGE
-// --------------------------------------------------
-
-function zeigeStatus(text, typ = "") {
-
-    status.textContent = text;
-    status.className = "status";
-
-    if (typ) {
-        status.classList.add(typ);
-    }
+function showStatus(message, type="") {
+  statusEl.textContent = message;
+  statusEl.className = "status" + (type ? " " + type : "");
 }
 
-
-// --------------------------------------------------
-// LESBARE FIREBASE-FEHLERMELDUNGEN
-// --------------------------------------------------
-
-function friendlyError(error) {
-
-    const messages = {
-
-        "auth/invalid-email":
-            "Bitte gib eine gültige E-Mail-Adresse ein.",
-
-        "auth/invalid-credential":
-            "E-Mail-Adresse oder Passwort ist falsch.",
-
-        "auth/user-disabled":
-            "Dieses Konto wurde deaktiviert.",
-
-        "auth/too-many-requests":
-            "Zu viele Anmeldeversuche. Bitte versuche es später erneut.",
-
-        "auth/network-request-failed":
-            "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
-
-        "PERMISSION_DENIED":
-            "Der Zugriff auf die Rolleninformationen wurde verweigert. Bitte prüfe deine Firebase-Datenbankregeln.",
-
-        "auth/operation-not-allowed":
-            "Die E-Mail-/Passwort-Anmeldung ist in Firebase nicht aktiviert."
-    };
-
-    return messages[error.code] ||
-        "Die Anmeldung ist fehlgeschlagen. Bitte überprüfe deine Zugangsdaten und Firebase-Einstellungen.";
+function errorText(error) {
+  const messages = {
+    "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
+    "auth/invalid-credential": "E-Mail-Adresse oder Passwort ist falsch.",
+    "auth/user-disabled": "Dieses Konto wurde deaktiviert.",
+    "auth/too-many-requests": "Zu viele Anmeldeversuche. Bitte später erneut versuchen.",
+    "auth/network-request-failed": "Netzwerkfehler. Bitte Internetverbindung prüfen.",
+    "auth/operation-not-allowed": "E-Mail-/Passwort-Anmeldung ist in Firebase nicht aktiviert.",
+    "PERMISSION_DENIED": "Firebase verweigert den Zugriff auf die Rolleninformationen. Bitte Realtime-Database-Regeln prüfen.",
+    "database/permission-denied": "Firebase verweigert den Zugriff auf die Rolleninformationen. Bitte Realtime-Database-Regeln prüfen."
+  };
+  return messages[error.code] || error.message || "Die Aktion ist fehlgeschlagen.";
 }
 
+resetLink.addEventListener("click", async (event) => {
+  event.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  if (!email) {
+    showStatus("Bitte zuerst deine E-Mail-Adresse eingeben.", "error");
+    document.getElementById("email").focus();
+    return;
+  }
+  resetLink.style.pointerEvents = "none";
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showStatus("Falls ein Konto zu dieser Adresse besteht, wurde eine E-Mail zum Zurücksetzen versendet. Bitte auch den Spam-Ordner prüfen.", "success");
+  } catch (error) {
+    console.error(error);
+    showStatus(errorText(error), "error");
+  } finally {
+    resetLink.style.pointerEvents = "";
+  }
+});
 
-// --------------------------------------------------
-// PASSWORT ZURÜCKSETZEN
-// --------------------------------------------------
+async function login(event, requireGuest=false) {
+  event.preventDefault();
+  if (busy) return;
+  busy = true;
+  loginButton.disabled = true;
+  guestButton.disabled = true;
+  showStatus("Anmeldung läuft ...");
+  let signedInUser = null;
 
-resetPasswordLink.addEventListener("click", async (event) => {
-    event.preventDefault();
-
+  try {
     const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("passwort").value;
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    signedInUser = credential.user;
 
-    if (!email) {
-        zeigeStatus(
-            "Bitte gib zuerst deine E-Mail-Adresse ein. Danach kannst du dein Passwort zurücksetzen.",
-            "error"
-        );
-        document.getElementById("email").focus();
-        return;
+    const snapshot = await get(ref(db, "roles/" + signedInUser.uid));
+    if (!snapshot.exists()) throw new Error("Für dieses Konto ist keine Rolle hinterlegt. Bitte Administrator kontaktieren.");
+
+    const role = snapshot.val();
+    if (!["gast","mitarbeiter","manager","admin","superadmin"].includes(role)) {
+      throw new Error("Für dieses Konto ist keine gültige Rolle hinterlegt.");
+    }
+    if (requireGuest && role !== "gast") {
+      throw new Error("Dieses Konto ist kein Gastkonto. Bitte normal anmelden.");
     }
 
-    resetPasswordLink.style.pointerEvents = "none";
-    zeigeStatus("Die E-Mail zum Zurücksetzen des Passworts wird gesendet ...");
-
-    try {
-        await sendPasswordResetEmail(auth, email);
-
-        zeigeStatus(
-            "Wenn für diese E-Mail-Adresse ein Konto besteht, wurde eine E-Mail zum Zurücksetzen des Passworts versendet. Bitte prüfe auch deinen Spam-Ordner.",
-            "success"
-        );
-    } catch (error) {
-        console.error("Fehler beim Zurücksetzen des Passworts:", error);
-
-        const messages = {
-            "auth/invalid-email": "Bitte gib eine gültige E-Mail-Adresse ein.",
-            "auth/user-not-found": "Zu dieser E-Mail-Adresse wurde kein Konto gefunden.",
-            "auth/too-many-requests": "Zu viele Anfragen. Bitte versuche es später erneut.",
-            "auth/network-request-failed": "Netzwerkfehler. Bitte prüfe deine Internetverbindung.",
-            "auth/operation-not-allowed": "Das Zurücksetzen des Passworts ist in Firebase nicht aktiviert."
-        };
-
-        zeigeStatus(
-            messages[error.code] ||
-            "Die E-Mail zum Zurücksetzen konnte nicht gesendet werden. Bitte versuche es später erneut.",
-            "error"
-        );
-    } finally {
-        resetPasswordLink.style.pointerEvents = "";
+    showStatus("Anmeldung erfolgreich. Weiterleitung ...", "success");
+    window.location.replace(destinations[role]);
+  } catch (error) {
+    console.error("Anmeldefehler:", error);
+    if (signedInUser && auth.currentUser) {
+      try { await signOut(auth); } catch (e) { console.error(e); }
     }
-});
-
-
-// --------------------------------------------------
-// GAST-LOGIN-BUTTON
-// --------------------------------------------------
-
-guestLoginButton.addEventListener("click", () => {
-
-    // Normale Firebase-Anmeldung starten.
-    // Die Gastrolle wird anschließend automatisch geprüft.
-
-    form.requestSubmit();
-
-});
-
-
-// --------------------------------------------------
-// ANMELDUNG UND ROLLENWEITERLEITUNG
-// --------------------------------------------------
-
-form.addEventListener("submit", async (event) => {
-
-    event.preventDefault();
-
-    if (anmeldungLaeuft) {
-        return;
-    }
-
-    anmeldungLaeuft = true;
-
-    button.disabled = true;
-    guestLoginButton.disabled = true;
-
-    zeigeStatus("Anmeldung läuft ...");
-
-    let angemeldeterBenutzer = null;
-
-    try {
-
-        const email = document
-            .getElementById("email")
-            .value
-            .trim();
-
-        const password = document
-            .getElementById("passwort")
-            .value;
-
-
-        // 1. Benutzer bei Firebase anmelden
-
-        const credential = await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
-
-        angemeldeterBenutzer = credential.user;
-
-
-        // 2. Benutzerrolle aus Firebase laden
-
-        const roleSnapshot = await get(
-            ref(db, "roles/" + credential.user.uid)
-        );
-
-        if (!roleSnapshot.exists()) {
-
-            throw new Error(
-                "Für dieses Konto ist keine Rolle hinterlegt. Bitte kontaktiere den Administrator."
-            );
-
-        }
-
-        const role = roleSnapshot.val();
-
-
-        // 3. Rolle prüfen
-
-        const allowedRoles = [
-            "gast",
-            "mitarbeiter",
-            "manager",
-            "admin",
-            "superadmin"
-        ];
-
-        if (
-            typeof role !== "string" ||
-            !allowedRoles.includes(role)
-        ) {
-
-            throw new Error(
-                "Für dieses Konto ist keine gültige Rolle hinterlegt. Bitte kontaktiere den Administrator."
-            );
-
-        }
-
-
-        // 4. Zielseite anhand der Rolle bestimmen
-
-        const zielseite = zielseiten[role];
-
-        if (!zielseite) {
-
-            throw new Error(
-                "Für diese Rolle ist keine Zielseite eingerichtet."
-            );
-
-        }
-
-
-        // 5. Erfolgreich anmelden und weiterleiten
-
-        zeigeStatus(
-            "Anmeldung erfolgreich. Du wirst weitergeleitet ...",
-            "success"
-        );
-
-        window.location.replace(zielseite);
-
-    } catch (error) {
-
-        console.error("Anmeldefehler:", error);
-
-
-        // Sitzung beenden, falls die Rollenprüfung fehlschlägt
-
-        if (angemeldeterBenutzer && auth.currentUser) {
-
-            try {
-
-                await signOut(auth);
-
-            } catch (signOutError) {
-
-                console.error(
-                    "Fehler beim Beenden der Sitzung:",
-                    signOutError
-                );
-
-            }
-
-        }
-
-
-        const nachricht = error.code
-            ? friendlyError(error)
-            : error.message;
-
-        zeigeStatus(nachricht, "error");
-
-        button.disabled = false;
-        guestLoginButton.disabled = false;
-
-        anmeldungLaeuft = false;
-
-    }
-
-});
-
+    showStatus(errorText(error), "error");
+    busy = false;
+    loginButton.disabled = false;
+    guestButton.disabled = false;
+  }
+}
+
+form.addEventListener("submit", (event) => login(event, false));
+guestButton.addEventListener("click", (event) => login(event, true));
 </script>
-
 </body>
 </html>
