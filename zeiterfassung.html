@@ -610,6 +610,7 @@ let monthlyRecords = {};
 let listeners = [];
 let timerInterval = null;
 let busy = false;
+let finalizing = false;
 
 const ADMIN_ROLES = ['admin', 'superadmin'];
 
@@ -758,6 +759,7 @@ function renderTimer() {
     $('pauseButton').disabled=true;
     $('endButton').disabled=true;
     $('pauseButton').textContent='☕ Pause';
+    $('endButton').textContent='■ Arbeitsende';
 
     return;
   }
@@ -777,6 +779,18 @@ function renderTimer() {
   $('timerDescription').textContent =
     `Arbeitsbeginn: ${formatTime(active.start)} · ${active.project || 'Ohne Projekt'}`;
 
+  if (active.status==='completed') {
+    $('status').textContent='Abschluss wird gespeichert';
+    $('status').className='status paused';
+    $('timerDescription').textContent='Deine Buchung ist beendet. Falls die Speicherung unterbrochen wurde, kannst du sie erneut abschließen.';
+    $('startButton').disabled=true;
+    $('pauseButton').disabled=true;
+    $('endButton').disabled=false;
+    $('endButton').textContent='↻ Speichern wiederholen';
+    return;
+  }
+
+  $('endButton').textContent='■ Arbeitsende';
   if (active.status==='paused') {
     $('status').textContent='Pause';
     $('status').className='status paused';
@@ -802,7 +816,7 @@ function startTimer() {
 -------------------------------- */
 
 $('startButton').addEventListener('click',async()=>{
-  if (busy || !user) return;
+  if (busy || !user || active) return;
 
   busy=true;
   hideMessage();
@@ -849,7 +863,7 @@ $('startButton').addEventListener('click',async()=>{
 -------------------------------- */
 
 $('pauseButton').addEventListener('click',async()=>{
-  if (busy || !active) return;
+  if (busy || !active || active.status==='completed') return;
 
   busy=true;
 
@@ -912,86 +926,89 @@ $('pauseButton').addEventListener('click',async()=>{
    ARBEITSENDE
 -------------------------------- */
 
-$('endButton').addEventListener('click',async()=>{
-  if (busy || !active) return;
-
-  const confirmed=confirm(
-    'Möchtest du deinen Arbeitstag wirklich beenden?'
-  );
-
-  if (!confirmed) return;
-
-  busy=true;
-
+async function persistCompletedRecord(completed) {
+  if (!completed || !completed.end || completed.status!=='completed') {
+    throw new Error('Der abgeschlossene Zeitdatensatz ist unvollständig.');
+  }
+  if (finalizing) return false;
+  finalizing=true;
   try {
-    const timestamp=Date.now();
-
-    const result=await runTransaction(
-      ref(db,activePath()),
-      current=>{
-        if (!current) return;
-
-        if (current.status==='paused' && current.breakStart) {
-          const breaks=current.breaks || {};
-          const breakId=push(ref(db,activePath()+'/breaks')).key;
-
-          if (!breakId) return;
-
-          breaks[breakId]={
-            start:current.breakStart,
-            end:timestamp
-          };
-
-          current.breaks=breaks;
-          current.breakStart=null;
-        }
-
-        current.status='completed';
-        current.end=timestamp;
-        current.updatedAt=timestamp;
-
-        return current;
-      }
-    );
-
-    if (!result.committed) {
-      throw new Error('Arbeitsende konnte nicht gespeichert werden.');
-    }
-
-    const completed=result.snapshot.val();
     const day=dateKey(new Date(completed.start));
-    const id=push(ref(db,`timeTracking/${user.uid}/${day}`)).key;
-
-    if (!id) throw new Error('Keine Datensatz-ID verfügbar.');
-
-    completed.completedAt=serverTimestamp();
-
-    await set(ref(db,recordPath(day,id)),completed);
-
-    const clear=await runTransaction(
-      ref(db,activePath()),
-      current=>{
-        if (current && current.start===completed.start) {
-          return null;
-        }
-        return;
-      }
-    );
-
-    if (!clear.committed) {
-      throw new Error(
-        'Arbeitszeit gespeichert. Der aktuelle Status konnte nicht zurückgesetzt werden.'
-      );
-    }
-
+    const id=completed.completedRecordId || ('completed_'+String(completed.start));
+    completed.completedRecordId=id;
+    completed.completedAt=completed.completedAt || serverTimestamp();
+    const changes={};
+    changes[`timeTracking/${user.uid}/${day}/${id}`]=completed;
+    changes[`activeTimeTracking/${user.uid}`]=null;
+    await update(ref(db),changes);
     active=null;
     renderTimer();
-    showMessage(
-      `Arbeitsende gespeichert. Nettoarbeitszeit: ${formatHours(workDuration(completed))}.`
-    );
+    renderStats();
+    showMessage(`Arbeitsende gespeichert. Nettoarbeitszeit: ${formatHours(workDuration(completed))}.`);
+    return true;
+  } finally {
+    finalizing=false;
+  }
+}
 
+$('endButton').addEventListener('click',async()=>{
+  if (busy || !active || !user) return;
+
+  if (active.status!=='completed' && !confirm('Möchtest du deinen Arbeitstag wirklich beenden?')) return;
+
+  busy=true;
+  $('endButton').disabled=true;
+  hideMessage();
+
+  try {
+    let completed=active;
+    if (active.status!=='completed') {
+      const timestamp=Date.now();
+      const day=dateKey(new Date(active.start));
+      const proposedId=push(ref(db,`timeTracking/${user.uid}/${day}`)).key;
+      if (!proposedId) throw new Error('Keine Datensatz-ID verfügbar.');
+
+      const result=await runTransaction(
+        ref(db,activePath()),
+        current=>{
+          if (!current) return;
+          if (current.status==='completed' && current.end) {
+            if (!current.completedRecordId) current.completedRecordId=proposedId;
+            return current;
+          }
+          if (!['working','paused'].includes(current.status)) return;
+
+          if (current.status==='paused' && current.breakStart) {
+            const breaks=current.breaks || {};
+            const breakId=push(ref(db,activePath()+'/breaks')).key;
+            if (!breakId) return;
+            breaks[breakId]={start:current.breakStart,end:timestamp};
+            current.breaks=breaks;
+            current.breakStart=null;
+          }
+
+          current.status='completed';
+          current.end=timestamp;
+          current.updatedAt=timestamp;
+          current.completedRecordId=proposedId;
+          return current;
+        }
+      );
+
+      if (!result.committed || !result.snapshot.exists()) {
+        throw new Error('Arbeitsende konnte nicht gespeichert werden. Bitte lade die Seite neu und versuche es erneut.');
+      }
+      completed=result.snapshot.val();
+    }
+
+    await persistCompletedRecord(completed);
   } catch(error) {
     showMessage(error.message || 'Arbeitsende fehlgeschlagen.','error');
+    if (active?.status==='completed') {
+      $('status').textContent='Abschluss offen – bitte erneut speichern';
+      $('endButton').textContent='↻ Speichern wiederholen';
+      $('endButton').disabled=false;
+    }
   } finally {
     busy=false;
   }
@@ -1225,7 +1242,8 @@ function renderAdminStatus() {
   $('adminWorking').textContent=working;
   $('adminPaused').textContent=paused;
   $('adminEmployees').textContent=Object.keys(allUsers).length;
-  $('adminEntries').textContent=recordRows(monthlyRecords).length;
+  const todayKey=dateKey(new Date());
+  $('adminEntries').textContent=recordRows(monthlyRecords).filter(r=>r.day===todayKey).length;
 
   const search=$('adminSearch').value.toLowerCase();
   const status=$('adminStatus').value;
@@ -1326,7 +1344,8 @@ function startAdminListeners() {
     snapshot=>{
       activeUsers=snapshot.val()||{};
       renderAdminStatus();
-    }
+    },
+    error=>showMessage('Live-Status aller Mitarbeiter konnte nicht geladen werden: '+error.message,'error')
   ));
 
   listeners.push(onValue(
@@ -1344,7 +1363,8 @@ function startAdminListeners() {
 
       renderAdminStatus();
       renderReport();
-    }
+    },
+    error=>showMessage('Mitarbeiterprofile konnten für die Admin-Auswertung nicht geladen werden: '+error.message,'error')
   ));
 
   listeners.push(onValue(
@@ -1353,7 +1373,8 @@ function startAdminListeners() {
       monthlyRecords=snapshot.val()||{};
       renderReport();
       renderAdminStatus();
-    }
+    },
+    error=>showMessage('Historische Arbeitszeiten konnten nicht geladen werden: '+error.message,'error')
   ));
 
   $('adminSection').hidden=false;
@@ -1459,6 +1480,12 @@ onAuthStateChanged(auth,async currentUser=>{
   clearInterval(timerInterval);
 
   user=currentUser;
+  role=null;
+  profile={};
+  active=null;
+  ownRecords={};
+  activeUsers={};
+  monthlyRecords={};
 
   if(!user){
     $('application').hidden=true;
@@ -1482,6 +1509,17 @@ onAuthStateChanged(auth,async currentUser=>{
       $('application').hidden=true;
       showMessage('Für dein Konto ist keine gültige Mitarbeiterrolle hinterlegt.','error');
       return;
+    }
+
+    const existingActive=await get(ref(db,activePath()));
+    const existingRecord=existingActive.exists()?existingActive.val():null;
+    if(existingRecord?.status==='completed' && existingRecord.end) {
+      try {
+        await persistCompletedRecord(existingRecord);
+      } catch(recoveryError) {
+        showMessage('Eine bereits beendete Zeitbuchung wartet noch auf die Speicherung. Nutze „Speichern wiederholen“: '+recoveryError.message,'error');
+        active=existingRecord;
+      }
     }
 
     if(isAdmin()) {
