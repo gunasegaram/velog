@@ -49,6 +49,32 @@
 @media(max-width:390px){.employee-time-fields input,.employee-time-fields select{max-width:100%;flex:1}}
 @media(max-width:760px){.employee-time-card{align-items:flex-start;padding:14px;gap:12px}.employee-time-main{gap:11px}.employee-time-icon{width:38px;height:38px;flex-basis:38px}.employee-time-action{padding:9px 11px;font-size:11px;white-space:nowrap}.employee-time-copy h2{font-size:14px}.employee-time-copy p{font-size:10px}}
 @media(max-width:390px){.employee-time-card{flex-wrap:wrap}.employee-time-action{margin-left:49px}}
+/* Visuelle Überarbeitung: klare Hierarchie, ruhigere Flächen und bessere Bedienbarkeit */
+:root{--bg:#f3f4f6;--line:#e5e7eb;--radius:16px;--shadow:0 2px 10px #21253608}
+.topbar{position:sticky;top:0;z-index:2;backdrop-filter:blur(12px);background:#ffffffed}
+main{padding-top:30px;padding-bottom:40px}
+.intro{margin-bottom:30px}
+.eyebrow{letter-spacing:1.5px}
+.stats{gap:14px}
+.stat{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.stat:hover{transform:translateY(-2px);box-shadow:0 8px 22px #21253610;border-color:#d8dbe2}
+.stat-top{font-size:13px;font-weight:600;color:#5e6370}
+.stat-value{font-variant-numeric:tabular-nums}
+.panel,.time-live-panel,.module{box-shadow:0 2px 10px #21253608}
+.panel-head{margin-bottom:18px}
+.nav a{transition:background .16s ease,color .16s ease}
+.nav a.active{box-shadow:inset 3px 0 0 var(--brand)}
+.action{min-height:112px;transition:transform .16s ease,background .16s ease,border-color .16s ease}
+.action:hover{transform:translateY(-2px)}
+.empty{line-height:1.65}
+@media(max-width:760px){
+  .topbar{backdrop-filter:none}
+  main{padding-top:22px;padding-bottom:30px}
+  .stats{gap:10px}
+  .nav{scrollbar-width:thin;scrollbar-color:#d7d9df transparent}
+  .nav a.active{box-shadow:inset 0 -3px 0 var(--brand)}
+}
+@media(prefers-reduced-motion:reduce){.stat,.action,.nav a{transition:none!important}}
 </style>
 </head>
 <body>
@@ -134,7 +160,6 @@
 <section class="panel profile-card" aria-labelledby="profileTitle"><div class="panel-head"><h2 id="profileTitle">Benutzerkarte</h2><span class="tag" id="profileBadge">PROFIL</span></div><div class="profile-avatar" id="profileAvatar">VE</div><h3 id="profileName">Profil wird geladen …</h3><span class="role-pill" id="profileRole">Bitte warten</span><p class="muted" id="profileEmail" style="font-size:12px;margin-top:14px;overflow-wrap:anywhere"></p><p class="muted" id="profilePhone" style="font-size:12px;margin-top:4px"></p><div class="profile-login">Letzter Login<strong id="lastLogin">Nicht verfügbar</strong></div><a class="profile-link" href="einstellungen.html"><svg class="icon"><use href="#settings"/></svg>Profil &amp; Einstellungen</a></section></div>
 <div class="workspace"><section class="panel" aria-labelledby="activityTitle"><div class="panel-head"><h2 id="activityTitle">Aktivitäten</h2><span class="tag" id="activityBadge">DEMO · KEIN LIVE-FEED</span></div><ol class="activity-list" id="activityList"></ol><div class="empty" id="activityEmpty" hidden>Noch keine Aktivitäten angebunden.</div><p class="activity-note" id="activityNote">Beispiele für den späteren Live-Bereich. Automatische Aktualisierung benötigt eine Datenanbindung.</p></section>
 <section class="panel" aria-labelledby="taskTitle"><div class="panel-head"><h2 id="taskTitle">Meine Aufgaben</h2><span class="tag" id="taskCount">0 OFFEN</span></div><p class="private-note" style="margin:0 0 14px"><strong id="openCount">0</strong> persönliche Aufgaben offen · getrennt von betrieblichen Aufgaben</p><ul class="tasks" id="taskList"></ul><div class="empty" id="taskEmpty"><svg class="icon"><use href="#check"/></svg><p>Noch keine Aufgaben.<br>Füge deine erste Erinnerung hinzu.</p></div><form class="task-form" id="taskForm"><label for="taskInput" hidden>Neue Aufgabe</label><input id="taskInput" maxlength="120" placeholder="Neue Aufgabe hinzufügen …" required autocomplete="off"><button class="add" type="submit" aria-label="Aufgabe hinzufügen">+</button></form><p class="private-note">Persönliche Checkliste · nur in diesem Browser gespeichert.</p><p class="storage-warning" id="storageWarning" role="status" hidden></p><p id="taskStatus" role="status" style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)"></p></section></div>
-<div class="workspace"><section class="panel"><div class="panel-head"><h2>Zuletzt bearbeitete Dokumente</h2><a class="tag" href="formular.html">FORMULARE ÖFFNEN →</a></div><div class="empty"><svg class="icon"><use href="#file"/></svg><p>Deine letzten Arbeitsnachweise und Lieferscheine erscheinen hier,<br>sobald die Dokumentenübersicht angebunden ist.</p></div></section><section class="panel"><div class="panel-head"><h2>Anstehende Termine</h2><span class="tag">AUSBLICK</span></div><div class="empty"><svg class="icon"><use href="#calendar"/></svg><p>Hier ist Platz für deinen nächsten Urlaub,<br>Schulungen und wichtige Abgabefristen.</p></div><p class="private-note">Termine sind noch nicht angebunden.</p></section></div>
 <section><div class="section-head"><h2>Deine Bereiche</h2><div class="search"><svg class="icon"><use href="#search"/></svg><label for="moduleSearch" hidden>Bereiche durchsuchen</label><input type="search" id="moduleSearch" placeholder="Bereiche durchsuchen …"></div></div><div class="modules" id="modules">
 <a class="module" href="personalmanagement.html" data-admin-only><div class="module-top"><span class="icon-box blue"><svg class="icon"><use href="#users"/></svg></span><svg class="icon arrow"><use href="#arrow"/></svg></div><h3>Personalmanagement</h3><p>Mitarbeiter, Beschäftigungsstatus und Personaldaten verwalten.</p></a>
 <a class="module" href="fahrzeuge.html" data-admin-only><div class="module-top"><span class="icon-box gold"><svg class="icon"><use href="#truck"/></svg></span><svg class="icon arrow"><use href="#arrow"/></svg></div><h3>Fuhrpark</h3><p>Fahrzeugübersicht und Fuhrparkverwaltung öffnen.</p></a>
